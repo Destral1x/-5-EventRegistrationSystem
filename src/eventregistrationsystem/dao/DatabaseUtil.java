@@ -14,7 +14,7 @@ import java.util.List;
  * Datu bāze glabājas mapē "database/eventdb" (projekta mapē), tāpēc dati
  * saglabājas starp programmas palaišanas reizēm.
  *
- * @author artjomsdoktorovs
+ * @author artjomsdoktorovs, glebsvasiljievs
  */
 public class DatabaseUtil {
 
@@ -23,8 +23,6 @@ public class DatabaseUtil {
 
     private static final String SCHEMA_SQL = "/eventregistrationsystem/sql/schema.sql";
     private static final String DATA_SQL = "/eventregistrationsystem/sql/data.sql";
-
-    private static boolean shutdownHookAdded = false;
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
@@ -55,13 +53,10 @@ public class DatabaseUtil {
             }
         }
 
-        if (!shutdownHookAdded) {
-            Runtime.getRuntime().addShutdownHook(new Thread(DatabaseUtil::shutdown));
-            shutdownHookAdded = true;
-        }
+        // Aizverot programmu, datu bāze tiek korekti aizvērta
+        Runtime.getRuntime().addShutdownHook(new Thread(DatabaseUtil::shutdown));
     }
 
-    /** Korekti aizver Derby, lai visas izmaiņas tiktu ierakstītas diskā. */
     public static void shutdown() {
         try {
             DriverManager.getConnection(SHUTDOWN_URL);
@@ -75,7 +70,7 @@ public class DatabaseUtil {
 
     private static boolean tableExists(Connection conn, String table) throws SQLException {
         DatabaseMetaData meta = conn.getMetaData();
-        try (ResultSet rs = meta.getTables(null, null, table, new String[]{"TABLE"})) {
+        try (ResultSet rs = meta.getTables(null, conn.getSchema(), table, new String[]{"TABLE"})) {
             return rs.next();
         }
     }

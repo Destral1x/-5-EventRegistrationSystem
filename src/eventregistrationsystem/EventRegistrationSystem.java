@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 /**
  *
- * @author artjomsdoktorovs
+ * @author artjomsdoktorovs, glebsvasiljievs
  */
 public class EventRegistrationSystem {
 
@@ -21,6 +21,9 @@ public class EventRegistrationSystem {
             DatabaseUtil.init();
         } catch (SQLException e) {
             System.err.println("Neizdevās pieslēgties datu bāzei: " + e.getMessage());
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "Neizdevās pieslēgties datu bāzei.\nPārbaudiet, vai datu bāze nav atvērta NetBeans Services logā.",
+                    "Datu bāzes kļūda", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
 
         EventRegistrationSystemGUI.main(args);

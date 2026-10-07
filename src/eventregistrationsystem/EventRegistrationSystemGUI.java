@@ -5,133 +5,70 @@
 package eventregistrationsystem;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 /**
- * Galvenais logs — pasākumu saraksts (2.6. att.).
  *
- * @author artjomsdoktorovs
+ * @author artjomsdoktorovs, glebsvasiljievs
  */
 public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EventRegistrationSystemGUI.class.getName());
-
-    // Krāsas no saskarnes skicēm
-    private static final Color ZILA = new Color(59, 99, 224);
-    private static final Color ZILA_TUMSA = new Color(47, 85, 212);
-    private static final Color GALVENES_FONS = new Color(220, 232, 252);
-    private static final Color GALVENES_TEKSTS = new Color(30, 58, 138);
-    private static final Color RINDA_OTRA = new Color(242, 246, 252);
-    private static final Color REZGIS = new Color(196, 212, 236);
-    private static final Color TEKSTS = new Color(20, 24, 33);
-    private static final Color ZALA = new Color(46, 125, 50);
-    private static final Color ORANZA = new Color(178, 106, 30);
-    private static final Color SARKANA = new Color(183, 28, 28);
 
     /**
      * Creates new form EventRegistrationSystemGUI
      */
     public EventRegistrationSystemGUI() {
         initComponents();
-        noformetDizainu();
+        noformet();
         ieliktParaugaDatus();
     }
 
-    /** Noformējums, ko nevar iestatīt GUI Builder logā (apmales, tabulas galvene, krāsas šūnās). */
-    private void noformetDizainu() {
-        pnlHeader.setBorder(BorderFactory.createMatteBorder(0, 0, 4, 0, ZILA_TUMSA));
+    // dizains, ko nevar uzlikt Design logā
+    private void noformet() {
+        Color zila = new Color(59, 99, 224);
+        Color peleka = new Color(160, 170, 185);
 
-        noformetPogu(btnRegistretiesDaliba, ZILA_TUMSA);
-        noformetPogu(btnDalibnieki, ZILA);
+        // pogas
+        noformetPogu(btnRegistretiesDaliba, zila);
+        noformetPogu(btnDalibnieki, zila);
+        noformetPogu(btnLogin, zila);
+        noformetPogu(btnLoginRegister, zila);
+        noformetPogu(btnRegister, zila);
+        noformetPogu(btnRegisterCancel, peleka);
+        noformetPogu(btnIzrakstities, peleka);
+        noformetPogu(btnIziet, peleka);
+        btnDalibnieki.setBackground(Color.WHITE);
+        btnLoginRegister.setBackground(Color.WHITE);
 
-        tblPasakumi.setFont(tblPasakumi.getFont().deriveFont(tblPasakumi.getFont().getSize() + 1f));
+        dlgLogin.getRootPane().setDefaultButton(btnLogin); // lai var ielogoties ar Enter
+
+        // tabula
         tblPasakumi.setRowHeight(28);
-        tblPasakumi.setShowGrid(true);
-        tblPasakumi.setGridColor(REZGIS);
-        tblPasakumi.setSelectionBackground(GALVENES_FONS);
-        tblPasakumi.setSelectionForeground(TEKSTS);
+        tblPasakumi.setGridColor(new Color(196, 212, 236));
+        tblPasakumi.getTableHeader().setBackground(new Color(220, 232, 252));
+        tblPasakumi.getTableHeader().setForeground(new Color(30, 58, 138));
+        tblPasakumi.getTableHeader().setFont(tblPasakumi.getFont().deriveFont(Font.BOLD));
+        scrPasakumi.getViewport().setBackground(Color.WHITE);
 
-        scrPasakumi.setBorder(BorderFactory.createLineBorder(REZGIS));
-        scrPasakumi.getViewport().setBackground(pnlBody.getBackground());
-
-        // Tabulas galvene
-        JTableHeader galvene = tblPasakumi.getTableHeader();
-        galvene.setReorderingAllowed(false);
-        galvene.setPreferredSize(new Dimension(galvene.getPreferredSize().width, 32));
-        galvene.setDefaultRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable t, Object v, boolean sel,
-                                                           boolean focus, int row, int col) {
-                super.getTableCellRendererComponent(t, v, false, false, row, col);
-                setHorizontalAlignment(SwingConstants.CENTER);
-                setBackground(GALVENES_FONS);
-                setForeground(GALVENES_TEKSTS);
-                setFont(t.getFont().deriveFont(Font.BOLD));
-                setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, REZGIS));
-                return this;
-            }
-        });
-
-        // Parastās šūnas — pārmaiņus balta / gaiši zila rinda
-        DefaultTableCellRenderer rindas = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable t, Object v, boolean sel,
-                                                           boolean focus, int row, int col) {
-                super.getTableCellRendererComponent(t, v, sel, false, row, col);
-                setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-                if (!sel) {
-                    setBackground(row % 2 == 0 ? Color.WHITE : RINDA_OTRA);
-                    setForeground(TEKSTS);
-                }
-                return this;
-            }
-        };
-        tblPasakumi.setDefaultRenderer(Object.class, rindas);
-
-        // Brīvās vietas — centrā, treknrakstā, krāsa pēc skaita
-        DefaultTableCellRenderer vietas = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable t, Object v, boolean sel,
-                                                           boolean focus, int row, int col) {
-                super.getTableCellRendererComponent(t, v, sel, false, row, col);
-                setHorizontalAlignment(SwingConstants.CENTER);
-                setFont(t.getFont().deriveFont(Font.BOLD));
-                if (!sel) {
-                    setBackground(row % 2 == 0 ? Color.WHITE : RINDA_OTRA);
-                }
-                int skaits = (v instanceof Integer) ? (Integer) v : 0;
-                setForeground(skaits <= 0 ? SARKANA : skaits < 10 ? ORANZA : ZALA);
-                return this;
-            }
-        };
-        tblPasakumi.getColumnModel().getColumn(3).setCellRenderer(vietas);
-
-        int[] platumi = {228, 115, 158, 111};
-        for (int i = 0; i < platumi.length; i++) {
-            tblPasakumi.getColumnModel().getColumn(i).setPreferredWidth(platumi[i]);
-        }
+        // brīvās vietas pa vidu
+        DefaultTableCellRenderer centra = new DefaultTableCellRenderer();
+        centra.setHorizontalAlignment(JLabel.CENTER);
+        tblPasakumi.getColumnModel().getColumn(3).setCellRenderer(centra);
     }
 
     private void noformetPogu(JButton poga, Color apmale) {
         poga.setOpaque(true);
-        poga.setContentAreaFilled(true);
-        poga.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        poga.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(apmale, 2, true),
-                BorderFactory.createEmptyBorder(6, 16, 6, 16)));
+        poga.setBorder(BorderFactory.createLineBorder(apmale, 2));
     }
 
-    /** PAGAIDU dati izskata pārbaudei — vēlāk tiks aizstāti ar datiem no datu bāzes. */
+    // pagaidām testa dati, vēlāk ņems no DB
     private void ieliktParaugaDatus() {
         DefaultTableModel modelis = (DefaultTableModel) tblPasakumi.getModel();
         modelis.addRow(new Object[]{"IT konference 2026", "12.10.2026", "Rīga, LU", 24});
@@ -149,6 +86,37 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dlgLogin = new javax.swing.JDialog();
+        pnlLoginHeader = new javax.swing.JPanel();
+        lblLoginHeader = new javax.swing.JLabel();
+        pnlLoginBody = new javax.swing.JPanel();
+        lblLoginHint = new javax.swing.JLabel();
+        lblLoginUsername = new javax.swing.JLabel();
+        txtLoginUsername = new javax.swing.JTextField();
+        lblLoginPassword = new javax.swing.JLabel();
+        pwdLoginPassword = new javax.swing.JPasswordField();
+        btnLogin = new javax.swing.JButton();
+        btnLoginRegister = new javax.swing.JButton();
+        dlgRegister = new javax.swing.JDialog();
+        pnlRegisterHeader = new javax.swing.JPanel();
+        lblRegisterHeader = new javax.swing.JLabel();
+        pnlRegisterBody = new javax.swing.JPanel();
+        lblRegisterHint = new javax.swing.JLabel();
+        lblRegisterName = new javax.swing.JLabel();
+        txtRegisterName = new javax.swing.JTextField();
+        lblRegisterSurname = new javax.swing.JLabel();
+        txtRegisterSurname = new javax.swing.JTextField();
+        lblRegisterUsername = new javax.swing.JLabel();
+        txtRegisterUsername = new javax.swing.JTextField();
+        lblRegisterPhone = new javax.swing.JLabel();
+        txtRegisterPhone = new javax.swing.JTextField();
+        lblRegisterPassword = new javax.swing.JLabel();
+        pwdRegisterPassword = new javax.swing.JPasswordField();
+        lblRegisterPassword2 = new javax.swing.JLabel();
+        pwdRegisterPassword2 = new javax.swing.JPasswordField();
+        sepRegister = new javax.swing.JSeparator();
+        btnRegister = new javax.swing.JButton();
+        btnRegisterCancel = new javax.swing.JButton();
         pnlHeader = new javax.swing.JPanel();
         lblVirsraksts = new javax.swing.JLabel();
         pnlBody = new javax.swing.JPanel();
@@ -156,10 +124,281 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         tblPasakumi = new javax.swing.JTable();
         btnRegistretiesDaliba = new javax.swing.JButton();
         btnDalibnieki = new javax.swing.JButton();
-        lblAdminPiezime = new javax.swing.JLabel();
+        btnIzrakstities = new javax.swing.JButton();
+        btnIziet = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        dlgLogin.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        dlgLogin.setTitle("Pasākumu sistēma – Ielogošanās");
+        dlgLogin.setResizable(false);
+        dlgLogin.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                dlgLoginWindowClosing(evt);
+            }
+        });
+
+        pnlLoginHeader.setBackground(new java.awt.Color(59, 99, 224));
+
+        lblLoginHeader.setFont(lblLoginHeader.getFont().deriveFont(lblLoginHeader.getFont().getStyle() | java.awt.Font.BOLD, lblLoginHeader.getFont().getSize()+3));
+        lblLoginHeader.setForeground(new java.awt.Color(255, 255, 255));
+        lblLoginHeader.setText("Ielogošanās");
+
+        javax.swing.GroupLayout pnlLoginHeaderLayout = new javax.swing.GroupLayout(pnlLoginHeader);
+        pnlLoginHeader.setLayout(pnlLoginHeaderLayout);
+        pnlLoginHeaderLayout.setHorizontalGroup(
+            pnlLoginHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlLoginHeaderLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblLoginHeader)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlLoginHeaderLayout.setVerticalGroup(
+            pnlLoginHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlLoginHeaderLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(lblLoginHeader)
+                .addGap(12, 12, 12))
+        );
+
+        pnlLoginBody.setBackground(new java.awt.Color(248, 250, 252));
+
+        lblLoginHint.setForeground(new java.awt.Color(100, 116, 139));
+        lblLoginHint.setText("Lūdzu, ievadiet savus piekļuves datus:");
+
+        lblLoginUsername.setText("Lietotājvārds:");
+
+        lblLoginPassword.setText("Parole:");
+
+        btnLogin.setBackground(new java.awt.Color(59, 99, 224));
+        btnLogin.setFont(btnLogin.getFont().deriveFont(btnLogin.getFont().getStyle() | java.awt.Font.BOLD));
+        btnLogin.setForeground(new java.awt.Color(255, 255, 255));
+        btnLogin.setText("Ielogoties");
+        btnLogin.setFocusPainted(false);
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
+
+        btnLoginRegister.setForeground(new java.awt.Color(59, 99, 224));
+        btnLoginRegister.setText("Reģistrēties");
+        btnLoginRegister.setFocusPainted(false);
+        btnLoginRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginRegisterActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlLoginBodyLayout = new javax.swing.GroupLayout(pnlLoginBody);
+        pnlLoginBody.setLayout(pnlLoginBodyLayout);
+        pnlLoginBodyLayout.setHorizontalGroup(
+            pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlLoginBodyLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblLoginHint)
+                    .addGroup(pnlLoginBodyLayout.createSequentialGroup()
+                        .addGroup(pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblLoginUsername)
+                            .addComponent(lblLoginPassword))
+                        .addGap(24, 24, 24)
+                        .addGroup(pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtLoginUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                            .addComponent(pwdLoginPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLoginBodyLayout.createSequentialGroup()
+                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnLoginRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(22, 22, 22))
+        );
+        pnlLoginBodyLayout.setVerticalGroup(
+            pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlLoginBodyLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(lblLoginHint)
+                .addGap(16, 16, 16)
+                .addGroup(pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblLoginUsername)
+                    .addComponent(txtLoginUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblLoginPassword)
+                    .addComponent(pwdLoginPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22)
+                .addGroup(pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLoginRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
+        );
+
+        javax.swing.GroupLayout dlgLoginLayout = new javax.swing.GroupLayout(dlgLogin.getContentPane());
+        dlgLogin.getContentPane().setLayout(dlgLoginLayout);
+        dlgLoginLayout.setHorizontalGroup(
+            dlgLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlLoginHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlLoginBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dlgLoginLayout.setVerticalGroup(
+            dlgLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dlgLoginLayout.createSequentialGroup()
+                .addComponent(pnlLoginHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlLoginBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        dlgRegister.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        dlgRegister.setTitle("Pasākumu sistēma – Reģistrācija");
+        dlgRegister.setResizable(false);
+        dlgRegister.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                dlgRegisterWindowClosing(evt);
+            }
+        });
+
+        pnlRegisterHeader.setBackground(new java.awt.Color(59, 99, 224));
+
+        lblRegisterHeader.setFont(lblRegisterHeader.getFont().deriveFont(lblRegisterHeader.getFont().getStyle() | java.awt.Font.BOLD, lblRegisterHeader.getFont().getSize()+3));
+        lblRegisterHeader.setForeground(new java.awt.Color(255, 255, 255));
+        lblRegisterHeader.setText("Reģistrācija");
+
+        javax.swing.GroupLayout pnlRegisterHeaderLayout = new javax.swing.GroupLayout(pnlRegisterHeader);
+        pnlRegisterHeader.setLayout(pnlRegisterHeaderLayout);
+        pnlRegisterHeaderLayout.setHorizontalGroup(
+            pnlRegisterHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlRegisterHeaderLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblRegisterHeader)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlRegisterHeaderLayout.setVerticalGroup(
+            pnlRegisterHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlRegisterHeaderLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(lblRegisterHeader)
+                .addGap(12, 12, 12))
+        );
+
+        pnlRegisterBody.setBackground(new java.awt.Color(248, 250, 252));
+
+        lblRegisterHint.setForeground(new java.awt.Color(100, 116, 139));
+        lblRegisterHint.setText("Aizpildiet visus laukus, lai izveidotu kontu");
+
+        lblRegisterName.setText("Vārds:");
+
+        lblRegisterSurname.setText("Uzvārds:");
+
+        lblRegisterUsername.setText("E-pasts / Lietotājvārds:");
+
+        lblRegisterPhone.setText("Tālrunis:");
+
+        lblRegisterPassword.setText("Parole:");
+
+        lblRegisterPassword2.setText("Parole (atkārtoti):");
+
+        btnRegister.setBackground(new java.awt.Color(59, 99, 224));
+        btnRegister.setFont(btnRegister.getFont().deriveFont(btnRegister.getFont().getStyle() | java.awt.Font.BOLD));
+        btnRegister.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegister.setText("Reģistrēties");
+        btnRegister.setFocusPainted(false);
+
+        btnRegisterCancel.setBackground(new java.awt.Color(242, 245, 250));
+        btnRegisterCancel.setForeground(new java.awt.Color(51, 65, 81));
+        btnRegisterCancel.setText("Atcelt");
+        btnRegisterCancel.setFocusPainted(false);
+        btnRegisterCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisterCancelActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlRegisterBodyLayout = new javax.swing.GroupLayout(pnlRegisterBody);
+        pnlRegisterBody.setLayout(pnlRegisterBodyLayout);
+        pnlRegisterBodyLayout.setHorizontalGroup(
+            pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlRegisterBodyLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblRegisterHint)
+                    .addGroup(pnlRegisterBodyLayout.createSequentialGroup()
+                        .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblRegisterName)
+                            .addComponent(lblRegisterSurname)
+                            .addComponent(lblRegisterUsername)
+                            .addComponent(lblRegisterPhone)
+                            .addComponent(lblRegisterPassword)
+                            .addComponent(lblRegisterPassword2))
+                        .addGap(24, 24, 24)
+                        .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtRegisterName, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .addComponent(txtRegisterSurname, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .addComponent(txtRegisterUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .addComponent(txtRegisterPhone, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .addComponent(pwdRegisterPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .addComponent(pwdRegisterPassword2, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)))
+                    .addComponent(sepRegister)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRegisterBodyLayout.createSequentialGroup()
+                        .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnRegisterCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(22, 22, 22))
+        );
+        pnlRegisterBodyLayout.setVerticalGroup(
+            pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlRegisterBodyLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(lblRegisterHint)
+                .addGap(16, 16, 16)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRegisterName)
+                    .addComponent(txtRegisterName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRegisterSurname)
+                    .addComponent(txtRegisterSurname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRegisterUsername)
+                    .addComponent(txtRegisterUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRegisterPhone)
+                    .addComponent(txtRegisterPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRegisterPassword)
+                    .addComponent(pwdRegisterPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRegisterPassword2)
+                    .addComponent(pwdRegisterPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addComponent(sepRegister, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRegisterCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
+        );
+
+        javax.swing.GroupLayout dlgRegisterLayout = new javax.swing.GroupLayout(dlgRegister.getContentPane());
+        dlgRegister.getContentPane().setLayout(dlgRegisterLayout);
+        dlgRegisterLayout.setHorizontalGroup(
+            dlgRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlRegisterHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlRegisterBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dlgRegisterLayout.setVerticalGroup(
+            dlgRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dlgRegisterLayout.createSequentialGroup()
+                .addComponent(pnlRegisterHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlRegisterBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Pasākumu reģistrācijas sistēma");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         pnlHeader.setBackground(new java.awt.Color(59, 99, 224));
 
@@ -217,14 +456,30 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnRegistretiesDaliba.setText("Reģistrēties dalībai");
         btnRegistretiesDaliba.setFocusPainted(false);
 
-        btnDalibnieki.setBackground(new java.awt.Color(255, 255, 255));
         btnDalibnieki.setFont(btnDalibnieki.getFont().deriveFont(btnDalibnieki.getFont().getSize()+1f));
         btnDalibnieki.setForeground(new java.awt.Color(59, 99, 224));
         btnDalibnieki.setText("Dalībnieki");
         btnDalibnieki.setFocusPainted(false);
 
-        lblAdminPiezime.setForeground(new java.awt.Color(100, 116, 139));
-        lblAdminPiezime.setText("← redzama tikai administratoram");
+        btnIzrakstities.setBackground(new java.awt.Color(242, 245, 250));
+        btnIzrakstities.setForeground(new java.awt.Color(51, 65, 81));
+        btnIzrakstities.setText("Izrakstīties");
+        btnIzrakstities.setFocusPainted(false);
+        btnIzrakstities.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIzrakstitiesActionPerformed(evt);
+            }
+        });
+
+        btnIziet.setBackground(new java.awt.Color(242, 245, 250));
+        btnIziet.setForeground(new java.awt.Color(51, 65, 81));
+        btnIziet.setText("Iziet");
+        btnIziet.setFocusPainted(false);
+        btnIziet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIzietActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlBodyLayout = new javax.swing.GroupLayout(pnlBody);
         pnlBody.setLayout(pnlBodyLayout);
@@ -238,9 +493,10 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                         .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
                         .addComponent(btnDalibnieki, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnIzrakstities, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
-                        .addComponent(lblAdminPiezime)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btnIziet, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
         pnlBodyLayout.setVerticalGroup(
@@ -252,7 +508,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDalibnieki, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblAdminPiezime))
+                    .addComponent(btnIzrakstities, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnIziet, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(60, 60, 60))
         );
 
@@ -267,6 +524,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnlHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addComponent(pnlBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -274,30 +532,131 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        iziet(this);
+    }//GEN-LAST:event_formWindowClosing
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // TODO pārbaudīt lietotāju un paroli DB
+        dlgLogin.setVisible(false);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnLoginRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginRegisterActionPerformed
+        dlgLogin.setVisible(false);
+        paraditLogu(dlgRegister);
+    }//GEN-LAST:event_btnLoginRegisterActionPerformed
+
+    private void btnRegisterCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterCancelActionPerformed
+        dlgRegister.setVisible(false);
+        paraditLogu(dlgLogin);
+    }//GEN-LAST:event_btnRegisterCancelActionPerformed
+
+    private void dlgLoginWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgLoginWindowClosing
+        iziet(dlgLogin);
+    }//GEN-LAST:event_dlgLoginWindowClosing
+
+    private void dlgRegisterWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgRegisterWindowClosing
+        dlgRegister.setVisible(false);
+        paraditLogu(dlgLogin);
+    }//GEN-LAST:event_dlgRegisterWindowClosing
+
+    private void btnIzrakstitiesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzrakstitiesActionPerformed
+        int atbilde = JOptionPane.showConfirmDialog(this, "Vai tiešām vēlaties izrakstīties?",
+                "Izrakstīties", JOptionPane.YES_NO_OPTION);
+        if (atbilde == JOptionPane.YES_OPTION) {
+            setVisible(false);
+            txtLoginUsername.setText("");
+            pwdLoginPassword.setText("");
+            paraditLogu(dlgLogin);
+        }
+    }//GEN-LAST:event_btnIzrakstitiesActionPerformed
+
+    private void btnIzietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzietActionPerformed
+        iziet(this);
+    }//GEN-LAST:event_btnIzietActionPerformed
+
+    // atver logu ekrāna vidū
+    private void paraditLogu(javax.swing.JDialog logs) {
+        logs.pack();
+        logs.setLocationRelativeTo(null);
+        logs.setVisible(true);
+    }
+
+    // pirms aizvēršanas pajautā
+    private void iziet(java.awt.Component logs) {
+        int atbilde = JOptionPane.showConfirmDialog(logs, "Vai tiešām vēlaties aizvērt programmu?",
+                "Iziet", JOptionPane.YES_NO_OPTION);
+        if (atbilde == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Metal izskats — tikai tajā strādā pogu un galvenes krāsas (Nimbus un macOS tās ignorē) */
+        // Metal, citādi nestrādā pogu krāsas
         try {
             javax.swing.UIManager.put("swing.boldMetal", Boolean.FALSE);
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getCrossPlatformLookAndFeelClassName());
+            // Yes/No latviski
+            javax.swing.UIManager.put("OptionPane.yesButtonText", "Jā");
+            javax.swing.UIManager.put("OptionPane.noButtonText", "Nē");
+            javax.swing.UIManager.put("OptionPane.okButtonText", "Labi");
+            javax.swing.UIManager.put("OptionPane.cancelButtonText", "Atcelt");
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new EventRegistrationSystemGUI().setVisible(true));
+        // sākumā atveras login logs
+        java.awt.EventQueue.invokeLater(() -> {
+            EventRegistrationSystemGUI gui = new EventRegistrationSystemGUI();
+            gui.paraditLogu(gui.dlgLogin);
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDalibnieki;
+    private javax.swing.JButton btnIziet;
+    private javax.swing.JButton btnIzrakstities;
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnLoginRegister;
+    private javax.swing.JButton btnRegister;
+    private javax.swing.JButton btnRegisterCancel;
     private javax.swing.JButton btnRegistretiesDaliba;
-    private javax.swing.JLabel lblAdminPiezime;
+    private javax.swing.JDialog dlgLogin;
+    private javax.swing.JDialog dlgRegister;
+    private javax.swing.JLabel lblLoginHeader;
+    private javax.swing.JLabel lblLoginHint;
+    private javax.swing.JLabel lblLoginPassword;
+    private javax.swing.JLabel lblLoginUsername;
+    private javax.swing.JLabel lblRegisterHeader;
+    private javax.swing.JLabel lblRegisterHint;
+    private javax.swing.JLabel lblRegisterName;
+    private javax.swing.JLabel lblRegisterPassword;
+    private javax.swing.JLabel lblRegisterPassword2;
+    private javax.swing.JLabel lblRegisterPhone;
+    private javax.swing.JLabel lblRegisterSurname;
+    private javax.swing.JLabel lblRegisterUsername;
     private javax.swing.JLabel lblVirsraksts;
     private javax.swing.JPanel pnlBody;
     private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlLoginBody;
+    private javax.swing.JPanel pnlLoginHeader;
+    private javax.swing.JPanel pnlRegisterBody;
+    private javax.swing.JPanel pnlRegisterHeader;
+    private javax.swing.JPasswordField pwdLoginPassword;
+    private javax.swing.JPasswordField pwdRegisterPassword;
+    private javax.swing.JPasswordField pwdRegisterPassword2;
     private javax.swing.JScrollPane scrPasakumi;
+    private javax.swing.JSeparator sepRegister;
     private javax.swing.JTable tblPasakumi;
+    private javax.swing.JTextField txtLoginUsername;
+    private javax.swing.JTextField txtRegisterName;
+    private javax.swing.JTextField txtRegisterPhone;
+    private javax.swing.JTextField txtRegisterSurname;
+    private javax.swing.JTextField txtRegisterUsername;
     // End of variables declaration//GEN-END:variables
 }
