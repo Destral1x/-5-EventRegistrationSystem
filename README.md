@@ -1,4 +1,6 @@
+Tēma: Pasākumu reģistrācijas sistēma<br>
 5.Grupa<br>
-Autori : Artjoms Doktorovs, Gļebs Vasiļjevs<br>
-ATS/PR-32<br>
-Tēma: Pasākumu reģistrācijas sistēma
+Autori :<br>
+Artjoms Doktorovs - Kizarov3<br>
+Gļebs Vasiļjevs - Destral1x<br>
+ATS/PR-32
