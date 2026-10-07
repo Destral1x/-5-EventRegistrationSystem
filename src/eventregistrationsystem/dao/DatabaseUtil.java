@@ -10,29 +10,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Savienojums ar iegulto Apache Derby datu bāzi.
- * Datu bāze glabājas mapē "database/eventdb" (projekta mapē), tāpēc dati
- * saglabājas starp programmas palaišanas reizēm.
  *
  * @author artjomsdoktorovs, glebsvasiljievs
  */
 public class DatabaseUtil {
 
-    private static final String DB_URL = "jdbc:derby:database/eventdb;create=true";
-    private static final String SHUTDOWN_URL = "jdbc:derby:;shutdown=true";
+    // pirms palaišanas NetBeans jāieslēdz Java DB serveris
+    private static final String DB_URL = "jdbc:derby://localhost:1527/EventDB;create=true";
+    private static final String DB_USER = "dbuser";
+    private static final String DB_PASSWORD = "dbuser";
 
     private static final String SCHEMA_SQL = "/eventregistrationsystem/sql/schema.sql";
     private static final String DATA_SQL = "/eventregistrationsystem/sql/data.sql";
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL);
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    /**
-     * Jāizsauc vienreiz programmas sākumā.
-     * Ja tabulu vēl nav (pirmā palaišana) — izveido tās un ievieto sākotnējos datus.
-     * Ja tabulas jau ir — neko nemaina, tiek izmantoti saglabātie dati.
-     */
+    // pirmajā palaišanā izveido tabulas un ieliek sākuma datus
     public static void init() throws SQLException {
         try (Connection conn = getConnection()) {
             if (!tableExists(conn, "LIETOTAJI")) {
@@ -52,20 +47,6 @@ public class DatabaseUtil {
                 System.out.println("Datu bāze atrasta, tiek izmantoti saglabātie dati.");
             }
         }
-
-        // Aizverot programmu, datu bāze tiek korekti aizvērta
-        Runtime.getRuntime().addShutdownHook(new Thread(DatabaseUtil::shutdown));
-    }
-
-    public static void shutdown() {
-        try {
-            DriverManager.getConnection(SHUTDOWN_URL);
-        } catch (SQLException e) {
-            // Derby veiksmīgas aizvēršanas gadījumā vienmēr met XJ015
-            if (!"XJ015".equals(e.getSQLState())) {
-                System.err.println("Kļūda aizverot datu bāzi: " + e.getMessage());
-            }
-        }
     }
 
     private static boolean tableExists(Connection conn, String table) throws SQLException {
@@ -75,7 +56,7 @@ public class DatabaseUtil {
         }
     }
 
-    /** Nolasa .sql failu no resursiem un izpilda katru komandu (atdalītas ar ";"). */
+    // izpilda sql failu pa vienai komandai
     private static void runScript(Connection conn, String resource) throws SQLException, IOException {
         try (Statement st = conn.createStatement()) {
             for (String sql : readStatements(resource)) {
@@ -84,6 +65,7 @@ public class DatabaseUtil {
         }
     }
 
+    // sadala sql failu pa komandām (pēc ;)
     private static List<String> readStatements(String resource) throws IOException {
         InputStream in = DatabaseUtil.class.getResourceAsStream(resource);
         if (in == null) {

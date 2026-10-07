@@ -22,7 +22,8 @@ public class EventRegistrationSystem {
         } catch (SQLException e) {
             System.err.println("Neizdevās pieslēgties datu bāzei: " + e.getMessage());
             javax.swing.JOptionPane.showMessageDialog(null,
-                    "Neizdevās pieslēgties datu bāzei.\nPārbaudiet, vai datu bāze nav atvērta NetBeans Services logā.",
+                    "Neizdevās pieslēgties datu bāzei.\nPārbaudiet, vai Java DB serveris ir palaists\n"
+                    + "(Services → Databases → Java DB → Start Server).",
                     "Datu bāzes kļūda", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
 
