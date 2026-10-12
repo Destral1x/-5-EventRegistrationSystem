@@ -65,6 +65,7 @@ public class DatabaseUtil {
         }
     }
 
+    // sadala sql failu pa komandām (pēc ;)
     private static List<String> readStatements(String resource) throws IOException {
         InputStream in = DatabaseUtil.class.getResourceAsStream(resource);
         if (in == null) {
