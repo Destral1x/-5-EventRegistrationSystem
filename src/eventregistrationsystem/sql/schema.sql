@@ -1,7 +1,6 @@
---  Pasākumu reģistrācijas sistēma — datu bāzes struktūra
---  Skripts tiek izpildīts automātiski TIKAI pirmajā palaišanas reizē.
+-- tabulas (izpildās tikai pirmajā palaišanā)
 
--- Lietotāji (administratori un dalībnieki)
+-- lietotāji
 CREATE TABLE LIETOTAJI (
     id             INT          NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     vards          VARCHAR(50)  NOT NULL,
@@ -16,7 +15,7 @@ CREATE TABLE LIETOTAJI (
     CONSTRAINT ck_loma CHECK (loma IN ('ADMIN', 'DALIBNIEKS'))
 );
 
--- Pasākumi
+-- pasākumi
 CREATE TABLE PASAKUMI (
     id                      INT           NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     nosaukums               VARCHAR(100)  NOT NULL,
@@ -31,7 +30,7 @@ CREATE TABLE PASAKUMI (
     CONSTRAINT fk_pasakumi_izveidotajs FOREIGN KEY (izveidotajs_id) REFERENCES LIETOTAJI (id)
 );
 
--- Dalības pieteikumi (reģistrācijas)
+-- pieteikumi
 CREATE TABLE REGISTRACIJAS (
     id                    INT          NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     pasakuma_id           INT          NOT NULL,
@@ -45,6 +44,6 @@ CREATE TABLE REGISTRACIJAS (
     CONSTRAINT fk_reg_lietotajs FOREIGN KEY (lietotaja_id) REFERENCES LIETOTAJI (id) ON DELETE CASCADE
 );
 
--- Indeksi biežākajiem vaicājumiem
+-- indeksi
 CREATE INDEX idx_pasakumi_datums ON PASAKUMI (datums);
 CREATE INDEX idx_reg_statuss ON REGISTRACIJAS (pasakuma_id, statuss);

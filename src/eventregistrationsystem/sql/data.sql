@@ -1,17 +1,16 @@
---  Sākotnējie dati — izpildās tikai kopā ar schema.sql (pirmajā palaišanā)
+-- sākuma dati
 
--- Noklusējuma administrators: lietotājvārds "admin", parole "admin123"
--- (parole_hash = SHA-256 no "admin123")
+-- admins, parole admin123
 INSERT INTO LIETOTAJI (vards, uzvards, lietotajvards, talrunis, parole_hash, loma)
 VALUES ('Sistēmas', 'Administrators', 'admin', NULL,
         '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN');
 
--- Testa dalībnieks: lietotājvārds "janis@example.com", parole "admin123"
+-- testa lietotājs, parole admin123
 INSERT INTO LIETOTAJI (vards, uzvards, lietotajvards, talrunis, parole_hash, loma)
 VALUES ('Jānis', 'Bērziņš', 'janis@example.com', '+37120000000',
         '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'DALIBNIEKS');
 
--- Piemēra pasākumi (izveidojis administrators ar id = 1)
+-- pasākumi
 INSERT INTO PASAKUMI (nosaukums, apraksts, datums, laiks, vieta, maks_dalibnieku_skaits, izveidotajs_id)
 VALUES ('Java programmēšanas seminārs', 'Ievads Java Swing un JDBC.', '2026-11-20', '10:00:00',
         'DTTT, 205. kabinets', 25, 1);
@@ -24,5 +23,5 @@ INSERT INTO PASAKUMI (nosaukums, apraksts, datums, laiks, vieta, maks_dalibnieku
 VALUES ('Programmēšanas sacensības', 'Komandu sacensības algoritmos.', '2027-02-14', '09:00:00',
         'Daugavpils, Vienības nams', 3, 1);
 
--- Piemēra pieteikums (Jānis → 1. pasākums, gaida apstiprinājumu)
+-- viens pieteikums
 INSERT INTO REGISTRACIJAS (pasakuma_id, lietotaja_id, statuss) VALUES (1, 2, 'GAIDA');

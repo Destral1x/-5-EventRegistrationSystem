@@ -4,14 +4,16 @@
  */
 package eventregistrationsystem;
 
+import eventregistrationsystem.dao.DatabaseUtil;
 import java.awt.Color;
 import java.awt.Font;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -27,7 +29,6 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     public EventRegistrationSystemGUI() {
         initComponents();
         noformet();
-        ieliktParaugaDatus();
     }
 
     // dizains, ko nevar uzlikt Design logā
@@ -44,8 +45,17 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         noformetPogu(btnRegisterCancel, peleka);
         noformetPogu(btnIzrakstities, peleka);
         noformetPogu(btnIziet, peleka);
+        noformetPogu(btnPievienotPasakumu, zila);
+        noformetPogu(btnEventSave, zila);
+        noformetPogu(btnEventCancel, peleka);
+        noformetPogu(btnApprove, new Color(56, 130, 64));
+        noformetPogu(btnReject, new Color(160, 40, 35));
+        noformetPogu(btnParticipantsClose, peleka);
         btnDalibnieki.setBackground(Color.WHITE);
         btnLoginRegister.setBackground(Color.WHITE);
+        btnPievienotPasakumu.setBackground(Color.WHITE);
+
+        spnEventMax.setModel(new SpinnerNumberModel(10, 1, 1000, 1));
 
         dlgLogin.getRootPane().setDefaultButton(btnLogin); // lai var ielogoties ar Enter
 
@@ -61,6 +71,13 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         DefaultTableCellRenderer centra = new DefaultTableCellRenderer();
         centra.setHorizontalAlignment(JLabel.CENTER);
         tblPasakumi.getColumnModel().getColumn(3).setCellRenderer(centra);
+
+        tblParticipants.setRowHeight(28);
+        tblParticipants.setGridColor(new Color(196, 212, 236));
+        tblParticipants.getTableHeader().setBackground(new Color(220, 232, 252));
+        tblParticipants.getTableHeader().setForeground(new Color(30, 58, 138));
+        tblParticipants.getTableHeader().setFont(tblParticipants.getFont().deriveFont(Font.BOLD));
+        scrParticipants.getViewport().setBackground(Color.WHITE);
     }
 
     private void noformetPogu(JButton poga, Color apmale) {
@@ -68,13 +85,10 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         poga.setBorder(BorderFactory.createLineBorder(apmale, 2));
     }
 
-    // pagaidām testa dati, vēlāk ņems no DB
-    private void ieliktParaugaDatus() {
-        DefaultTableModel modelis = (DefaultTableModel) tblPasakumi.getModel();
-        modelis.addRow(new Object[]{"IT konference 2026", "12.10.2026", "Rīga, LU", 24});
-        modelis.addRow(new Object[]{"Java seminārs", "20.10.2026", "Daugavpils, DU", 8});
-        modelis.addRow(new Object[]{"Datu bāzu praktikums", "03.11.2026", "Tiešsaiste", 0});
-        modelis.addRow(new Object[]{"Studentu hakatons", "15.11.2026", "Liepāja", 31});
+    // galvenais logs ekrāna vidū
+    private void atvertGalvenoLogu() {
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     /**
@@ -117,6 +131,39 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         sepRegister = new javax.swing.JSeparator();
         btnRegister = new javax.swing.JButton();
         btnRegisterCancel = new javax.swing.JButton();
+        dlgAddEvent = new javax.swing.JDialog();
+        pnlEventHeader = new javax.swing.JPanel();
+        lblEventHeader = new javax.swing.JLabel();
+        pnlEventBody = new javax.swing.JPanel();
+        lblEventHint = new javax.swing.JLabel();
+        lblEventName = new javax.swing.JLabel();
+        txtEventName = new javax.swing.JTextField();
+        lblEventDescription = new javax.swing.JLabel();
+        scrEventDescription = new javax.swing.JScrollPane();
+        txtEventDescription = new javax.swing.JTextArea();
+        lblEventDate = new javax.swing.JLabel();
+        txtEventDate = new javax.swing.JTextField();
+        lblEventTime = new javax.swing.JLabel();
+        txtEventTime = new javax.swing.JTextField();
+        lblEventPlace = new javax.swing.JLabel();
+        txtEventPlace = new javax.swing.JTextField();
+        lblEventMax = new javax.swing.JLabel();
+        spnEventMax = new javax.swing.JSpinner();
+        lblEventNote = new javax.swing.JLabel();
+        sepEvent = new javax.swing.JSeparator();
+        btnEventSave = new javax.swing.JButton();
+        btnEventCancel = new javax.swing.JButton();
+        dlgParticipants = new javax.swing.JDialog();
+        pnlParticipantsHeader = new javax.swing.JPanel();
+        lblParticipantsHeader = new javax.swing.JLabel();
+        pnlParticipantsBody = new javax.swing.JPanel();
+        lblParticipantsEvent = new javax.swing.JLabel();
+        cmbParticipantsEvent = new javax.swing.JComboBox<>();
+        scrParticipants = new javax.swing.JScrollPane();
+        tblParticipants = new javax.swing.JTable();
+        btnApprove = new javax.swing.JButton();
+        btnReject = new javax.swing.JButton();
+        btnParticipantsClose = new javax.swing.JButton();
         pnlHeader = new javax.swing.JPanel();
         lblVirsraksts = new javax.swing.JLabel();
         pnlBody = new javax.swing.JPanel();
@@ -124,6 +171,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         tblPasakumi = new javax.swing.JTable();
         btnRegistretiesDaliba = new javax.swing.JButton();
         btnDalibnieki = new javax.swing.JButton();
+        btnPievienotPasakumu = new javax.swing.JButton();
         btnIzrakstities = new javax.swing.JButton();
         btnIziet = new javax.swing.JButton();
 
@@ -392,6 +440,302 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 .addComponent(pnlRegisterBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        dlgAddEvent.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        dlgAddEvent.setTitle("Pasākumu sistēma – Pasākuma izveide");
+        dlgAddEvent.setResizable(false);
+        dlgAddEvent.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                dlgAddEventWindowClosing(evt);
+            }
+        });
+
+        pnlEventHeader.setBackground(new java.awt.Color(59, 99, 224));
+
+        lblEventHeader.setFont(lblEventHeader.getFont().deriveFont(lblEventHeader.getFont().getStyle() | java.awt.Font.BOLD, lblEventHeader.getFont().getSize()+3));
+        lblEventHeader.setForeground(new java.awt.Color(255, 255, 255));
+        lblEventHeader.setText("Pasākuma izveide");
+
+        javax.swing.GroupLayout pnlEventHeaderLayout = new javax.swing.GroupLayout(pnlEventHeader);
+        pnlEventHeader.setLayout(pnlEventHeaderLayout);
+        pnlEventHeaderLayout.setHorizontalGroup(
+            pnlEventHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlEventHeaderLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblEventHeader)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlEventHeaderLayout.setVerticalGroup(
+            pnlEventHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlEventHeaderLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(lblEventHeader)
+                .addGap(12, 12, 12))
+        );
+
+        pnlEventBody.setBackground(new java.awt.Color(248, 250, 252));
+
+        lblEventHint.setForeground(new java.awt.Color(100, 116, 139));
+        lblEventHint.setText("Aizpildiet pasākuma datus");
+
+        lblEventName.setText("Nosaukums:");
+
+        lblEventDescription.setText("Apraksts:");
+
+        txtEventDescription.setColumns(20);
+        txtEventDescription.setLineWrap(true);
+        txtEventDescription.setRows(3);
+        txtEventDescription.setWrapStyleWord(true);
+        scrEventDescription.setViewportView(txtEventDescription);
+
+        lblEventDate.setText("Norises datums:");
+
+        lblEventTime.setText("Norises laiks:");
+
+        lblEventPlace.setText("Vieta:");
+
+        lblEventMax.setText("Maks. dalībnieku skaits:");
+
+        lblEventNote.setForeground(new java.awt.Color(178, 106, 30));
+        lblEventNote.setText("* datums dd.mm.gggg (nedrīkst būt pagātnē), laiks hh:mm");
+
+        btnEventSave.setBackground(new java.awt.Color(59, 99, 224));
+        btnEventSave.setFont(btnEventSave.getFont().deriveFont(btnEventSave.getFont().getStyle() | java.awt.Font.BOLD));
+        btnEventSave.setForeground(new java.awt.Color(255, 255, 255));
+        btnEventSave.setText("Saglabāt");
+        btnEventSave.setFocusPainted(false);
+
+        btnEventCancel.setBackground(new java.awt.Color(242, 245, 250));
+        btnEventCancel.setForeground(new java.awt.Color(51, 65, 81));
+        btnEventCancel.setText("Atcelt");
+        btnEventCancel.setFocusPainted(false);
+        btnEventCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEventCancelActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlEventBodyLayout = new javax.swing.GroupLayout(pnlEventBody);
+        pnlEventBody.setLayout(pnlEventBodyLayout);
+        pnlEventBodyLayout.setHorizontalGroup(
+            pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlEventBodyLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblEventHint)
+                    .addGroup(pnlEventBodyLayout.createSequentialGroup()
+                        .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblEventName)
+                            .addComponent(lblEventDescription)
+                            .addComponent(lblEventDate)
+                            .addComponent(lblEventTime)
+                            .addComponent(lblEventPlace)
+                            .addComponent(lblEventMax))
+                        .addGap(24, 24, 24)
+                        .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtEventName, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                            .addComponent(scrEventDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                            .addComponent(txtEventDate, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtEventTime, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtEventPlace, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                            .addComponent(spnEventMax, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblEventNote)))
+                    .addComponent(sepEvent)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEventBodyLayout.createSequentialGroup()
+                        .addComponent(btnEventSave, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnEventCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(22, 22, 22))
+        );
+        pnlEventBodyLayout.setVerticalGroup(
+            pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlEventBodyLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(lblEventHint)
+                .addGap(16, 16, 16)
+                .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEventName)
+                    .addComponent(txtEventName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblEventDescription)
+                    .addComponent(scrEventDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEventDate)
+                    .addComponent(txtEventDate, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEventTime)
+                    .addComponent(txtEventTime, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEventPlace)
+                    .addComponent(txtEventPlace, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEventMax)
+                    .addComponent(spnEventMax, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addComponent(lblEventNote)
+                .addGap(16, 16, 16)
+                .addComponent(sepEvent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addGroup(pnlEventBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEventSave, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEventCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
+        );
+
+        javax.swing.GroupLayout dlgAddEventLayout = new javax.swing.GroupLayout(dlgAddEvent.getContentPane());
+        dlgAddEvent.getContentPane().setLayout(dlgAddEventLayout);
+        dlgAddEventLayout.setHorizontalGroup(
+            dlgAddEventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlEventHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlEventBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dlgAddEventLayout.setVerticalGroup(
+            dlgAddEventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dlgAddEventLayout.createSequentialGroup()
+                .addComponent(pnlEventHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlEventBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        dlgParticipants.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        dlgParticipants.setTitle("Pasākumu sistēma – Dalībnieku pārvaldība");
+        dlgParticipants.setResizable(false);
+        dlgParticipants.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                dlgParticipantsWindowClosing(evt);
+            }
+        });
+
+        pnlParticipantsHeader.setBackground(new java.awt.Color(59, 99, 224));
+
+        lblParticipantsHeader.setFont(lblParticipantsHeader.getFont().deriveFont(lblParticipantsHeader.getFont().getStyle() | java.awt.Font.BOLD, lblParticipantsHeader.getFont().getSize()+3));
+        lblParticipantsHeader.setForeground(new java.awt.Color(255, 255, 255));
+        lblParticipantsHeader.setText("Dalībnieku pārvaldība");
+
+        javax.swing.GroupLayout pnlParticipantsHeaderLayout = new javax.swing.GroupLayout(pnlParticipantsHeader);
+        pnlParticipantsHeader.setLayout(pnlParticipantsHeaderLayout);
+        pnlParticipantsHeaderLayout.setHorizontalGroup(
+            pnlParticipantsHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlParticipantsHeaderLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblParticipantsHeader)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlParticipantsHeaderLayout.setVerticalGroup(
+            pnlParticipantsHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlParticipantsHeaderLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(lblParticipantsHeader)
+                .addGap(12, 12, 12))
+        );
+
+        pnlParticipantsBody.setBackground(new java.awt.Color(248, 250, 252));
+
+        lblParticipantsEvent.setText("Pasākums:");
+
+
+        tblParticipants.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Vārds", "Uzvārds", "E-pasts", "Tālrunis", "Statuss"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        scrParticipants.setViewportView(tblParticipants);
+
+        btnApprove.setBackground(new java.awt.Color(76, 163, 84));
+        btnApprove.setFont(btnApprove.getFont().deriveFont(btnApprove.getFont().getStyle() | java.awt.Font.BOLD));
+        btnApprove.setForeground(new java.awt.Color(255, 255, 255));
+        btnApprove.setText("Apstiprināt");
+        btnApprove.setFocusPainted(false);
+
+        btnReject.setBackground(new java.awt.Color(201, 58, 50));
+        btnReject.setFont(btnReject.getFont().deriveFont(btnReject.getFont().getStyle() | java.awt.Font.BOLD));
+        btnReject.setForeground(new java.awt.Color(255, 255, 255));
+        btnReject.setText("Noraidīt");
+        btnReject.setFocusPainted(false);
+
+        btnParticipantsClose.setBackground(new java.awt.Color(242, 245, 250));
+        btnParticipantsClose.setForeground(new java.awt.Color(51, 65, 81));
+        btnParticipantsClose.setText("Aizvērt");
+        btnParticipantsClose.setFocusPainted(false);
+        btnParticipantsClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnParticipantsCloseActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlParticipantsBodyLayout = new javax.swing.GroupLayout(pnlParticipantsBody);
+        pnlParticipantsBody.setLayout(pnlParticipantsBodyLayout);
+        pnlParticipantsBodyLayout.setHorizontalGroup(
+            pnlParticipantsBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlParticipantsBodyLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(pnlParticipantsBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlParticipantsBodyLayout.createSequentialGroup()
+                        .addComponent(lblParticipantsEvent)
+                        .addGap(24, 24, 24)
+                        .addComponent(cmbParticipantsEvent, 0, 320, Short.MAX_VALUE))
+                    .addComponent(scrParticipants, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                    .addGroup(pnlParticipantsBodyLayout.createSequentialGroup()
+                        .addComponent(btnApprove, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnReject, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnParticipantsClose, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(22, 22, 22))
+        );
+        pnlParticipantsBodyLayout.setVerticalGroup(
+            pnlParticipantsBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlParticipantsBodyLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(pnlParticipantsBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblParticipantsEvent)
+                    .addComponent(cmbParticipantsEvent, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addComponent(scrParticipants, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
+                .addGroup(pnlParticipantsBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnApprove, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReject, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnParticipantsClose, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
+        );
+
+        javax.swing.GroupLayout dlgParticipantsLayout = new javax.swing.GroupLayout(dlgParticipants.getContentPane());
+        dlgParticipants.getContentPane().setLayout(dlgParticipantsLayout);
+        dlgParticipantsLayout.setHorizontalGroup(
+            dlgParticipantsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlParticipantsHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlParticipantsBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dlgParticipantsLayout.setVerticalGroup(
+            dlgParticipantsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dlgParticipantsLayout.createSequentialGroup()
+                .addComponent(pnlParticipantsHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlParticipantsBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Pasākumu reģistrācijas sistēma");
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -460,6 +804,21 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnDalibnieki.setForeground(new java.awt.Color(59, 99, 224));
         btnDalibnieki.setText("Dalībnieki");
         btnDalibnieki.setFocusPainted(false);
+        btnDalibnieki.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDalibniekiActionPerformed(evt);
+            }
+        });
+
+        btnPievienotPasakumu.setBackground(new java.awt.Color(255, 255, 255));
+        btnPievienotPasakumu.setForeground(new java.awt.Color(59, 99, 224));
+        btnPievienotPasakumu.setText("Pievienot pasākumu");
+        btnPievienotPasakumu.setFocusPainted(false);
+        btnPievienotPasakumu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPievienotPasakumuActionPerformed(evt);
+            }
+        });
 
         btnIzrakstities.setBackground(new java.awt.Color(242, 245, 250));
         btnIzrakstities.setForeground(new java.awt.Color(51, 65, 81));
@@ -493,6 +852,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                         .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
                         .addComponent(btnDalibnieki, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnPievienotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnIzrakstities, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
@@ -508,6 +869,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDalibnieki, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPievienotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnIzrakstities, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnIziet, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(60, 60, 60))
@@ -537,10 +899,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        // TODO pārbaudīt lietotāju un paroli DB
         dlgLogin.setVisible(false);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        atvertGalvenoLogu();
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnLoginRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginRegisterActionPerformed
@@ -577,6 +937,36 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         iziet(this);
     }//GEN-LAST:event_btnIzietActionPerformed
 
+    private void btnPievienotPasakumuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPievienotPasakumuActionPerformed
+        setVisible(false);
+        paraditLogu(dlgAddEvent);
+    }//GEN-LAST:event_btnPievienotPasakumuActionPerformed
+
+    private void btnEventCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventCancelActionPerformed
+        dlgAddEvent.setVisible(false);
+        atvertGalvenoLogu();
+    }//GEN-LAST:event_btnEventCancelActionPerformed
+
+    private void dlgAddEventWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgAddEventWindowClosing
+        dlgAddEvent.setVisible(false);
+        atvertGalvenoLogu();
+    }//GEN-LAST:event_dlgAddEventWindowClosing
+
+    private void btnDalibniekiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDalibniekiActionPerformed
+        setVisible(false);
+        paraditLogu(dlgParticipants);
+    }//GEN-LAST:event_btnDalibniekiActionPerformed
+
+    private void btnParticipantsCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParticipantsCloseActionPerformed
+        dlgParticipants.setVisible(false);
+        atvertGalvenoLogu();
+    }//GEN-LAST:event_btnParticipantsCloseActionPerformed
+
+    private void dlgParticipantsWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgParticipantsWindowClosing
+        dlgParticipants.setVisible(false);
+        atvertGalvenoLogu();
+    }//GEN-LAST:event_dlgParticipantsWindowClosing
+
     // atver logu ekrāna vidū
     private void paraditLogu(javax.swing.JDialog logs) {
         logs.pack();
@@ -610,6 +1000,15 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
+        try {
+            DatabaseUtil.init();
+        } catch (SQLException e) {
+            System.err.println("Neizdevās pieslēgties datu bāzei: " + e.getMessage());
+            JOptionPane.showMessageDialog(null,
+                    "Neizdevās pieslēgties datu bāzei.\nPārbaudiet, vai Java DB serveris ir palaists.",
+                    "Datu bāzes kļūda", JOptionPane.ERROR_MESSAGE);
+        }
+
         // sākumā atveras login logs
         java.awt.EventQueue.invokeLater(() -> {
             EventRegistrationSystemGUI gui = new EventRegistrationSystemGUI();
@@ -618,20 +1017,40 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnApprove;
     private javax.swing.JButton btnDalibnieki;
+    private javax.swing.JButton btnEventCancel;
+    private javax.swing.JButton btnEventSave;
     private javax.swing.JButton btnIziet;
     private javax.swing.JButton btnIzrakstities;
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnLoginRegister;
+    private javax.swing.JButton btnParticipantsClose;
+    private javax.swing.JButton btnPievienotPasakumu;
     private javax.swing.JButton btnRegister;
     private javax.swing.JButton btnRegisterCancel;
     private javax.swing.JButton btnRegistretiesDaliba;
+    private javax.swing.JButton btnReject;
+    private javax.swing.JComboBox<String> cmbParticipantsEvent;
+    private javax.swing.JDialog dlgAddEvent;
     private javax.swing.JDialog dlgLogin;
+    private javax.swing.JDialog dlgParticipants;
     private javax.swing.JDialog dlgRegister;
+    private javax.swing.JLabel lblEventDate;
+    private javax.swing.JLabel lblEventDescription;
+    private javax.swing.JLabel lblEventHeader;
+    private javax.swing.JLabel lblEventHint;
+    private javax.swing.JLabel lblEventMax;
+    private javax.swing.JLabel lblEventName;
+    private javax.swing.JLabel lblEventNote;
+    private javax.swing.JLabel lblEventPlace;
+    private javax.swing.JLabel lblEventTime;
     private javax.swing.JLabel lblLoginHeader;
     private javax.swing.JLabel lblLoginHint;
     private javax.swing.JLabel lblLoginPassword;
     private javax.swing.JLabel lblLoginUsername;
+    private javax.swing.JLabel lblParticipantsEvent;
+    private javax.swing.JLabel lblParticipantsHeader;
     private javax.swing.JLabel lblRegisterHeader;
     private javax.swing.JLabel lblRegisterHint;
     private javax.swing.JLabel lblRegisterName;
@@ -642,17 +1061,31 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblRegisterUsername;
     private javax.swing.JLabel lblVirsraksts;
     private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlEventBody;
+    private javax.swing.JPanel pnlEventHeader;
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JPanel pnlLoginBody;
     private javax.swing.JPanel pnlLoginHeader;
+    private javax.swing.JPanel pnlParticipantsBody;
+    private javax.swing.JPanel pnlParticipantsHeader;
     private javax.swing.JPanel pnlRegisterBody;
     private javax.swing.JPanel pnlRegisterHeader;
     private javax.swing.JPasswordField pwdLoginPassword;
     private javax.swing.JPasswordField pwdRegisterPassword;
     private javax.swing.JPasswordField pwdRegisterPassword2;
+    private javax.swing.JScrollPane scrEventDescription;
+    private javax.swing.JScrollPane scrParticipants;
     private javax.swing.JScrollPane scrPasakumi;
+    private javax.swing.JSeparator sepEvent;
     private javax.swing.JSeparator sepRegister;
+    private javax.swing.JSpinner spnEventMax;
+    private javax.swing.JTable tblParticipants;
     private javax.swing.JTable tblPasakumi;
+    private javax.swing.JTextField txtEventDate;
+    private javax.swing.JTextArea txtEventDescription;
+    private javax.swing.JTextField txtEventName;
+    private javax.swing.JTextField txtEventPlace;
+    private javax.swing.JTextField txtEventTime;
     private javax.swing.JTextField txtLoginUsername;
     private javax.swing.JTextField txtRegisterName;
     private javax.swing.JTextField txtRegisterPhone;
