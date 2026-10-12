@@ -346,6 +346,11 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnRegister.setForeground(new java.awt.Color(255, 255, 255));
         btnRegister.setText("Reģistrēties");
         btnRegister.setFocusPainted(false);
+        btnRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisterActionPerformed(evt);
+            }
+        });
 
         btnRegisterCancel.setBackground(new java.awt.Color(242, 245, 250));
         btnRegisterCancel.setForeground(new java.awt.Color(51, 65, 81));
@@ -503,6 +508,11 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnEventSave.setForeground(new java.awt.Color(255, 255, 255));
         btnEventSave.setText("Saglabāt");
         btnEventSave.setFocusPainted(false);
+        btnEventSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEventSaveActionPerformed(evt);
+            }
+        });
 
         btnEventCancel.setBackground(new java.awt.Color(242, 245, 250));
         btnEventCancel.setForeground(new java.awt.Color(51, 65, 81));
@@ -908,6 +918,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         paraditLogu(dlgRegister);
     }//GEN-LAST:event_btnLoginRegisterActionPerformed
 
+    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
+        // pagaidām tikai atgriežas uz ielogošanos
+        dlgRegister.setVisible(false);
+        paraditLogu(dlgLogin);
+    }//GEN-LAST:event_btnRegisterActionPerformed
+
     private void btnRegisterCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterCancelActionPerformed
         dlgRegister.setVisible(false);
         paraditLogu(dlgLogin);
@@ -941,6 +957,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         setVisible(false);
         paraditLogu(dlgAddEvent);
     }//GEN-LAST:event_btnPievienotPasakumuActionPerformed
+
+    private void btnEventSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventSaveActionPerformed
+        // pagaidām tikai atgriežas uz galveno logu
+        dlgAddEvent.setVisible(false);
+        atvertGalvenoLogu();
+    }//GEN-LAST:event_btnEventSaveActionPerformed
 
     private void btnEventCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventCancelActionPerformed
         dlgAddEvent.setVisible(false);

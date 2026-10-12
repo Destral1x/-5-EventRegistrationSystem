@@ -423,6 +423,9 @@
                 <Property name="text" type="java.lang.String" value="Re&#x123;istr&#x113;ties"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegisterActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnRegisterCancel">
               <Properties>
@@ -699,6 +702,9 @@
                 <Property name="text" type="java.lang.String" value="Saglabāt"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEventSaveActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnEventCancel">
               <Properties>
