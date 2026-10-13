@@ -241,7 +241,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         lblLoginHint.setForeground(new java.awt.Color(100, 116, 139));
         lblLoginHint.setText("Lūdzu, ievadiet savus piekļuves datus:");
 
-        lblLoginUsername.setText("Lietotājvārds:");
+        lblLoginUsername.setText("E-pasts:");
 
         lblLoginPassword.setText("Parole:");
 
@@ -279,8 +279,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                             .addComponent(lblLoginPassword))
                         .addGap(24, 24, 24)
                         .addGroup(pnlLoginBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtLoginUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                            .addComponent(pwdLoginPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+                            .addComponent(txtLoginUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                            .addComponent(pwdLoginPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLoginBodyLayout.createSequentialGroup()
                         .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
@@ -318,6 +318,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             dlgLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dlgLoginLayout.createSequentialGroup()
                 .addComponent(pnlLoginHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addComponent(pnlLoginBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -362,7 +363,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         lblRegisterSurname.setText("Uzvārds:");
 
-        lblRegisterUsername.setText("E-pasts / Lietotājvārds:");
+        lblRegisterUsername.setText("E-pasts:");
 
         lblRegisterPhone.setText("Tālrunis:");
 
@@ -409,12 +410,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                             .addComponent(lblRegisterPassword2))
                         .addGap(24, 24, 24)
                         .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtRegisterName, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(txtRegisterSurname, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(txtRegisterUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(txtRegisterPhone, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(pwdRegisterPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(pwdRegisterPassword2, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)))
+                            .addComponent(txtRegisterName, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(txtRegisterSurname, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(txtRegisterUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(txtRegisterPhone, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(pwdRegisterPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(pwdRegisterPassword2, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)))
                     .addComponent(sepRegister)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRegisterBodyLayout.createSequentialGroup()
                         .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -471,6 +472,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             dlgRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dlgRegisterLayout.createSequentialGroup()
                 .addComponent(pnlRegisterHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addComponent(pnlRegisterBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -675,7 +677,6 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         lblParticipantsEvent.setText("Pasākums:");
 
-
         tblParticipants.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -849,7 +850,6 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             }
         });
 
-        btnPievienotPasakumu.setBackground(new java.awt.Color(255, 255, 255));
         btnPievienotPasakumu.setForeground(new java.awt.Color(59, 99, 224));
         btnPievienotPasakumu.setText("Pievienot pasākumu");
         btnPievienotPasakumu.setFocusPainted(false);
@@ -886,7 +886,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             .addGroup(pnlBodyLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrPasakumi, javax.swing.GroupLayout.DEFAULT_SIZE, 614, Short.MAX_VALUE)
+                    .addComponent(scrPasakumi)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
