@@ -449,7 +449,7 @@
     <Container class="javax.swing.JDialog" name="dlgAddEvent">
       <Properties>
         <Property name="defaultCloseOperation" type="int" value="0"/>
-        <Property name="title" type="java.lang.String" value="Pasākumu sistēma – Pasākuma izveide"/>
+        <Property name="title" type="java.lang.String" value="Pas&#x101;kumu sist&#x113;ma &#x2013; Pas&#x101;kuma izveide"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
       <Events>
@@ -511,7 +511,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Pasākuma izveide"/>
+                <Property name="text" type="java.lang.String" value="Pas&#x101;kuma izveide"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -532,21 +532,21 @@
                           <Component id="lblEventHint" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lblEventName" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblEventDescription" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblEventDate" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblEventTime" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblEventPlace" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblEventMax" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblEventName" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblEventDescription" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblEventDate" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblEventTime" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblEventPlace" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblEventMax" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtEventName" alignment="0" pref="300" max="32767" attributes="0"/>
-                              <Component id="scrEventDescription" alignment="0" pref="300" max="32767" attributes="0"/>
-                              <Component id="txtEventDate" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
-                              <Component id="txtEventTime" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
-                              <Component id="txtEventPlace" alignment="0" pref="300" max="32767" attributes="0"/>
-                              <Component id="spnEventMax" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Component id="txtEventName" alignment="0" pref="300" max="32767" attributes="0"/>
+                                  <Component id="scrEventDescription" alignment="0" pref="300" max="32767" attributes="0"/>
+                                  <Component id="txtEventDate" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
+                                  <Component id="txtEventTime" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Component id="txtEventPlace" alignment="0" pref="300" max="32767" attributes="0"/>
+                                  <Component id="spnEventMax" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                                   <Component id="lblEventNote" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -616,7 +616,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="8b" green="74" red="64" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Aizpildiet pasākuma datus"/>
+                <Property name="text" type="java.lang.String" value="Aizpildiet pas&#x101;kuma datus"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblEventName">
@@ -671,7 +671,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lblEventMax">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Maks. dalībnieku skaits:"/>
+                <Property name="text" type="java.lang.String" value="Maks. dal&#x12b;bnieku skaits:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JSpinner" name="spnEventMax">
@@ -681,7 +681,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="1e" green="6a" red="b2" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="* datums dd.mm.gggg (nedrīkst būt pagātnē), laiks hh:mm"/>
+                <Property name="text" type="java.lang.String" value="* datums dd.mm.gggg (nedr&#x12b;kst b&#x16b;t pag&#x101;tn&#x113;), laiks hh:mm"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JSeparator" name="sepEvent">
@@ -699,7 +699,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Saglabāt"/>
+                <Property name="text" type="java.lang.String" value="Saglab&#x101;t"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -728,7 +728,7 @@
     <Container class="javax.swing.JDialog" name="dlgParticipants">
       <Properties>
         <Property name="defaultCloseOperation" type="int" value="0"/>
-        <Property name="title" type="java.lang.String" value="Pasākumu sistēma – Dalībnieku pārvaldība"/>
+        <Property name="title" type="java.lang.String" value="Pas&#x101;kumu sist&#x113;ma &#x2013; Dal&#x12b;bnieku p&#x101;rvald&#x12b;ba"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
       <Events>
@@ -790,7 +790,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Dalībnieku pārvaldība"/>
+                <Property name="text" type="java.lang.String" value="Dal&#x12b;bnieku p&#x101;rvald&#x12b;ba"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -851,7 +851,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="lblParticipantsEvent">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Pasākums:"/>
+                <Property name="text" type="java.lang.String" value="Pas&#x101;kums:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cmbParticipantsEvent">
@@ -870,11 +870,11 @@
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="5" rowCount="0">
-                    <Column editable="false" title="Vārds" type="java.lang.String"/>
-                    <Column editable="false" title="Uzvārds" type="java.lang.String"/>
-                    <Column editable="false" title="E-pasts" type="java.lang.String"/>
-                    <Column editable="false" title="Tālrunis" type="java.lang.String"/>
-                    <Column editable="false" title="Statuss" type="java.lang.String"/>
+                        <Column editable="false" title="V&#x101;rds" type="java.lang.String"/>
+                        <Column editable="false" title="Uzv&#x101;rds" type="java.lang.String"/>
+                        <Column editable="false" title="E-pasts" type="java.lang.String"/>
+                        <Column editable="false" title="T&#x101;lrunis" type="java.lang.String"/>
+                        <Column editable="false" title="Statuss" type="java.lang.String"/>
                       </Table>
                     </Property>
                   </Properties>
@@ -894,7 +894,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Apstiprināt"/>
+                <Property name="text" type="java.lang.String" value="Apstiprin&#x101;t"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
             </Component>
@@ -911,7 +911,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Noraidīt"/>
+                <Property name="text" type="java.lang.String" value="Noraid&#x12b;t"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
             </Component>
@@ -923,7 +923,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="51" green="41" red="33" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Aizvērt"/>
+                <Property name="text" type="java.lang.String" value="Aizv&#x113;rt"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -1032,7 +1032,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="scrPasakumi" pref="614" max="32767" attributes="0"/>
+                      <Component id="scrPasakumi" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnRegistretiesDaliba" min="-2" pref="185" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
@@ -1125,13 +1125,10 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnPievienotPasakumu">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="ff" red="ff" type="rgb"/>
-            </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="e0" green="63" red="3b" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Pievienot pasākumu"/>
+            <Property name="text" type="java.lang.String" value="Pievienot pas&#x101;kumu"/>
             <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
           <Events>
@@ -1146,7 +1143,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="51" green="41" red="33" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Izrakstīties"/>
+            <Property name="text" type="java.lang.String" value="Izrakst&#x12b;ties"/>
             <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
           <Events>

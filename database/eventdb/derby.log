@@ -1,57 +1,7 @@
-Mon Oct 12 11:01:38 EEST 2026 : Apache Derby Network Server - 10.17.1.0 - (1913217) started and ready to accept connections on port 1527
-Mon Oct 12 11:02:30 EEST 2026 Thread[#26,DRDAConnThread_2,5,main] Cleanup action starting
-java.sql.SQLException: Database 'EventDB' not found.
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:115)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:141)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Util.java:225)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Util.java:220)
-	at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(EmbedConnection.java:3208)
-	at org.apache.derby.impl.jdbc.EmbedConnection.handleDBNotFound(EmbedConnection.java:767)
-	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(EmbedConnection.java:437)
-	at org.apache.derby.iapi.jdbc.InternalDriver.getNewEmbedConnection(InternalDriver.java:629)
-	at org.apache.derby.iapi.jdbc.InternalDriver.connect(InternalDriver.java:295)
-	at org.apache.derby.iapi.jdbc.InternalDriver.connect(InternalDriver.java:921)
-	at org.apache.derby.jdbc.EmbeddedDriver.connect(EmbeddedDriver.java:125)
-	at org.apache.derby.impl.drda.Database.makeConnection(Database.java:253)
-	at org.apache.derby.impl.drda.DRDAConnThread.getConnFromDatabaseName(DRDAConnThread.java:1474)
-	at org.apache.derby.impl.drda.DRDAConnThread.verifyUserIdPassword(DRDAConnThread.java:1424)
-	at org.apache.derby.impl.drda.DRDAConnThread.parseSECCHK(DRDAConnThread.java:3378)
-	at org.apache.derby.impl.drda.DRDAConnThread.parseDRDAConnection(DRDAConnThread.java:1208)
-	at org.apache.derby.impl.drda.DRDAConnThread.processCommands(DRDAConnThread.java:1008)
-	at org.apache.derby.impl.drda.DRDAConnThread.run(DRDAConnThread.java:298)
-Caused by: ERROR XJ004: Database 'EventDB' not found.
-	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:299)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.wrapArgsForTransportAcrossDRDA(SQLExceptionFactory.java:170)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:75)
-	... 17 more
-============= begin nested exception, level (1) ===========
-ERROR XJ004: Database 'EventDB' not found.
-	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:299)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.wrapArgsForTransportAcrossDRDA(SQLExceptionFactory.java:170)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:75)
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:141)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Util.java:225)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Util.java:220)
-	at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(EmbedConnection.java:3208)
-	at org.apache.derby.impl.jdbc.EmbedConnection.handleDBNotFound(EmbedConnection.java:767)
-	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(EmbedConnection.java:437)
-	at org.apache.derby.iapi.jdbc.InternalDriver.getNewEmbedConnection(InternalDriver.java:629)
-	at org.apache.derby.iapi.jdbc.InternalDriver.connect(InternalDriver.java:295)
-	at org.apache.derby.iapi.jdbc.InternalDriver.connect(InternalDriver.java:921)
-	at org.apache.derby.jdbc.EmbeddedDriver.connect(EmbeddedDriver.java:125)
-	at org.apache.derby.impl.drda.Database.makeConnection(Database.java:253)
-	at org.apache.derby.impl.drda.DRDAConnThread.getConnFromDatabaseName(DRDAConnThread.java:1474)
-	at org.apache.derby.impl.drda.DRDAConnThread.verifyUserIdPassword(DRDAConnThread.java:1424)
-	at org.apache.derby.impl.drda.DRDAConnThread.parseSECCHK(DRDAConnThread.java:3378)
-	at org.apache.derby.impl.drda.DRDAConnThread.parseDRDAConnection(DRDAConnThread.java:1208)
-	at org.apache.derby.impl.drda.DRDAConnThread.processCommands(DRDAConnThread.java:1008)
-	at org.apache.derby.impl.drda.DRDAConnThread.run(DRDAConnThread.java:298)
-============= end nested exception, level (1) ===========
-Cleanup action completed
-Mon Oct 12 11:02:30 EEST 2026 Thread[#26,DRDAConnThread_2,5,main] (DATABASE = EventDB), (DRDAID = {1}), Database 'EventDB' not found.
+Tue Oct 13 12:04:22 EEST 2026 : Apache Derby Network Server - 10.17.1.0 - (1913217) started and ready to accept connections on port 1527
 ----------------------------------------------------------------
-Mon Oct 12 11:02:36 EEST 2026:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-01a1-2f21-aadc-ffffa21c9828 
+Tue Oct 13 12:04:23 EEST 2026:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-01a1-3481-78cd-ffffa21c9828 
 on database directory D:\vasiljevspr32\5.EventRegistrationSystem\database\eventdb\EventDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@33909752 
 Loaded from file:/D:/Users/Glebs.Vasiljev/Downloads/db-derby-10.17.1.0-lib/lib/derby.jar
 java.vendor=Oracle Corporation

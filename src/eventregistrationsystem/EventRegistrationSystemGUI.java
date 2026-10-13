@@ -14,6 +14,23 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import eventregistrationsystem.dao.LietotajuDAO;
+import eventregistrationsystem.dao.PasakumuDAO;
+import eventregistrationsystem.dao.RegistracijaDAO;
+import eventregistrationsystem.model.Administrators;
+import eventregistrationsystem.model.Dalibnieks;
+import eventregistrationsystem.model.Lietotajs;
+import eventregistrationsystem.model.Pasakums;
+import eventregistrationsystem.model.Registracija;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -22,13 +39,25 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EventRegistrationSystemGUI.class.getName());
+    private final LietotajuDAO lietotajuDAO = new LietotajuDAO();
+    private final PasakumuDAO pasakumuDAO = new PasakumuDAO();
+    private final RegistracijaDAO registracijaDAO = new RegistracijaDAO();
 
+    private Lietotajs currentUser;
+    private List<Pasakums> pasakumi = new ArrayList<>();
+    private List<Registracija> dalibnieki = new ArrayList<>();
+    private boolean atjaunina = false;
+
+    private static final DateTimeFormatter DATUMA_FORMATS
+            = DateTimeFormatter.ofPattern("dd.MM.uuuu").withResolverStyle(ResolverStyle.STRICT);
+    
     /**
      * Creates new form EventRegistrationSystemGUI
      */
-    public EventRegistrationSystemGUI() {
+        public EventRegistrationSystemGUI() {
         initComponents();
         noformet();
+        pievienotKlausitajus();
     }
 
     // dizains, ko nevar uzlikt Design logā
@@ -909,6 +938,24 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+     String lietotajvards = txtLoginUsername.getText().trim();
+        String parole = new String(pwdLoginPassword.getPassword());
+
+        if (lietotajvards.isEmpty() || parole.isEmpty()) {
+            kluda(dlgLogin, "Ievadiet lietotājvārdu un paroli!");
+            return;
+        }
+        Lietotajs l = lietotajuDAO.atrastLietotaju(lietotajvards);
+        if (l == null || !l.parbauditParoli(parole)) {
+            kluda(dlgLogin, "Nepareizs lietotājvārds vai parole!");
+            return;
+        }
+
+        currentUser = l;
+        pwdLoginPassword.setText("");
+        uzstaditTiesibas();
+        ieladetPasakumus();
+        info(dlgLogin, "Ieeja ir veiksmīgi pabeigta!");
         dlgLogin.setVisible(false);
         atvertGalvenoLogu();
     }//GEN-LAST:event_btnLoginActionPerformed
@@ -919,9 +966,53 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginRegisterActionPerformed
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-        // pagaidām tikai atgriežas uz ielogošanos
-        dlgRegister.setVisible(false);
-        paraditLogu(dlgLogin);
+            String vards = txtRegisterName.getText().trim();
+        String uzvards = txtRegisterSurname.getText().trim();
+        String lietotajvards = txtRegisterUsername.getText().trim();
+        String talrunis = txtRegisterPhone.getText().trim();
+        String parole = new String(pwdRegisterPassword.getPassword());
+        String parole2 = new String(pwdRegisterPassword2.getPassword());
+
+        if (vards.isEmpty() || uzvards.isEmpty() || lietotajvards.isEmpty() || parole.isEmpty()) {
+            kluda(dlgRegister, "Aizpildiet visus obligātos laukus!");
+            return;
+        }
+        if (!lietotajvards.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            kluda(dlgRegister, "Ievadiet derīgu e-pasta adresi!");
+            return;
+        }
+        if (parole.length() < 6) {
+            kluda(dlgRegister, "Parolei jābūt vismaz 6 simbolus garai!");
+            return;
+        }
+        if (!parole.equals(parole2)) {
+            kluda(dlgRegister, "Paroles nesakrīt!");
+            return;
+        }
+        if (vards.length() > 50 || uzvards.length() > 50 || lietotajvards.length() > 50 || talrunis.length() > 20) {
+            kluda(dlgRegister, "Kāds no laukiem ir pārāk garš!");
+            return;
+        }
+        if (lietotajuDAO.atrastLietotaju(lietotajvards) != null) {
+            kluda(dlgRegister, "Šāds lietotājvārds jau eksistē!");
+            return;
+        }
+
+        if (lietotajuDAO.registretLietotaju(vards, uzvards, lietotajvards,
+                talrunis.isEmpty() ? null : talrunis, parole)) {
+            info(dlgRegister, "Reģistrēšana ir veiksmīgi pabeigta!");
+            txtRegisterName.setText("");
+            txtRegisterSurname.setText("");
+            txtRegisterUsername.setText("");
+            txtRegisterPhone.setText("");
+            pwdRegisterPassword.setText("");
+            pwdRegisterPassword2.setText("");
+            txtLoginUsername.setText(lietotajvards);
+            dlgRegister.setVisible(false);
+            paraditLogu(dlgLogin);
+        } else {
+            kluda(dlgRegister, "Neizdevās saglabāt datus datu bāzē.");
+        }
     }//GEN-LAST:event_btnRegisterActionPerformed
 
     private void btnRegisterCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterCancelActionPerformed
@@ -942,6 +1033,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         int atbilde = JOptionPane.showConfirmDialog(this, "Vai tiešām vēlaties izrakstīties?",
                 "Izrakstīties", JOptionPane.YES_NO_OPTION);
         if (atbilde == JOptionPane.YES_OPTION) {
+            currentUser = null;
             setVisible(false);
             txtLoginUsername.setText("");
             pwdLoginPassword.setText("");
@@ -959,9 +1051,69 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPievienotPasakumuActionPerformed
 
     private void btnEventSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventSaveActionPerformed
-        // pagaidām tikai atgriežas uz galveno logu
-        dlgAddEvent.setVisible(false);
-        atvertGalvenoLogu();
+            if (!(currentUser instanceof Administrators)) {
+            kluda(dlgAddEvent, "Tikai administrators var izveidot pasākumus!");
+            return;
+        }
+
+        String nosaukums = txtEventName.getText().trim();
+        String apraksts = txtEventDescription.getText().trim();
+        String datumsTeksts = txtEventDate.getText().trim();
+        String laiksTeksts = txtEventTime.getText().trim();
+        String vieta = txtEventPlace.getText().trim();
+        int maks = (Integer) spnEventMax.getValue();
+
+        if (nosaukums.isEmpty() || datumsTeksts.isEmpty() || laiksTeksts.isEmpty() || vieta.isEmpty()) {
+            kluda(dlgAddEvent, "Aizpildiet visus obligātos laukus!");
+            return;
+        }
+        if (nosaukums.length() > 100 || vieta.length() > 100 || apraksts.length() > 500) {
+            kluda(dlgAddEvent, "Kāds no laukiem ir pārāk garš!");
+            return;
+        }
+
+        LocalDate datums;
+        try {
+            datums = LocalDate.parse(datumsTeksts, DATUMA_FORMATS);
+        } catch (DateTimeParseException ex) {
+            kluda(dlgAddEvent, "Datums jāievada formātā dd.mm.gggg!");
+            return;
+        }
+        if (datums.isBefore(LocalDate.now())) {
+            kluda(dlgAddEvent, "Datums nedrīkst būt pagātnē!");
+            return;
+        }
+
+        String laiks;
+        try {
+            laiks = LocalTime.parse(laiksTeksts, DateTimeFormatter.ofPattern("H:mm"))
+                    .format(DateTimeFormatter.ofPattern("HH:mm"));
+        } catch (DateTimeParseException ex) {
+            kluda(dlgAddEvent, "Laiks jāievada formātā hh:mm!");
+            return;
+        }
+        if (maks <= 0) {
+            kluda(dlgAddEvent, "Dalībnieku skaitam jābūt lielākam par 0!");
+            return;
+        }
+
+        Pasakums p = ((Administrators) currentUser).izveidotPasakumu(nosaukums,
+                apraksts.isEmpty() ? null : apraksts, java.sql.Date.valueOf(datums), laiks, vieta, maks);
+
+        if (pasakumuDAO.saglabatPasakumu(p)) {
+            info(dlgAddEvent, "Pasākums veiksmīgi izveidots!");
+            txtEventName.setText("");
+            txtEventDescription.setText("");
+            txtEventDate.setText("");
+            txtEventTime.setText("");
+            txtEventPlace.setText("");
+            spnEventMax.setValue(10);
+            ieladetPasakumus();
+            dlgAddEvent.setVisible(false);
+            atvertGalvenoLogu();
+        } else {
+            kluda(dlgAddEvent, "Neizdevās saglabāt pasākumu datu bāzē.");
+        }
     }//GEN-LAST:event_btnEventSaveActionPerformed
 
     private void btnEventCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventCancelActionPerformed
@@ -975,6 +1127,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_dlgAddEventWindowClosing
 
     private void btnDalibniekiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDalibniekiActionPerformed
+        ieladetPasakumus();
+        ieladetDalibniekus();
         setVisible(false);
         paraditLogu(dlgParticipants);
     }//GEN-LAST:event_btnDalibniekiActionPerformed
@@ -1005,6 +1159,155 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         }
     }
 
+        // ---------- datu bāzes savienojums ar GUI ----------
+
+    private void pievienotKlausitajus() {
+        btnRegistretiesDaliba.addActionListener(e -> pieteiktiesPasakumam());
+        btnApprove.addActionListener(e -> apstradatPieteikumu(true));
+        btnReject.addActionListener(e -> apstradatPieteikumu(false));
+        cmbParticipantsEvent.addActionListener(e -> {
+            if (!atjaunina) {
+                ieladetDalibniekus();
+            }
+        });
+    }
+
+    private void kluda(java.awt.Component vecaks, String teksts) {
+        JOptionPane.showMessageDialog(vecaks, teksts, "Kļūda", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void info(java.awt.Component vecaks, String teksts) {
+        JOptionPane.showMessageDialog(vecaks, teksts, "Informācija", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private String formatDatums(Pasakums p) {
+        return p.getDatums().toLocalDate().format(DATUMA_FORMATS) + " " + p.getLaiks();
+    }
+
+    // administrators redz pārvaldību, dalībnieks - pieteikšanos
+    private void uzstaditTiesibas() {
+        boolean admin = currentUser instanceof Administrators;
+        btnPievienotPasakumu.setVisible(admin);
+        btnDalibnieki.setVisible(admin);
+        btnRegistretiesDaliba.setVisible(!admin);
+        lblVirsraksts.setText("Pasākumu saraksts – " + currentUser.getVards() + " " + currentUser.getUzvards());
+    }
+
+    // pasākumu tabula + izvēlne dalībnieku logā
+    private void ieladetPasakumus() {
+        int izvelesId = -1;
+        int ind = cmbParticipantsEvent.getSelectedIndex();
+        if (ind >= 0 && ind < pasakumi.size()) {
+            izvelesId = pasakumi.get(ind).getId();
+        }
+
+        pasakumi = pasakumuDAO.iegutVisusPasakumus();
+        DefaultTableModel tm = (DefaultTableModel) tblPasakumi.getModel();
+        tm.setRowCount(0);
+
+        String[] nosaukumi = new String[pasakumi.size()];
+        int jaunaisInd = pasakumi.isEmpty() ? -1 : 0;
+        for (int i = 0; i < pasakumi.size(); i++) {
+            Pasakums p = pasakumi.get(i);
+            tm.addRow(new Object[]{p.getNosaukums(), formatDatums(p), p.getVieta(), p.getBrivoVietuSkaitu()});
+            nosaukumi[i] = p.getNosaukums() + " (" + formatDatums(p) + ")";
+            if (p.getId() == izvelesId) {
+                jaunaisInd = i;
+            }
+        }
+
+        atjaunina = true;
+        cmbParticipantsEvent.setModel(new DefaultComboBoxModel<>(nosaukumi));
+        if (jaunaisInd >= 0) {
+            cmbParticipantsEvent.setSelectedIndex(jaunaisInd);
+        }
+        atjaunina = false;
+    }
+
+    // dalībnieku tabula izvēlētajam pasākumam
+    private void ieladetDalibniekus() {
+        DefaultTableModel tm = (DefaultTableModel) tblParticipants.getModel();
+        tm.setRowCount(0);
+
+        int ind = cmbParticipantsEvent.getSelectedIndex();
+        if (ind < 0 || ind >= pasakumi.size()) {
+            dalibnieki = new ArrayList<>();
+            return;
+        }
+        dalibnieki = registracijaDAO.iegutPasakumaDalibniekus(pasakumi.get(ind));
+        for (Registracija r : dalibnieki) {
+            Dalibnieks d = r.getDalibnieks();
+            tm.addRow(new Object[]{d.getVards(), d.getUzvards(), d.getLietotajvardu(),
+                d.getTalrunis() == null ? "" : d.getTalrunis(), r.getStatussTeksts()});
+        }
+    }
+
+    // poga "Reģistrēties dalībai"
+    private void pieteiktiesPasakumam() {
+        if (!(currentUser instanceof Dalibnieks)) {
+            info(this, "Administrators nevar pieteikties dalībai pasākumā.");
+            return;
+        }
+        int rinda = tblPasakumi.getSelectedRow();
+        if (rinda < 0 || rinda >= pasakumi.size()) {
+            kluda(this, "Izvēlieties pasākumu no saraksta!");
+            return;
+        }
+        Pasakums p = pasakumi.get(tblPasakumi.convertRowIndexToModel(rinda));
+
+        if (p.getBrivoVietuSkaitu() <= 0) {
+            kluda(this, "Vietu skaits ir pilns!");
+            return;
+        }
+        if (registracijaDAO.jauPieteicies(p.getId(), currentUser.getId())) {
+            kluda(this, "Jūs jau esat pieteicies šim pasākumam!");
+            return;
+        }
+
+        Registracija r = ((Dalibnieks) currentUser).registretiesPasakumam(p);
+        if (registracijaDAO.saglabatRegistraciju(r)) {
+            info(this, "Pieteikums nosūtīts, gaidiet apstiprinājumu!");
+        } else {
+            kluda(this, "Neizdevās saglabāt pieteikumu. Mēģiniet vēlreiz.");
+        }
+        ieladetPasakumus();
+    }
+
+    // pogas "Apstiprināt" / "Noraidīt"
+    private void apstradatPieteikumu(boolean apstiprinat) {
+        int rinda = tblParticipants.getSelectedRow();
+        if (rinda < 0 || rinda >= dalibnieki.size()) {
+            kluda(dlgParticipants, "Izvēlieties pieteikumu no saraksta!");
+            return;
+        }
+        Registracija r = dalibnieki.get(tblParticipants.convertRowIndexToModel(rinda));
+
+        if (apstiprinat) {
+            int rez = registracijaDAO.apstiprinatArKontroli(r.getId());
+            if (rez == -1) {
+                kluda(dlgParticipants, "Vietu skaits ir pilns!");
+                return;
+            } else if (rez == 0) {
+                kluda(dlgParticipants, "Neizdevās atjaunināt statusu.");
+                return;
+            }
+        } else {
+            int atbilde = JOptionPane.showConfirmDialog(dlgParticipants,
+                    "Vai tiešām vēlaties noraidīt šo pieteikumu?",
+                    "Noraidīt", JOptionPane.YES_NO_OPTION);
+            if (atbilde != JOptionPane.YES_OPTION) {
+                return;
+            }
+            if (!registracijaDAO.mainitStatusu(r.getId(), Registracija.NORAIDITS)) {
+                kluda(dlgParticipants, "Neizdevās atjaunināt statusu.");
+                return;
+            }
+        }
+        info(dlgParticipants, "Statuss atjaunināts!");
+        ieladetPasakumus();
+        ieladetDalibniekus();
+    }
+    
     /**
      * @param args the command line arguments
      */

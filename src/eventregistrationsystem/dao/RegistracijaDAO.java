@@ -71,4 +71,74 @@ public class RegistracijaDAO {
         }
         return saraksts;
     }
+        // true, ja lietotājs jau ir pieteicies šim pasākumam
+    public boolean jauPieteicies(int pasakumaId, int lietotajaId) {
+        String sql = "SELECT COUNT(*) FROM REGISTRACIJAS WHERE pasakuma_id = ? AND lietotaja_id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, pasakumaId);
+            ps.setInt(2, lietotajaId);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // apstiprina pieteikumu tikai ja ir brīvas vietas
+    // atgriež: 1 = apstiprināts, -1 = vietu nav, 0 = kļūda
+    public int apstiprinatArKontroli(int registracijasId) {
+        String sqlInfo = "SELECT r.pasakuma_id, r.statuss, p.maks_dalibnieku_skaits "
+                + "FROM REGISTRACIJAS r JOIN PASAKUMI p ON p.id = r.pasakuma_id WHERE r.id = ?";
+        String sqlCount = "SELECT COUNT(*) FROM REGISTRACIJAS WHERE pasakuma_id = ? AND statuss = 'APSTIPRINATS'";
+        String sqlUpdate = "UPDATE REGISTRACIJAS SET statuss = 'APSTIPRINATS' WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                int pasakumaId;
+                int maks;
+                try (PreparedStatement ps = conn.prepareStatement(sqlInfo)) {
+                    ps.setInt(1, registracijasId);
+                    ResultSet rs = ps.executeQuery();
+                    if (!rs.next()) {
+                        conn.rollback();
+                        return 0;
+                    }
+                    pasakumaId = rs.getInt(1);
+                    if ("APSTIPRINATS".equals(rs.getString(2))) {
+                        conn.rollback();
+                        return 1; // jau apstiprināts
+                    }
+                    maks = rs.getInt(3);
+                }
+                int apstiprinati;
+                try (PreparedStatement ps = conn.prepareStatement(sqlCount)) {
+                    ps.setInt(1, pasakumaId);
+                    ResultSet rs = ps.executeQuery();
+                    rs.next();
+                    apstiprinati = rs.getInt(1);
+                }
+                if (apstiprinati >= maks) {
+                    conn.rollback();
+                    return -1;
+                }
+                try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
+                    ps.setInt(1, registracijasId);
+                    ps.executeUpdate();
+                }
+                conn.commit();
+                return 1;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }
