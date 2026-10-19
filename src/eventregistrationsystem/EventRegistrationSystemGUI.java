@@ -96,10 +96,22 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         tblPasakumi.getTableHeader().setFont(tblPasakumi.getFont().deriveFont(Font.BOLD));
         scrPasakumi.getViewport().setBackground(Color.WHITE);
 
-        // brīvās vietas pa vidu
-        DefaultTableCellRenderer centra = new DefaultTableCellRenderer();
-        centra.setHorizontalAlignment(JLabel.CENTER);
-        tblPasakumi.getColumnModel().getColumn(3).setCellRenderer(centra);
+        // brīvās vietas pa vidu, krāsa pēc vietu skaita
+        tblPasakumi.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable t, Object v,
+                    boolean izvelets, boolean fokuss, int rinda, int kol) {
+                super.getTableCellRendererComponent(t, v, izvelets, fokuss, rinda, kol);
+                setHorizontalAlignment(JLabel.CENTER);
+                setFont(getFont().deriveFont(Font.BOLD));
+                int vietas = v instanceof Integer ? (Integer) v : 0;
+                if (!izvelets) {
+                    setForeground(vietas <= 0 ? new Color(178, 34, 34)
+                            : vietas <= 10 ? new Color(178, 106, 30) : new Color(46, 125, 50));
+                }
+                return this;
+            }
+        });
 
         tblParticipants.setRowHeight(28);
         tblParticipants.setGridColor(new Color(196, 212, 236));
@@ -107,6 +119,22 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         tblParticipants.getTableHeader().setForeground(new Color(30, 58, 138));
         tblParticipants.getTableHeader().setFont(tblParticipants.getFont().deriveFont(Font.BOLD));
         scrParticipants.getViewport().setBackground(Color.WHITE);
+
+        // statuss pa vidu, krāsa pēc statusa
+        tblParticipants.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable t, Object v,
+                    boolean izvelets, boolean fokuss, int rinda, int kol) {
+                super.getTableCellRendererComponent(t, v, izvelets, fokuss, rinda, kol);
+                setHorizontalAlignment(JLabel.CENTER);
+                setFont(getFont().deriveFont(Font.BOLD));
+                if (!izvelets) {
+                    setForeground("Apstiprināts".equals(v) ? new Color(46, 125, 50)
+                            : "Noraidīts".equals(v) ? new Color(178, 34, 34) : new Color(178, 106, 30));
+                }
+                return this;
+            }
+        });
     }
 
     private void noformetPogu(JButton poga, Color apmale) {
@@ -241,7 +269,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         lblLoginHint.setForeground(new java.awt.Color(100, 116, 139));
         lblLoginHint.setText("Lūdzu, ievadiet savus piekļuves datus:");
 
-        lblLoginUsername.setText("E-pasts:");
+        lblLoginUsername.setText("Lietotājvārds:");
 
         lblLoginPassword.setText("Parole:");
 
@@ -363,7 +391,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         lblRegisterSurname.setText("Uzvārds:");
 
-        lblRegisterUsername.setText("E-pasts:");
+        lblRegisterUsername.setText("E-pasts / Lietotājvārds:");
 
         lblRegisterPhone.setText("Tālrunis:");
 
@@ -489,7 +517,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         lblEventHeader.setFont(lblEventHeader.getFont().deriveFont(lblEventHeader.getFont().getStyle() | java.awt.Font.BOLD, lblEventHeader.getFont().getSize()+3));
         lblEventHeader.setForeground(new java.awt.Color(255, 255, 255));
-        lblEventHeader.setText("Pasākuma izveide");
+        lblEventHeader.setText("Pasākuma izveide (administrators)");
 
         javax.swing.GroupLayout pnlEventHeaderLayout = new javax.swing.GroupLayout(pnlEventHeader);
         pnlEventHeader.setLayout(pnlEventHeaderLayout);
@@ -654,7 +682,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         lblParticipantsHeader.setFont(lblParticipantsHeader.getFont().deriveFont(lblParticipantsHeader.getFont().getStyle() | java.awt.Font.BOLD, lblParticipantsHeader.getFont().getSize()+3));
         lblParticipantsHeader.setForeground(new java.awt.Color(255, 255, 255));
-        lblParticipantsHeader.setText("Dalībnieku pārvaldība");
+        lblParticipantsHeader.setText("Dalībnieku pārvaldība (administrators)");
 
         javax.swing.GroupLayout pnlParticipantsHeaderLayout = new javax.swing.GroupLayout(pnlParticipantsHeader);
         pnlParticipantsHeader.setLayout(pnlParticipantsHeaderLayout);
@@ -777,7 +805,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Pasākumu reģistrācijas sistēma");
+        setTitle("Pasākumu sistēma – Pasākumu saraksts");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
