@@ -12,3 +12,5 @@ os.arch=amd64
 os.version=10.0
 derby.system.home=D:\vasiljevspr32\5.EventRegistrationSystem\database\eventdb
 Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Tue Oct 13 13:04:23 EEST 2026: Shutting down Derby engine
