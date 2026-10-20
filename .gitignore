@@ -2,3 +2,5 @@ build/
 dist/
 nbproject/private/
 *.class
+derby.log
+.DS_Store

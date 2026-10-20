@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import eventregistrationsystem.dao.LietotajuDAO;
@@ -47,6 +48,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private List<Pasakums> pasakumi = new ArrayList<>();
     private List<Registracija> dalibnieki = new ArrayList<>();
     private boolean atjaunina = false;
+    private static boolean dbPieejama = false;
 
     private static final DateTimeFormatter DATUMA_FORMATS
             = DateTimeFormatter.ofPattern("dd.MM.uuuu").withResolverStyle(ResolverStyle.STRICT);
@@ -55,6 +57,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
      * Creates new form EventRegistrationSystemGUI
      */
         public EventRegistrationSystemGUI() {
+        // izveido logus, uzliek dizainu un pogu darbības
         initComponents();
         noformet();
         pievienotKlausitajus();
@@ -62,6 +65,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
     // dizains, ko nevar uzlikt Design logā
     private void noformet() {
+        // galvenās krāsas: zila - galvenās pogas, pelēka - atcelt/iziet
         Color zila = new Color(59, 99, 224);
         Color peleka = new Color(160, 170, 185);
 
@@ -84,9 +88,15 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnLoginRegister.setBackground(Color.WHITE);
         btnPievienotPasakumu.setBackground(Color.WHITE);
 
+        // dalībnieku skaits no 1 līdz 1000, sākumā 10
         spnEventMax.setModel(new SpinnerNumberModel(10, 1, 1000, 1));
 
         dlgLogin.getRootPane().setDefaultButton(btnLogin); // lai var ielogoties ar Enter
+        dlgRegister.getRootPane().setDefaultButton(btnRegister);
+
+        // tabulās var izvēlēties tikai vienu rindu
+        tblPasakumi.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblParticipants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // tabula
         tblPasakumi.setRowHeight(28);
@@ -137,6 +147,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         });
     }
 
+    // pogai uzliek krāsainu apmali
     private void noformetPogu(JButton poga, Color apmale) {
         poga.setOpaque(true);
         poga.setBorder(BorderFactory.createLineBorder(apmale, 2));
@@ -962,23 +973,30 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // galvenā loga krustiņš - pajautā, vai tiešām iziet
         iziet(this);
     }//GEN-LAST:event_formWindowClosing
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-     String lietotajvards = txtLoginUsername.getText().trim();
+        // poga "Ielogoties": nolasa laukus, pārbauda un atver galveno logu
+        String lietotajvards = txtLoginUsername.getText().trim();
         String parole = new String(pwdLoginPassword.getPassword());
 
         if (lietotajvards.isEmpty() || parole.isEmpty()) {
             kluda(dlgLogin, "Ievadiet lietotājvārdu un paroli!");
             return;
         }
+        if (!parbauditSavienojumu(dlgLogin)) {
+            return;
+        }
+        // meklē lietotāju un salīdzina paroli
         Lietotajs l = lietotajuDAO.atrastLietotaju(lietotajvards);
         if (l == null || !l.parbauditParoli(parole)) {
             kluda(dlgLogin, "Nepareizs lietotājvārds vai parole!");
             return;
         }
 
+        // ieeja izdevās - atceramies lietotāju un sagatavojam galveno logu
         currentUser = l;
         pwdLoginPassword.setText("");
         uzstaditTiesibas();
@@ -989,12 +1007,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnLoginRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginRegisterActionPerformed
+        // no ielogošanās loga pāriet uz reģistrācijas logu
         dlgLogin.setVisible(false);
         paraditLogu(dlgRegister);
     }//GEN-LAST:event_btnLoginRegisterActionPerformed
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-            String vards = txtRegisterName.getText().trim();
+        // poga "Reģistrēties": pārbauda ievadītos datus un izveido kontu
+        String vards = txtRegisterName.getText().trim();
         String uzvards = txtRegisterSurname.getText().trim();
         String lietotajvards = txtRegisterUsername.getText().trim();
         String talrunis = txtRegisterPhone.getText().trim();
@@ -1002,30 +1022,45 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         String parole2 = new String(pwdRegisterPassword2.getPassword());
 
         if (vards.isEmpty() || uzvards.isEmpty() || lietotajvards.isEmpty() || parole.isEmpty()) {
+            // vai visi obligātie lauki ir aizpildīti
             kluda(dlgRegister, "Aizpildiet visus obligātos laukus!");
             return;
         }
+        // vai e-pasts izskatās pareizi (ir @ un punkts)
         if (!lietotajvards.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
             kluda(dlgRegister, "Ievadiet derīgu e-pasta adresi!");
             return;
         }
+        // parolei jābūt vismaz 6 simboliem
         if (parole.length() < 6) {
             kluda(dlgRegister, "Parolei jābūt vismaz 6 simbolus garai!");
             return;
         }
+        // abām parolēm jābūt vienādām
         if (!parole.equals(parole2)) {
             kluda(dlgRegister, "Paroles nesakrīt!");
             return;
         }
+        // teksts nedrīkst būt garāks, nekā ir vietas datu bāzē
         if (vards.length() > 50 || uzvards.length() > 50 || lietotajvards.length() > 50 || talrunis.length() > 20) {
             kluda(dlgRegister, "Kāds no laukiem ir pārāk garš!");
             return;
         }
+        // tālrunis nav obligāts, bet ja ievadīts - tikai cipari, +, atstarpes
+        if (!talrunis.isEmpty() && !talrunis.matches("^\\+?[0-9 ]{8,19}$")) {
+            kluda(dlgRegister, "Ievadiet derīgu tālruņa numuru (piem., +371 20000000)!");
+            return;
+        }
+        if (!parbauditSavienojumu(dlgRegister)) {
+            return;
+        }
+        // tāds lietotājvārds jau ir aizņemts
         if (lietotajuDAO.atrastLietotaju(lietotajvards) != null) {
             kluda(dlgRegister, "Šāds lietotājvārds jau eksistē!");
             return;
         }
 
+        // viss pareizi - saglabā un notīra laukus, atgriežas uz ielogošanos
         if (lietotajuDAO.registretLietotaju(vards, uzvards, lietotajvards,
                 talrunis.isEmpty() ? null : talrunis, parole)) {
             info(dlgRegister, "Reģistrēšana ir veiksmīgi pabeigta!");
@@ -1044,20 +1079,24 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegisterActionPerformed
 
     private void btnRegisterCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterCancelActionPerformed
+        // poga "Atcelt" - atpakaļ uz ielogošanās logu
         dlgRegister.setVisible(false);
         paraditLogu(dlgLogin);
     }//GEN-LAST:event_btnRegisterCancelActionPerformed
 
     private void dlgLoginWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgLoginWindowClosing
+        // ielogošanās loga krustiņš aizver visu programmu
         iziet(dlgLogin);
     }//GEN-LAST:event_dlgLoginWindowClosing
 
     private void dlgRegisterWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgRegisterWindowClosing
+        // reģistrācijas loga krustiņš - atpakaļ uz ielogošanos
         dlgRegister.setVisible(false);
         paraditLogu(dlgLogin);
     }//GEN-LAST:event_dlgRegisterWindowClosing
 
     private void btnIzrakstitiesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzrakstitiesActionPerformed
+        // poga "Izrakstīties": pajautā un atgriežas uz ielogošanās logu
         int atbilde = JOptionPane.showConfirmDialog(this, "Vai tiešām vēlaties izrakstīties?",
                 "Izrakstīties", JOptionPane.YES_NO_OPTION);
         if (atbilde == JOptionPane.YES_OPTION) {
@@ -1070,20 +1109,24 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIzrakstitiesActionPerformed
 
     private void btnIzietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzietActionPerformed
+        // poga "Iziet" aizver programmu
         iziet(this);
     }//GEN-LAST:event_btnIzietActionPerformed
 
     private void btnPievienotPasakumuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPievienotPasakumuActionPerformed
+        // paslēpj galveno logu un atver pasākuma izveides logu
         setVisible(false);
         paraditLogu(dlgAddEvent);
     }//GEN-LAST:event_btnPievienotPasakumuActionPerformed
 
     private void btnEventSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventSaveActionPerformed
-            if (!(currentUser instanceof Administrators)) {
+        // poga "Saglabāt": pārbauda pasākuma datus un saglabā
+        if (!(currentUser instanceof Administrators)) {
             kluda(dlgAddEvent, "Tikai administrators var izveidot pasākumus!");
             return;
         }
 
+        // nolasa visus laukus
         String nosaukums = txtEventName.getText().trim();
         String apraksts = txtEventDescription.getText().trim();
         String datumsTeksts = txtEventDate.getText().trim();
@@ -1092,6 +1135,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         int maks = (Integer) spnEventMax.getValue();
 
         if (nosaukums.isEmpty() || datumsTeksts.isEmpty() || laiksTeksts.isEmpty() || vieta.isEmpty()) {
+            // apraksts nav obligāts, pārējie lauki ir
             kluda(dlgAddEvent, "Aizpildiet visus obligātos laukus!");
             return;
         }
@@ -1102,29 +1146,38 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         LocalDate datums;
         try {
+            // pārbauda datuma formātu, piem. 25.12.2026
             datums = LocalDate.parse(datumsTeksts, DATUMA_FORMATS);
         } catch (DateTimeParseException ex) {
             kluda(dlgAddEvent, "Datums jāievada formātā dd.mm.gggg!");
             return;
         }
+        // pasākumu nevar izveidot pagātnē
         if (datums.isBefore(LocalDate.now())) {
             kluda(dlgAddEvent, "Datums nedrīkst būt pagātnē!");
             return;
         }
 
-        String laiks;
+        LocalTime laiksObj;
         try {
-            laiks = LocalTime.parse(laiksTeksts, DateTimeFormatter.ofPattern("H:mm"))
-                    .format(DateTimeFormatter.ofPattern("HH:mm"));
+            // pārbauda laika formātu, piem. 18:30
+            laiksObj = LocalTime.parse(laiksTeksts, DateTimeFormatter.ofPattern("H:mm"));
         } catch (DateTimeParseException ex) {
             kluda(dlgAddEvent, "Laiks jāievada formātā hh:mm!");
             return;
         }
+        // ja pasākums ir šodien, laiks nedrīkst būt jau pagājis
+        if (datums.isEqual(LocalDate.now()) && laiksObj.isBefore(LocalTime.now())) {
+            kluda(dlgAddEvent, "Pasākuma laiks nedrīkst būt pagātnē!");
+            return;
+        }
+        String laiks = laiksObj.format(DateTimeFormatter.ofPattern("HH:mm"));
         if (maks <= 0) {
             kluda(dlgAddEvent, "Dalībnieku skaitam jābūt lielākam par 0!");
             return;
         }
 
+        // viss pareizi - izveido pasākumu un saglabā
         Pasakums p = ((Administrators) currentUser).izveidotPasakumu(nosaukums,
                 apraksts.isEmpty() ? null : apraksts, java.sql.Date.valueOf(datums), laiks, vieta, maks);
 
@@ -1145,16 +1198,19 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEventSaveActionPerformed
 
     private void btnEventCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventCancelActionPerformed
+        // poga "Atcelt" - atpakaļ uz galveno logu
         dlgAddEvent.setVisible(false);
         atvertGalvenoLogu();
     }//GEN-LAST:event_btnEventCancelActionPerformed
 
     private void dlgAddEventWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgAddEventWindowClosing
+        // krustiņš - atpakaļ uz galveno logu
         dlgAddEvent.setVisible(false);
         atvertGalvenoLogu();
     }//GEN-LAST:event_dlgAddEventWindowClosing
 
     private void btnDalibniekiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDalibniekiActionPerformed
+        // atjauno sarakstus un atver dalībnieku pārvaldības logu
         ieladetPasakumus();
         ieladetDalibniekus();
         setVisible(false);
@@ -1162,11 +1218,13 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDalibniekiActionPerformed
 
     private void btnParticipantsCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParticipantsCloseActionPerformed
+        // poga "Aizvērt" - atpakaļ uz galveno logu
         dlgParticipants.setVisible(false);
         atvertGalvenoLogu();
     }//GEN-LAST:event_btnParticipantsCloseActionPerformed
 
     private void dlgParticipantsWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgParticipantsWindowClosing
+        // krustiņš - atpakaļ uz galveno logu
         dlgParticipants.setVisible(false);
         atvertGalvenoLogu();
     }//GEN-LAST:event_dlgParticipantsWindowClosing
@@ -1189,6 +1247,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         // ---------- datu bāzes savienojums ar GUI ----------
 
+    // piesaista pogām un izvēlnei, ko darīt pēc klikšķa
     private void pievienotKlausitajus() {
         btnRegistretiesDaliba.addActionListener(e -> pieteiktiesPasakumam());
         btnApprove.addActionListener(e -> apstradatPieteikumu(true));
@@ -1200,14 +1259,25 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         });
     }
 
+    // ja datu bāze nav pieslēgta, nav jēgas pārbaudīt lietotāju
+    private boolean parbauditSavienojumu(java.awt.Component vecaks) {
+        if (!dbPieejama) {
+            kluda(vecaks, "Nav savienojuma ar datu bāzi.\nPārbaudiet, vai Java DB serveris ir palaists, un restartējiet programmu.");
+        }
+        return dbPieejama;
+    }
+
+    // sarkanais kļūdas paziņojums
     private void kluda(java.awt.Component vecaks, String teksts) {
         JOptionPane.showMessageDialog(vecaks, teksts, "Kļūda", JOptionPane.ERROR_MESSAGE);
     }
 
+    // parasts informācijas paziņojums
     private void info(java.awt.Component vecaks, String teksts) {
         JOptionPane.showMessageDialog(vecaks, teksts, "Informācija", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // datums un laiks tabulai, piem. 25.12.2026 18:30
     private String formatDatums(Pasakums p) {
         return p.getDatums().toLocalDate().format(DATUMA_FORMATS) + " " + p.getLaiks();
     }
@@ -1276,6 +1346,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             info(this, "Administrators nevar pieteikties dalībai pasākumā.");
             return;
         }
+        // lietotājam jāizvēlas rinda tabulā
         int rinda = tblPasakumi.getSelectedRow();
         if (rinda < 0 || rinda >= pasakumi.size()) {
             kluda(this, "Izvēlieties pasākumu no saraksta!");
@@ -1283,10 +1354,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         }
         Pasakums p = pasakumi.get(tblPasakumi.convertRowIndexToModel(rinda));
 
+        // vai vēl ir brīvas vietas
         if (p.getBrivoVietuSkaitu() <= 0) {
             kluda(this, "Vietu skaits ir pilns!");
             return;
         }
+        // vai šis lietotājs jau nav pieteicies
         if (registracijaDAO.jauPieteicies(p.getId(), currentUser.getId())) {
             kluda(this, "Jūs jau esat pieteicies šim pasākumam!");
             return;
@@ -1303,6 +1376,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
     // pogas "Apstiprināt" / "Noraidīt"
     private void apstradatPieteikumu(boolean apstiprinat) {
+        // administratoram jāizvēlas pieteikums tabulā
         int rinda = tblParticipants.getSelectedRow();
         if (rinda < 0 || rinda >= dalibnieki.size()) {
             kluda(dlgParticipants, "Izvēlieties pieteikumu no saraksta!");
@@ -1311,6 +1385,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         Registracija r = dalibnieki.get(tblParticipants.convertRowIndexToModel(rinda));
 
         if (apstiprinat) {
+            // apstiprina, ja vēl ir brīvas vietas
             int rez = registracijaDAO.apstiprinatArKontroli(r.getId());
             if (rez == -1) {
                 kluda(dlgParticipants, "Vietu skaits ir pilns!");
@@ -1320,6 +1395,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 return;
             }
         } else {
+            // pirms noraidīšanas pajautā, vai tiešām
             int atbilde = JOptionPane.showConfirmDialog(dlgParticipants,
                     "Vai tiešām vēlaties noraidīt šo pieteikumu?",
                     "Noraidīt", JOptionPane.YES_NO_OPTION);
@@ -1353,8 +1429,18 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
+        // jebkura neparedzēta kļūda - paziņojums, programma turpina darbu
+        Thread.setDefaultUncaughtExceptionHandler((pavediens, e) -> {
+            logger.log(java.util.logging.Level.SEVERE, "Neapstrādāta kļūda", e);
+            java.awt.EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(null,
+                    "Radās neparedzēta kļūda. Lūdzu, mēģiniet vēlreiz.\nProgramma turpina darbu.",
+                    "Kļūda", JOptionPane.ERROR_MESSAGE));
+        });
+
         try {
+            // pieslēdzas datu bāzei
             DatabaseUtil.init();
+            dbPieejama = true;
         } catch (SQLException e) {
             System.err.println("Neizdevās pieslēgties datu bāzei: " + e.getMessage());
             JOptionPane.showMessageDialog(null,
