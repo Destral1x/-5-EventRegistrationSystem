@@ -1032,6 +1032,24 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="lblMekletNosaukums" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                          <Component id="txtMekletNosaukums" min="-2" pref="150" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Component id="lblMekletVieta" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                          <Component id="txtMekletVieta" min="-2" pref="130" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Component id="lblMekletDatums" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                          <Component id="txtMekletDatums" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Component id="btnMeklet" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Component id="btnNotirit" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
                       <Component id="scrPasakumi" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnRegistretiesDaliba" min="-2" pref="185" max="-2" attributes="0"/>
@@ -1053,6 +1071,17 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="lblMekletNosaukums" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtMekletNosaukums" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      <Component id="lblMekletVieta" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtMekletVieta" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      <Component id="lblMekletDatums" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtMekletDatums" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      <Component id="btnMeklet" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      <Component id="btnNotirit" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                   <Component id="scrPasakumi" pref="146" max="32767" attributes="0"/>
                   <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -1164,6 +1193,57 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIzietActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lblMekletNosaukums">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Nosaukums:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="txtMekletNosaukums">
+          <Properties>
+            <Property name="toolTipText" type="java.lang.String" value="Nosaukums vai t&#x101; da&#x13c;a"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lblMekletVieta">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Vieta:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="txtMekletVieta">
+          <Properties>
+            <Property name="toolTipText" type="java.lang.String" value="Vieta vai t&#x101;s da&#x13c;a"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lblMekletDatums">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Datums:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="txtMekletDatums">
+          <Properties>
+            <Property name="toolTipText" type="java.lang.String" value="Piem. 25.12.2026 vai 12.2026"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnMeklet">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="e0" green="63" red="3b" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Mekl&#x113;t"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnNotirit">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="fa" green="f5" red="f2" type="rgb"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="51" green="41" red="33" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Not&#x12b;r&#x12b;t"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

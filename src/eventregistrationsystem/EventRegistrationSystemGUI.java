@@ -31,7 +31,10 @@ import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import java.util.regex.Pattern;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -84,6 +87,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         noformetPogu(btnApprove, new Color(56, 130, 64));
         noformetPogu(btnReject, new Color(160, 40, 35));
         noformetPogu(btnParticipantsClose, peleka);
+        noformetPogu(btnMeklet, zila);
+        noformetPogu(btnNotirit, peleka);
+        btnMeklet.setBackground(Color.WHITE);
+
+        // kārtotājs, lai tabulā var atlasīt rindas (meklēšana)
+        tblPasakumi.setRowSorter(new TableRowSorter<>((DefaultTableModel) tblPasakumi.getModel()));
         btnDalibnieki.setBackground(Color.WHITE);
         btnLoginRegister.setBackground(Color.WHITE);
         btnPievienotPasakumu.setBackground(Color.WHITE);
@@ -242,6 +251,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnPievienotPasakumu = new javax.swing.JButton();
         btnIzrakstities = new javax.swing.JButton();
         btnIziet = new javax.swing.JButton();
+        lblMekletNosaukums = new javax.swing.JLabel();
+        txtMekletNosaukums = new javax.swing.JTextField();
+        lblMekletVieta = new javax.swing.JLabel();
+        txtMekletVieta = new javax.swing.JTextField();
+        lblMekletDatums = new javax.swing.JLabel();
+        txtMekletDatums = new javax.swing.JTextField();
+        btnMeklet = new javax.swing.JButton();
+        btnNotirit = new javax.swing.JButton();
 
         dlgLogin.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         dlgLogin.setTitle("Pasākumu sistēma – Ielogošanās");
@@ -918,6 +935,27 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             }
         });
 
+        lblMekletNosaukums.setText("Nosaukums:");
+
+        txtMekletNosaukums.setToolTipText("Nosaukums vai tā daļa");
+
+        lblMekletVieta.setText("Vieta:");
+
+        txtMekletVieta.setToolTipText("Vieta vai tās daļa");
+
+        lblMekletDatums.setText("Datums:");
+
+        txtMekletDatums.setToolTipText("Piem. 25.12.2026 vai 12.2026");
+
+        btnMeklet.setForeground(new java.awt.Color(59, 99, 224));
+        btnMeklet.setText("Meklēt");
+        btnMeklet.setFocusPainted(false);
+
+        btnNotirit.setBackground(new java.awt.Color(242, 245, 250));
+        btnNotirit.setForeground(new java.awt.Color(51, 65, 81));
+        btnNotirit.setText("Notīrīt");
+        btnNotirit.setFocusPainted(false);
+
         javax.swing.GroupLayout pnlBodyLayout = new javax.swing.GroupLayout(pnlBody);
         pnlBody.setLayout(pnlBodyLayout);
         pnlBodyLayout.setHorizontalGroup(
@@ -925,6 +963,23 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             .addGroup(pnlBodyLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addComponent(lblMekletNosaukums)
+                        .addGap(6, 6, 6)
+                        .addComponent(txtMekletNosaukums, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(lblMekletVieta)
+                        .addGap(6, 6, 6)
+                        .addComponent(txtMekletVieta, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(lblMekletDatums)
+                        .addGap(6, 6, 6)
+                        .addComponent(txtMekletDatums, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnMeklet, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnNotirit, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(scrPasakumi)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -942,6 +997,16 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBodyLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
+                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblMekletNosaukums)
+                    .addComponent(txtMekletNosaukums, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblMekletVieta)
+                    .addComponent(txtMekletVieta, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblMekletDatums)
+                    .addComponent(txtMekletDatums, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMeklet, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNotirit, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
                 .addComponent(scrPasakumi, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
                 .addGap(22, 22, 22)
                 .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -1250,6 +1315,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     // piesaista pogām un izvēlnei, ko darīt pēc klikšķa
     private void pievienotKlausitajus() {
         btnRegistretiesDaliba.addActionListener(e -> pieteiktiesPasakumam());
+        btnMeklet.addActionListener(e -> mekletPasakumus());
+        btnNotirit.addActionListener(e -> notiritMeklesanu());
+        // Enter meklēšanas laukā arī meklē
+        txtMekletNosaukums.addActionListener(e -> mekletPasakumus());
+        txtMekletVieta.addActionListener(e -> mekletPasakumus());
+        txtMekletDatums.addActionListener(e -> mekletPasakumus());
         btnApprove.addActionListener(e -> apstradatPieteikumu(true));
         btnReject.addActionListener(e -> apstradatPieteikumu(false));
         cmbParticipantsEvent.addActionListener(e -> {
@@ -1320,6 +1391,40 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             cmbParticipantsEvent.setSelectedIndex(jaunaisInd);
         }
         atjaunina = false;
+    }
+
+    // meklēšana pēc viena vai vairākiem kritērijiem (tukšie lauki netiek ņemti vērā)
+    private void mekletPasakumus() {
+        List<RowFilter<DefaultTableModel, Integer>> kriteriji = new ArrayList<>();
+        pievienotKriteriju(kriteriji, txtMekletNosaukums.getText(), 0);
+        pievienotKriteriju(kriteriji, txtMekletDatums.getText(), 1);
+        pievienotKriteriju(kriteriji, txtMekletVieta.getText(), 2);
+
+        @SuppressWarnings("unchecked")
+        TableRowSorter<DefaultTableModel> sorter = (TableRowSorter<DefaultTableModel>) tblPasakumi.getRowSorter();
+        // visiem kritērijiem jāizpildās vienlaicīgi (UN)
+        sorter.setRowFilter(kriteriji.isEmpty() ? null : RowFilter.andFilter(kriteriji));
+
+        if (!kriteriji.isEmpty() && tblPasakumi.getRowCount() == 0) {
+            info(this, "Neviens pasākums neatbilst meklēšanas kritērijiem.");
+        }
+    }
+
+    // teksts kolonnā jāatrod neatkarīgi no lielajiem/mazajiem burtiem
+    private void pievienotKriteriju(List<RowFilter<DefaultTableModel, Integer>> kriteriji, String teksts, int kolonna) {
+        teksts = teksts.trim();
+        if (!teksts.isEmpty()) {
+            kriteriji.add(RowFilter.regexFilter("(?iu)" + Pattern.quote(teksts), kolonna));
+        }
+    }
+
+    // notīra laukus un atkal rāda visus pasākumus
+    private void notiritMeklesanu() {
+        txtMekletNosaukums.setText("");
+        txtMekletVieta.setText("");
+        txtMekletDatums.setText("");
+        tblPasakumi.getRowSorter().setSortKeys(null);
+        ((TableRowSorter<?>) tblPasakumi.getRowSorter()).setRowFilter(null);
     }
 
     // dalībnieku tabula izvēlētajam pasākumam
@@ -1464,6 +1569,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnIzrakstities;
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnLoginRegister;
+    private javax.swing.JButton btnMeklet;
+    private javax.swing.JButton btnNotirit;
     private javax.swing.JButton btnParticipantsClose;
     private javax.swing.JButton btnPievienotPasakumu;
     private javax.swing.JButton btnRegister;
@@ -1520,6 +1627,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JSpinner spnEventMax;
     private javax.swing.JTable tblParticipants;
     private javax.swing.JTable tblPasakumi;
+    private javax.swing.JLabel lblMekletDatums;
+    private javax.swing.JLabel lblMekletNosaukums;
+    private javax.swing.JLabel lblMekletVieta;
+    private javax.swing.JTextField txtMekletDatums;
+    private javax.swing.JTextField txtMekletNosaukums;
+    private javax.swing.JTextField txtMekletVieta;
     private javax.swing.JTextField txtEventDate;
     private javax.swing.JTextArea txtEventDescription;
     private javax.swing.JTextField txtEventName;
