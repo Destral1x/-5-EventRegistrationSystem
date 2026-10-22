@@ -934,12 +934,56 @@
         </Container>
       </SubComponents>
     </Container>
+    <Menu class="javax.swing.JMenuBar" name="mnbGalvena">
+      <SubComponents>
+        <Menu class="javax.swing.JMenu" name="mnuFails">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Fails"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="mniIzrakstities">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Izrakst&#x12b;ties"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniIziet">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Iziet"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="mnuPasakumi">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Pas&#x101;kumi"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="mniRegistreties">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Re&#x123;istr&#x113;ties dal&#x12b;bai"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniPievienot">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Pievienot pas&#x101;kumu"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniDalibnieki">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Dal&#x12b;bnieki"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+      </SubComponents>
+    </Menu>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="0"/>
     <Property name="title" type="java.lang.String" value="Pas&#x101;kumu sist&#x113;ma &#x2013; Pas&#x101;kumu saraksts"/>
   </Properties>
   <SyntheticProperties>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="mnbGalvena"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
   </SyntheticProperties>

@@ -241,6 +241,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnApprove = new javax.swing.JButton();
         btnReject = new javax.swing.JButton();
         btnParticipantsClose = new javax.swing.JButton();
+        mnbGalvena = new javax.swing.JMenuBar();
+        mnuFails = new javax.swing.JMenu();
+        mniIzrakstities = new javax.swing.JMenuItem();
+        mniIziet = new javax.swing.JMenuItem();
+        mnuPasakumi = new javax.swing.JMenu();
+        mniRegistreties = new javax.swing.JMenuItem();
+        mniPievienot = new javax.swing.JMenuItem();
+        mniDalibnieki = new javax.swing.JMenuItem();
         pnlHeader = new javax.swing.JPanel();
         lblVirsraksts = new javax.swing.JLabel();
         pnlBody = new javax.swing.JPanel();
@@ -1018,6 +1026,31 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 .addGap(60, 60, 60))
         );
 
+        mnuFails.setText("Fails");
+
+        mniIzrakstities.setText("Izrakstīties");
+        mnuFails.add(mniIzrakstities);
+
+        mniIziet.setText("Iziet");
+        mnuFails.add(mniIziet);
+
+        mnbGalvena.add(mnuFails);
+
+        mnuPasakumi.setText("Pasākumi");
+
+        mniRegistreties.setText("Reģistrēties dalībai");
+        mnuPasakumi.add(mniRegistreties);
+
+        mniPievienot.setText("Pievienot pasākumu");
+        mnuPasakumi.add(mniPievienot);
+
+        mniDalibnieki.setText("Dalībnieki");
+        mnuPasakumi.add(mniDalibnieki);
+
+        mnbGalvena.add(mnuPasakumi);
+
+        setJMenuBar(mnbGalvena);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1321,6 +1354,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         txtMekletNosaukums.addActionListener(e -> mekletPasakumus());
         txtMekletVieta.addActionListener(e -> mekletPasakumus());
         txtMekletDatums.addActionListener(e -> mekletPasakumus());
+        // galvenā izvēlne dara to pašu, ko pogas
+        mniIzrakstities.addActionListener(this::btnIzrakstitiesActionPerformed);
+        mniIziet.addActionListener(this::btnIzietActionPerformed);
+        mniRegistreties.addActionListener(e -> pieteiktiesPasakumam());
+        mniPievienot.addActionListener(this::btnPievienotPasakumuActionPerformed);
+        mniDalibnieki.addActionListener(this::btnDalibniekiActionPerformed);
         btnApprove.addActionListener(e -> apstradatPieteikumu(true));
         btnReject.addActionListener(e -> apstradatPieteikumu(false));
         cmbParticipantsEvent.addActionListener(e -> {
@@ -1359,6 +1398,9 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnPievienotPasakumu.setVisible(admin);
         btnDalibnieki.setVisible(admin);
         btnRegistretiesDaliba.setVisible(!admin);
+        mniPievienot.setVisible(admin);
+        mniDalibnieki.setVisible(admin);
+        mniRegistreties.setVisible(!admin);
         lblVirsraksts.setText("Pasākumu saraksts – " + currentUser.getVards() + " " + currentUser.getUzvards());
     }
 
@@ -1571,6 +1613,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnLoginRegister;
     private javax.swing.JButton btnMeklet;
     private javax.swing.JButton btnNotirit;
+    private javax.swing.JMenuBar mnbGalvena;
+    private javax.swing.JMenuItem mniDalibnieki;
+    private javax.swing.JMenuItem mniIziet;
+    private javax.swing.JMenuItem mniIzrakstities;
+    private javax.swing.JMenuItem mniPievienot;
+    private javax.swing.JMenuItem mniRegistreties;
+    private javax.swing.JMenu mnuFails;
+    private javax.swing.JMenu mnuPasakumi;
     private javax.swing.JButton btnParticipantsClose;
     private javax.swing.JButton btnPievienotPasakumu;
     private javax.swing.JButton btnRegister;
