@@ -23,11 +23,9 @@ import eventregistrationsystem.model.Dalibnieks;
 import eventregistrationsystem.model.Lietotajs;
 import eventregistrationsystem.model.Pasakums;
 import eventregistrationsystem.model.Registracija;
+import eventregistrationsystem.util.Validacija;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -53,9 +51,6 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private boolean atjaunina = false;
     private static boolean dbPieejama = false;
 
-    private static final DateTimeFormatter DATUMA_FORMATS
-            = DateTimeFormatter.ofPattern("dd.MM.uuuu").withResolverStyle(ResolverStyle.STRICT);
-    
     /**
      * Creates new form EventRegistrationSystemGUI
      */
@@ -1141,7 +1136,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginRegisterActionPerformed
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-        // poga "Reģistrēties": pārbauda ievadītos datus un izveido kontu
+               // poga "Reģistrēties": nolasa laukus, pārbauda un izveido kontu
         String vards = txtRegisterName.getText().trim();
         String uzvards = txtRegisterSurname.getText().trim();
         String lietotajvards = txtRegisterUsername.getText().trim();
@@ -1149,34 +1144,10 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         String parole = new String(pwdRegisterPassword.getPassword());
         String parole2 = new String(pwdRegisterPassword2.getPassword());
 
-        if (vards.isEmpty() || uzvards.isEmpty() || lietotajvards.isEmpty() || parole.isEmpty()) {
-            // vai visi obligātie lauki ir aizpildīti
-            kluda(dlgRegister, "Aizpildiet visus obligātos laukus!");
-            return;
-        }
-        // vai e-pasts izskatās pareizi (ir @ un punkts)
-        if (!lietotajvards.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
-            kluda(dlgRegister, "Ievadiet derīgu e-pasta adresi!");
-            return;
-        }
-        // parolei jābūt vismaz 6 simboliem
-        if (parole.length() < 6) {
-            kluda(dlgRegister, "Parolei jābūt vismaz 6 simbolus garai!");
-            return;
-        }
-        // abām parolēm jābūt vienādām
-        if (!parole.equals(parole2)) {
-            kluda(dlgRegister, "Paroles nesakrīt!");
-            return;
-        }
-        // teksts nedrīkst būt garāks, nekā ir vietas datu bāzē
-        if (vards.length() > 50 || uzvards.length() > 50 || lietotajvards.length() > 50 || talrunis.length() > 20) {
-            kluda(dlgRegister, "Kāds no laukiem ir pārāk garš!");
-            return;
-        }
-        // tālrunis nav obligāts, bet ja ievadīts - tikai cipari, +, atstarpes
-        if (!talrunis.isEmpty() && !talrunis.matches("^\\+?[0-9 ]{8,19}$")) {
-            kluda(dlgRegister, "Ievadiet derīgu tālruņa numuru (piem., +371 20000000)!");
+        // datu pārbaude ir klasē Validacija
+        String kludasTeksts = Validacija.registracija(vards, uzvards, lietotajvards, talrunis, parole, parole2);
+        if (kludasTeksts != null) {
+            kluda(dlgRegister, kludasTeksts);
             return;
         }
         if (!parbauditSavienojumu(dlgRegister)) {
@@ -1248,13 +1219,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPievienotPasakumuActionPerformed
 
     private void btnEventSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventSaveActionPerformed
-        // poga "Saglabāt": pārbauda pasākuma datus un saglabā
+               // poga "Saglabāt": nolasa laukus, pārbauda un saglabā pasākumu
         if (!(currentUser instanceof Administrators)) {
             kluda(dlgAddEvent, "Tikai administrators var izveidot pasākumus!");
             return;
         }
 
-        // nolasa visus laukus
         String nosaukums = txtEventName.getText().trim();
         String apraksts = txtEventDescription.getText().trim();
         String datumsTeksts = txtEventDate.getText().trim();
@@ -1262,50 +1232,18 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         String vieta = txtEventPlace.getText().trim();
         int maks = (Integer) spnEventMax.getValue();
 
-        if (nosaukums.isEmpty() || datumsTeksts.isEmpty() || laiksTeksts.isEmpty() || vieta.isEmpty()) {
-            // apraksts nav obligāts, pārējie lauki ir
-            kluda(dlgAddEvent, "Aizpildiet visus obligātos laukus!");
-            return;
-        }
-        if (nosaukums.length() > 100 || vieta.length() > 100 || apraksts.length() > 500) {
-            kluda(dlgAddEvent, "Kāds no laukiem ir pārāk garš!");
+        // datu pārbaude ir klasē Validacija
+        String kludasTeksts = Validacija.pasakums(nosaukums, apraksts, datumsTeksts, laiksTeksts, vieta, maks);
+        if (kludasTeksts != null) {
+            kluda(dlgAddEvent, kludasTeksts);
             return;
         }
 
-        LocalDate datums;
-        try {
-            // pārbauda datuma formātu, piem. 25.12.2026
-            datums = LocalDate.parse(datumsTeksts, DATUMA_FORMATS);
-        } catch (DateTimeParseException ex) {
-            kluda(dlgAddEvent, "Datums jāievada formātā dd.mm.gggg!");
-            return;
-        }
-        // pasākumu nevar izveidot pagātnē
-        if (datums.isBefore(LocalDate.now())) {
-            kluda(dlgAddEvent, "Datums nedrīkst būt pagātnē!");
-            return;
-        }
+        // pārbaude izieta - pārveido tekstu datumā un laikā
+        LocalDate datums = Validacija.parsetDatumu(datumsTeksts);
+        String laiks = Validacija.parsetLaiku(laiksTeksts).format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        LocalTime laiksObj;
-        try {
-            // pārbauda laika formātu, piem. 18:30
-            laiksObj = LocalTime.parse(laiksTeksts, DateTimeFormatter.ofPattern("H:mm"));
-        } catch (DateTimeParseException ex) {
-            kluda(dlgAddEvent, "Laiks jāievada formātā hh:mm!");
-            return;
-        }
-        // ja pasākums ir šodien, laiks nedrīkst būt jau pagājis
-        if (datums.isEqual(LocalDate.now()) && laiksObj.isBefore(LocalTime.now())) {
-            kluda(dlgAddEvent, "Pasākuma laiks nedrīkst būt pagātnē!");
-            return;
-        }
-        String laiks = laiksObj.format(DateTimeFormatter.ofPattern("HH:mm"));
-        if (maks <= 0) {
-            kluda(dlgAddEvent, "Dalībnieku skaitam jābūt lielākam par 0!");
-            return;
-        }
-
-        // viss pareizi - izveido pasākumu un saglabā
+        // izveido pasākumu un saglabā
         Pasakums p = ((Administrators) currentUser).izveidotPasakumu(nosaukums,
                 apraksts.isEmpty() ? null : apraksts, java.sql.Date.valueOf(datums), laiks, vieta, maks);
 
@@ -1505,7 +1443,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
     // datums un laiks tabulai, piem. 25.12.2026 18:30
     private String formatDatums(Pasakums p) {
-        return p.getDatums().toLocalDate().format(DATUMA_FORMATS) + " " + p.getLaiks();
+        return p.getDatums().toLocalDate().format(Validacija.DATUMA_FORMATS) + " " + p.getLaiks();
     }
 
     // administrators redz pārvaldību, dalībnieks - pieteikšanos
