@@ -15,8 +15,7 @@ import java.util.List;
  */
 public class DatabaseUtil {
 
-    // pirms palaišanas NetBeans jāieslēdz Java DB serveris
-    private static final String DB_URL = "jdbc:derby://localhost:1527/EventDB;create=true";
+    private static final String DB_URL = "jdbc:derby:database/eventdb;create=true";
     private static final String DB_USER = "dbuser";
     private static final String DB_PASSWORD = "dbuser";
 
@@ -25,6 +24,14 @@ public class DatabaseUtil {
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    }
+    
+        // korekti aizver lokālo Derby datu bāzi pirms programmas beigām
+    public static void shutdown() {
+        try {
+            DriverManager.getConnection("jdbc:derby:;shutdown=true");
+        } catch (SQLException e) {
+        }
     }
 
     // pirmajā palaišanā izveido tabulas un ieliek sākuma datus

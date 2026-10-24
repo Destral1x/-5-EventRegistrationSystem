@@ -1338,7 +1338,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private void iziet(java.awt.Component logs) {
         int atbilde = JOptionPane.showConfirmDialog(logs, "Vai tiešām vēlaties aizvērt programmu?",
                 "Iziet", JOptionPane.YES_NO_OPTION);
-        if (atbilde == JOptionPane.YES_OPTION) {
+                if (atbilde == JOptionPane.YES_OPTION) {
+            DatabaseUtil.shutdown();
             System.exit(0);
         }
     }
@@ -1591,7 +1592,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         } catch (SQLException e) {
             System.err.println("Neizdevās pieslēgties datu bāzei: " + e.getMessage());
             JOptionPane.showMessageDialog(null,
-                    "Neizdevās pieslēgties datu bāzei.\nPārbaudiet, vai Java DB serveris ir palaists.",
+                    "Neizdevās atvērt lokālo datu bāzi.\nPārbaudiet, vai programma jau nav palaista citā logā.",
                     "Datu bāzes kļūda", JOptionPane.ERROR_MESSAGE);
         }
 
