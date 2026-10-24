@@ -855,6 +855,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cmbParticipantsEvent">
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbParticipantsEventActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -897,6 +900,9 @@
                 <Property name="text" type="java.lang.String" value="Apstiprin&#x101;t"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnApproveActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnReject">
               <Properties>
@@ -914,6 +920,9 @@
                 <Property name="text" type="java.lang.String" value="Noraid&#x12b;t"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRejectActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnParticipantsClose">
               <Properties>
@@ -1178,6 +1187,9 @@
             <Property name="text" type="java.lang.String" value="Re&#x123;istr&#x113;ties dal&#x12b;bai"/>
             <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegistretiesDalibaActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnDalibnieki">
           <Properties>
@@ -1276,6 +1288,9 @@
             <Property name="text" type="java.lang.String" value="Mekl&#x113;t"/>
             <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMekletActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnNotirit">
           <Properties>
@@ -1288,6 +1303,9 @@
             <Property name="text" type="java.lang.String" value="Not&#x12b;r&#x12b;t"/>
             <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNotiritActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

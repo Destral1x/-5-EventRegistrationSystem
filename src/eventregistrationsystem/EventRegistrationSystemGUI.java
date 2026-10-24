@@ -63,7 +63,6 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         // izveido logus, uzliek dizainu un pogu darbības
         initComponents();
         noformet();
-        pievienotKlausitajus();
     }
 
     // dizains, ko nevar uzlikt Design logā
@@ -241,14 +240,6 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnApprove = new javax.swing.JButton();
         btnReject = new javax.swing.JButton();
         btnParticipantsClose = new javax.swing.JButton();
-        mnbGalvena = new javax.swing.JMenuBar();
-        mnuFails = new javax.swing.JMenu();
-        mniIzrakstities = new javax.swing.JMenuItem();
-        mniIziet = new javax.swing.JMenuItem();
-        mnuPasakumi = new javax.swing.JMenu();
-        mniRegistreties = new javax.swing.JMenuItem();
-        mniPievienot = new javax.swing.JMenuItem();
-        mniDalibnieki = new javax.swing.JMenuItem();
         pnlHeader = new javax.swing.JPanel();
         lblVirsraksts = new javax.swing.JLabel();
         pnlBody = new javax.swing.JPanel();
@@ -267,6 +258,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         txtMekletDatums = new javax.swing.JTextField();
         btnMeklet = new javax.swing.JButton();
         btnNotirit = new javax.swing.JButton();
+        mnbGalvena = new javax.swing.JMenuBar();
+        mnuFails = new javax.swing.JMenu();
+        mniIzrakstities = new javax.swing.JMenuItem();
+        mniIziet = new javax.swing.JMenuItem();
+        mnuPasakumi = new javax.swing.JMenu();
+        mniRegistreties = new javax.swing.JMenuItem();
+        mniPievienot = new javax.swing.JMenuItem();
+        mniDalibnieki = new javax.swing.JMenuItem();
 
         dlgLogin.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         dlgLogin.setTitle("Pasākumu sistēma – Ielogošanās");
@@ -741,6 +740,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         lblParticipantsEvent.setText("Pasākums:");
 
+        cmbParticipantsEvent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbParticipantsEventActionPerformed(evt);
+            }
+        });
+
         tblParticipants.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -771,12 +776,22 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnApprove.setForeground(new java.awt.Color(255, 255, 255));
         btnApprove.setText("Apstiprināt");
         btnApprove.setFocusPainted(false);
+        btnApprove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnApproveActionPerformed(evt);
+            }
+        });
 
         btnReject.setBackground(new java.awt.Color(201, 58, 50));
         btnReject.setFont(btnReject.getFont().deriveFont(btnReject.getFont().getStyle() | java.awt.Font.BOLD));
         btnReject.setForeground(new java.awt.Color(255, 255, 255));
         btnReject.setText("Noraidīt");
         btnReject.setFocusPainted(false);
+        btnReject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRejectActionPerformed(evt);
+            }
+        });
 
         btnParticipantsClose.setBackground(new java.awt.Color(242, 245, 250));
         btnParticipantsClose.setForeground(new java.awt.Color(51, 65, 81));
@@ -903,6 +918,11 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnRegistretiesDaliba.setForeground(new java.awt.Color(255, 255, 255));
         btnRegistretiesDaliba.setText("Reģistrēties dalībai");
         btnRegistretiesDaliba.setFocusPainted(false);
+        btnRegistretiesDaliba.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistretiesDalibaActionPerformed(evt);
+            }
+        });
 
         btnDalibnieki.setFont(btnDalibnieki.getFont().deriveFont(btnDalibnieki.getFont().getSize()+1f));
         btnDalibnieki.setForeground(new java.awt.Color(59, 99, 224));
@@ -958,11 +978,21 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnMeklet.setForeground(new java.awt.Color(59, 99, 224));
         btnMeklet.setText("Meklēt");
         btnMeklet.setFocusPainted(false);
+        btnMeklet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMekletActionPerformed(evt);
+            }
+        });
 
         btnNotirit.setBackground(new java.awt.Color(242, 245, 250));
         btnNotirit.setForeground(new java.awt.Color(51, 65, 81));
         btnNotirit.setText("Notīrīt");
         btnNotirit.setFocusPainted(false);
+        btnNotirit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNotiritActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlBodyLayout = new javax.swing.GroupLayout(pnlBody);
         pnlBody.setLayout(pnlBodyLayout);
@@ -1327,6 +1357,113 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         atvertGalvenoLogu();
     }//GEN-LAST:event_dlgParticipantsWindowClosing
 
+    private void btnRegistretiesDalibaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistretiesDalibaActionPerformed
+            // poga "Reģistrēties dalībai": piesaka dalībnieku izvēlētajam pasākumam
+        if (!(currentUser instanceof Dalibnieks)) {
+            info(this, "Administrators nevar pieteikties dalībai pasākumā.");
+            return;
+        }
+        // lietotājam jāizvēlas rinda tabulā
+        int rinda = tblPasakumi.getSelectedRow();
+        if (rinda < 0 || rinda >= pasakumi.size()) {
+            kluda(this, "Izvēlieties pasākumu no saraksta!");
+            return;
+        }
+        Pasakums p = pasakumi.get(tblPasakumi.convertRowIndexToModel(rinda));
+
+        // vai vēl ir brīvas vietas
+        if (p.getBrivoVietuSkaitu() <= 0) {
+            kluda(this, "Vietu skaits ir pilns!");
+            return;
+        }
+        // vai šis lietotājs jau nav pieteicies
+        if (registracijaDAO.jauPieteicies(p.getId(), currentUser.getId())) {
+            kluda(this, "Jūs jau esat pieteicies šim pasākumam!");
+            return;
+        }
+
+        Registracija r = ((Dalibnieks) currentUser).registretiesPasakumam(p);
+        if (registracijaDAO.saglabatRegistraciju(r)) {
+            info(this, "Pieteikums nosūtīts, gaidiet apstiprinājumu!");
+        } else {
+            kluda(this, "Neizdevās saglabāt pieteikumu. Mēģiniet vēlreiz.");
+        }
+        ieladetPasakumus();
+    }//GEN-LAST:event_btnRegistretiesDalibaActionPerformed
+
+    private void btnMekletActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMekletActionPerformed
+            // poga "Meklēt": meklē pēc viena vai vairākiem kritērijiem (tukšie lauki netiek ņemti vērā)
+        List<RowFilter<DefaultTableModel, Integer>> kriteriji = new ArrayList<>();
+        pievienotKriteriju(kriteriji, txtMekletNosaukums.getText(), 0);
+        pievienotKriteriju(kriteriji, txtMekletDatums.getText(), 1);
+        pievienotKriteriju(kriteriji, txtMekletVieta.getText(), 2);
+
+        @SuppressWarnings("unchecked")
+        TableRowSorter<DefaultTableModel> sorter = (TableRowSorter<DefaultTableModel>) tblPasakumi.getRowSorter();
+        // visiem kritērijiem jāizpildās vienlaicīgi (UN)
+        sorter.setRowFilter(kriteriji.isEmpty() ? null : RowFilter.andFilter(kriteriji));
+
+        if (!kriteriji.isEmpty() && tblPasakumi.getRowCount() == 0) {
+            info(this, "Neviens pasākums neatbilst meklēšanas kritērijiem.");
+        }
+    }//GEN-LAST:event_btnMekletActionPerformed
+
+    private void btnNotiritActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotiritActionPerformed
+        // poga "Notīrīt": notīra laukus un atkal rāda visus pasākumus
+        txtMekletNosaukums.setText("");
+        txtMekletVieta.setText("");
+        txtMekletDatums.setText("");
+        tblPasakumi.getRowSorter().setSortKeys(null);
+        ((TableRowSorter<?>) tblPasakumi.getRowSorter()).setRowFilter(null);
+    }//GEN-LAST:event_btnNotiritActionPerformed
+
+    private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
+        // poga "Apstiprināt": apstiprina izvēlēto pieteikumu, ja ir brīvas vietas
+        Registracija r = izveletaisPieteikums();
+        if (r == null) {
+            return;
+        }
+        int rez = registracijaDAO.apstiprinatArKontroli(r.getId());
+        if (rez == -1) {
+            kluda(dlgParticipants, "Vietu skaits ir pilns!");
+            return;
+        } else if (rez == 0) {
+            kluda(dlgParticipants, "Neizdevās atjaunināt statusu.");
+            return;
+        }
+        info(dlgParticipants, "Statuss atjaunināts!");
+        ieladetPasakumus();
+        ieladetDalibniekus();
+    }//GEN-LAST:event_btnApproveActionPerformed
+
+    private void btnRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectActionPerformed
+        // poga "Noraidīt": pirms noraidīšanas pajautā, vai tiešām
+        Registracija r = izveletaisPieteikums();
+        if (r == null) {
+            return;
+        }
+        int atbilde = JOptionPane.showConfirmDialog(dlgParticipants,
+                "Vai tiešām vēlaties noraidīt šo pieteikumu?",
+                "Noraidīt", JOptionPane.YES_NO_OPTION);
+        if (atbilde != JOptionPane.YES_OPTION) {
+            return;
+        }
+        if (!registracijaDAO.mainitStatusu(r.getId(), Registracija.NORAIDITS)) {
+            kluda(dlgParticipants, "Neizdevās atjaunināt statusu.");
+            return;
+        }
+        info(dlgParticipants, "Statuss atjaunināts!");
+        ieladetPasakumus();
+        ieladetDalibniekus();
+    }//GEN-LAST:event_btnRejectActionPerformed
+
+    private void cmbParticipantsEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbParticipantsEventActionPerformed
+        // pasākuma maiņa izvēlnē - parāda tā dalībniekus
+        if (!atjaunina) {
+            ieladetDalibniekus();
+        }
+    }//GEN-LAST:event_cmbParticipantsEventActionPerformed
+
     // atver logu ekrāna vidū
     private void paraditLogu(javax.swing.JDialog logs) {
         logs.pack();
@@ -1346,34 +1483,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         // ---------- datu bāzes savienojums ar GUI ----------
 
-    // piesaista pogām un izvēlnei, ko darīt pēc klikšķa
-    private void pievienotKlausitajus() {
-        btnRegistretiesDaliba.addActionListener(e -> pieteiktiesPasakumam());
-        btnMeklet.addActionListener(e -> mekletPasakumus());
-        btnNotirit.addActionListener(e -> notiritMeklesanu());
-        // Enter meklēšanas laukā arī meklē
-        txtMekletNosaukums.addActionListener(e -> mekletPasakumus());
-        txtMekletVieta.addActionListener(e -> mekletPasakumus());
-        txtMekletDatums.addActionListener(e -> mekletPasakumus());
-        // galvenā izvēlne dara to pašu, ko pogas
-        mniIzrakstities.addActionListener(this::btnIzrakstitiesActionPerformed);
-        mniIziet.addActionListener(this::btnIzietActionPerformed);
-        mniRegistreties.addActionListener(e -> pieteiktiesPasakumam());
-        mniPievienot.addActionListener(this::btnPievienotPasakumuActionPerformed);
-        mniDalibnieki.addActionListener(this::btnDalibniekiActionPerformed);
-        btnApprove.addActionListener(e -> apstradatPieteikumu(true));
-        btnReject.addActionListener(e -> apstradatPieteikumu(false));
-        cmbParticipantsEvent.addActionListener(e -> {
-            if (!atjaunina) {
-                ieladetDalibniekus();
-            }
-        });
-    }
+
 
     // ja datu bāze nav pieslēgta, nav jēgas pārbaudīt lietotāju
     private boolean parbauditSavienojumu(java.awt.Component vecaks) {
         if (!dbPieejama) {
-            kluda(vecaks, "Nav savienojuma ar datu bāzi.\nPārbaudiet, vai Java DB serveris ir palaists, un restartējiet programmu.");
+            kluda(vecaks, "Nav savienojuma ar datu bāzi.\nPārbaudiet, vai programma jau nav palaista citā logā, un restartējiet programmu.");
         }
         return dbPieejama;
     }
@@ -1522,42 +1637,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         ieladetPasakumus();
     }
 
-    // pogas "Apstiprināt" / "Noraidīt"
-    private void apstradatPieteikumu(boolean apstiprinat) {
-        // administratoram jāizvēlas pieteikums tabulā
+    // atgriež tabulā izvēlēto pieteikumu vai null (un paziņo lietotājam)
+    private Registracija izveletaisPieteikums() {
         int rinda = tblParticipants.getSelectedRow();
         if (rinda < 0 || rinda >= dalibnieki.size()) {
             kluda(dlgParticipants, "Izvēlieties pieteikumu no saraksta!");
-            return;
+            return null;
         }
-        Registracija r = dalibnieki.get(tblParticipants.convertRowIndexToModel(rinda));
-
-        if (apstiprinat) {
-            // apstiprina, ja vēl ir brīvas vietas
-            int rez = registracijaDAO.apstiprinatArKontroli(r.getId());
-            if (rez == -1) {
-                kluda(dlgParticipants, "Vietu skaits ir pilns!");
-                return;
-            } else if (rez == 0) {
-                kluda(dlgParticipants, "Neizdevās atjaunināt statusu.");
-                return;
-            }
-        } else {
-            // pirms noraidīšanas pajautā, vai tiešām
-            int atbilde = JOptionPane.showConfirmDialog(dlgParticipants,
-                    "Vai tiešām vēlaties noraidīt šo pieteikumu?",
-                    "Noraidīt", JOptionPane.YES_NO_OPTION);
-            if (atbilde != JOptionPane.YES_OPTION) {
-                return;
-            }
-            if (!registracijaDAO.mainitStatusu(r.getId(), Registracija.NORAIDITS)) {
-                kluda(dlgParticipants, "Neizdevās atjaunināt statusu.");
-                return;
-            }
-        }
-        info(dlgParticipants, "Statuss atjaunināts!");
-        ieladetPasakumus();
-        ieladetDalibniekus();
+        return dalibnieki.get(tblParticipants.convertRowIndexToModel(rinda));
     }
     
     /**
@@ -1614,14 +1701,6 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnLoginRegister;
     private javax.swing.JButton btnMeklet;
     private javax.swing.JButton btnNotirit;
-    private javax.swing.JMenuBar mnbGalvena;
-    private javax.swing.JMenuItem mniDalibnieki;
-    private javax.swing.JMenuItem mniIziet;
-    private javax.swing.JMenuItem mniIzrakstities;
-    private javax.swing.JMenuItem mniPievienot;
-    private javax.swing.JMenuItem mniRegistreties;
-    private javax.swing.JMenu mnuFails;
-    private javax.swing.JMenu mnuPasakumi;
     private javax.swing.JButton btnParticipantsClose;
     private javax.swing.JButton btnPievienotPasakumu;
     private javax.swing.JButton btnRegister;
@@ -1646,6 +1725,9 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblLoginHint;
     private javax.swing.JLabel lblLoginPassword;
     private javax.swing.JLabel lblLoginUsername;
+    private javax.swing.JLabel lblMekletDatums;
+    private javax.swing.JLabel lblMekletNosaukums;
+    private javax.swing.JLabel lblMekletVieta;
     private javax.swing.JLabel lblParticipantsEvent;
     private javax.swing.JLabel lblParticipantsHeader;
     private javax.swing.JLabel lblRegisterHeader;
@@ -1657,6 +1739,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblRegisterSurname;
     private javax.swing.JLabel lblRegisterUsername;
     private javax.swing.JLabel lblVirsraksts;
+    private javax.swing.JMenuBar mnbGalvena;
+    private javax.swing.JMenuItem mniDalibnieki;
+    private javax.swing.JMenuItem mniIziet;
+    private javax.swing.JMenuItem mniIzrakstities;
+    private javax.swing.JMenuItem mniPievienot;
+    private javax.swing.JMenuItem mniRegistreties;
+    private javax.swing.JMenu mnuFails;
+    private javax.swing.JMenu mnuPasakumi;
     private javax.swing.JPanel pnlBody;
     private javax.swing.JPanel pnlEventBody;
     private javax.swing.JPanel pnlEventHeader;
@@ -1678,18 +1768,15 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JSpinner spnEventMax;
     private javax.swing.JTable tblParticipants;
     private javax.swing.JTable tblPasakumi;
-    private javax.swing.JLabel lblMekletDatums;
-    private javax.swing.JLabel lblMekletNosaukums;
-    private javax.swing.JLabel lblMekletVieta;
-    private javax.swing.JTextField txtMekletDatums;
-    private javax.swing.JTextField txtMekletNosaukums;
-    private javax.swing.JTextField txtMekletVieta;
     private javax.swing.JTextField txtEventDate;
     private javax.swing.JTextArea txtEventDescription;
     private javax.swing.JTextField txtEventName;
     private javax.swing.JTextField txtEventPlace;
     private javax.swing.JTextField txtEventTime;
     private javax.swing.JTextField txtLoginUsername;
+    private javax.swing.JTextField txtMekletDatums;
+    private javax.swing.JTextField txtMekletNosaukums;
+    private javax.swing.JTextField txtMekletVieta;
     private javax.swing.JTextField txtRegisterName;
     private javax.swing.JTextField txtRegisterPhone;
     private javax.swing.JTextField txtRegisterSurname;
