@@ -12,7 +12,7 @@ import java.time.format.ResolverStyle;
 
 /**
  *
- * @author artjomsdoktorovs, glebsvasiljievs
+ * @author glebsvasiljievs
  */
 public class Validacija {
 
