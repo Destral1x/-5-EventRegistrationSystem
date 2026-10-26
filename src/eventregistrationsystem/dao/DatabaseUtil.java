@@ -10,23 +10,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Savienojums ar lokālo (iegulto) Apache Derby datu bāzi.
+ * Pirmajā palaišanā izveido tabulas un ieliek sākuma datus.
  *
  * @author artjomsdoktorovs, glebsvasiljievs
  */
 public class DatabaseUtil {
 
+    /** Lokālās Derby datu bāzes adrese (mape database/eventdb). */
     private static final String DB_URL = "jdbc:derby:database/eventdb;create=true";
+    /** Datu bāzes lietotājs. */
     private static final String DB_USER = "dbuser";
+    /** Datu bāzes parole. */
     private static final String DB_PASSWORD = "dbuser";
 
+    /** Tabulu izveides skripts. */
     private static final String SCHEMA_SQL = "/eventregistrationsystem/sql/schema.sql";
+    /** Sākuma datu skripts. */
     private static final String DATA_SQL = "/eventregistrationsystem/sql/data.sql";
 
+    /** Klasei ir tikai statiskas metodes, objektu neveido. */
+    private DatabaseUtil() {
+    }
+
+    /**
+     * Atver jaunu savienojumu ar datu bāzi.
+     *
+     * @return savienojums ar datu bāzi
+     * @throws SQLException ja datu bāzi neizdodas atvērt
+     */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
-    
-        // korekti aizver lokālo Derby datu bāzi pirms programmas beigām
+
+    /**
+     * Korekti aizver lokālo Derby datu bāzi pirms programmas beigām.
+     */
     public static void shutdown() {
         try {
             DriverManager.getConnection("jdbc:derby:;shutdown=true");
@@ -34,7 +53,12 @@ public class DatabaseUtil {
         }
     }
 
-    // pirmajā palaišanā izveido tabulas un ieliek sākuma datus
+    /**
+     * Pirmajā palaišanā izveido tabulas (schema.sql) un ieliek sākuma datus (data.sql).
+     * Ja tabulas jau ir, izmanto saglabātos datus.
+     *
+     * @throws SQLException ja datu bāzi neizdodas atvērt vai izveidot
+     */
     public static void init() throws SQLException {
         try (Connection conn = getConnection()) {
             if (!tableExists(conn, "LIETOTAJI")) {
@@ -56,6 +80,14 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * Pārbauda, vai tabula eksistē.
+     *
+     * @param conn savienojums
+     * @param table tabulas nosaukums
+     * @return true, ja tabula eksistē
+     * @throws SQLException datu bāzes kļūdas gadījumā
+     */
     private static boolean tableExists(Connection conn, String table) throws SQLException {
         DatabaseMetaData meta = conn.getMetaData();
         try (ResultSet rs = meta.getTables(null, conn.getSchema(), table, new String[]{"TABLE"})) {
@@ -63,7 +95,14 @@ public class DatabaseUtil {
         }
     }
 
-    // izpilda sql failu pa vienai komandai
+    /**
+     * Izpilda SQL failu pa vienai komandai.
+     *
+     * @param conn savienojums
+     * @param resource SQL faila ceļš resursos
+     * @throws SQLException ja kāda komanda neizpildās
+     * @throws IOException ja failu neizdodas nolasīt
+     */
     private static void runScript(Connection conn, String resource) throws SQLException, IOException {
         try (Statement st = conn.createStatement()) {
             for (String sql : readStatements(resource)) {
@@ -72,7 +111,13 @@ public class DatabaseUtil {
         }
     }
 
-    // sadala sql failu pa komandām (pēc ;)
+    /**
+     * Sadala SQL failu pa komandām (pēc semikola), izlaižot komentārus.
+     *
+     * @param resource SQL faila ceļš resursos
+     * @return SQL komandu saraksts
+     * @throws IOException ja failu neizdodas nolasīt
+     */
     private static List<String> readStatements(String resource) throws IOException {
         InputStream in = DatabaseUtil.class.getResourceAsStream(resource);
         if (in == null) {

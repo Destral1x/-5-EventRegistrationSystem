@@ -27,7 +27,9 @@ import eventregistrationsystem.util.Validacija;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import java.util.regex.Pattern;
 import javax.swing.RowFilter;
@@ -35,6 +37,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 /**
+ * Pasākumu reģistrācijas sistēmas galvenais logs (JFrame) ar apakšlogiem (JDialog):
+ * ielogošanās, reģistrācija, pasākuma izveide un dalībnieku pārvaldība.
  *
  * @author artjomsdoktorovs, glebsvasiljievs
  */
@@ -50,17 +54,22 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private List<Registracija> dalibnieki = new ArrayList<>();
     private boolean atjaunina = false;
     private static boolean dbPieejama = false;
+    private javax.swing.table.TableColumn kolMansStatuss;
+    private Pasakums labojamaisPasakums; // null - jauns pasākums, citādi labo šo
 
     /**
-     * Creates new form EventRegistrationSystemGUI
+     * Izveido programmas logus, uzliek dizainu un pogu darbības.
      */
-        public EventRegistrationSystemGUI() {
+    public EventRegistrationSystemGUI() {
         // izveido logus, uzliek dizainu un pogu darbības
         initComponents();
         noformet();
     }
 
-    // dizains, ko nevar uzlikt Design logā
+    /**
+     * Uzliek dizainu, ko nevar uzlikt Design logā: pogu apmales, tabulu krāsas,
+     * kārtotāju meklēšanai un statusu krāsas.
+     */
     private void noformet() {
         // galvenās krāsas: zila - galvenās pogas, pelēka - atcelt/iziet
         Color zila = new Color(59, 99, 224);
@@ -76,6 +85,9 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         noformetPogu(btnIzrakstities, peleka);
         noformetPogu(btnIziet, peleka);
         noformetPogu(btnPievienotPasakumu, zila);
+        noformetPogu(btnLabotPasakumu, zila);
+        noformetPogu(btnDzestPasakumu, new Color(160, 40, 35));
+        noformetPogu(btnAtceltPieteikumu, peleka);
         noformetPogu(btnEventSave, zila);
         noformetPogu(btnEventCancel, peleka);
         noformetPogu(btnApprove, new Color(56, 130, 64));
@@ -90,6 +102,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnDalibnieki.setBackground(Color.WHITE);
         btnLoginRegister.setBackground(Color.WHITE);
         btnPievienotPasakumu.setBackground(Color.WHITE);
+        btnLabotPasakumu.setBackground(Color.WHITE);
+        btnDzestPasakumu.setBackground(Color.WHITE);
 
         // dalībnieku skaits no 1 līdz 1000, sākumā 10
         spnEventMax.setModel(new SpinnerNumberModel(10, 1, 1000, 1));
@@ -134,7 +148,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         scrParticipants.getViewport().setBackground(Color.WHITE);
 
         // statuss pa vidu, krāsa pēc statusa
-        tblParticipants.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+        DefaultTableCellRenderer statusaRenderer = new DefaultTableCellRenderer() {
             @Override
             public java.awt.Component getTableCellRendererComponent(javax.swing.JTable t, Object v,
                     boolean izvelets, boolean fokuss, int rinda, int kol) {
@@ -147,16 +161,28 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 }
                 return this;
             }
-        });
+        };
+        tblParticipants.getColumnModel().getColumn(4).setCellRenderer(statusaRenderer);
+
+        // kolonna "Mans statuss" - dalībnieka pieteikuma statuss (administratoram to paslēpj)
+        kolMansStatuss = tblPasakumi.getColumnModel().getColumn(4);
+        kolMansStatuss.setCellRenderer(statusaRenderer);
     }
 
-    // pogai uzliek krāsainu apmali
+    /**
+     * Pogai uzliek krāsainu apmali.
+     *
+     * @param poga poga
+     * @param apmale apmales krāsa
+     */
     private void noformetPogu(JButton poga, Color apmale) {
         poga.setOpaque(true);
         poga.setBorder(BorderFactory.createLineBorder(apmale, 2));
     }
 
-    // galvenais logs ekrāna vidū
+    /**
+     * Parāda galveno logu ekrāna vidū.
+     */
     private void atvertGalvenoLogu() {
         setLocationRelativeTo(null);
         setVisible(true);
@@ -243,6 +269,9 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnRegistretiesDaliba = new javax.swing.JButton();
         btnDalibnieki = new javax.swing.JButton();
         btnPievienotPasakumu = new javax.swing.JButton();
+        btnAtceltPieteikumu = new javax.swing.JButton();
+        btnLabotPasakumu = new javax.swing.JButton();
+        btnDzestPasakumu = new javax.swing.JButton();
         btnIzrakstities = new javax.swing.JButton();
         btnIziet = new javax.swing.JButton();
         lblMekletNosaukums = new javax.swing.JLabel();
@@ -256,11 +285,17 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         mnbGalvena = new javax.swing.JMenuBar();
         mnuFails = new javax.swing.JMenu();
         mniIzrakstities = new javax.swing.JMenuItem();
+        mniDzestKontu = new javax.swing.JMenuItem();
         mniIziet = new javax.swing.JMenuItem();
         mnuPasakumi = new javax.swing.JMenu();
         mniRegistreties = new javax.swing.JMenuItem();
+        mniAtceltPieteikumu = new javax.swing.JMenuItem();
         mniPievienot = new javax.swing.JMenuItem();
+        mniLabotPasakumu = new javax.swing.JMenuItem();
+        mniDzestPasakumu = new javax.swing.JMenuItem();
         mniDalibnieki = new javax.swing.JMenuItem();
+        mnuPalidziba = new javax.swing.JMenu();
+        mniInstrukcija = new javax.swing.JMenuItem();
 
         dlgLogin.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         dlgLogin.setTitle("Pasākumu sistēma – Ielogošanās");
@@ -888,14 +923,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nosaukums", "Datums", "Vieta", "Brīvās vietas"
+                "Nosaukums", "Datums", "Vieta", "Brīvās vietas", "Mans statuss"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -935,6 +970,34 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnPievienotPasakumu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPievienotPasakumuActionPerformed(evt);
+            }
+        });
+
+        btnAtceltPieteikumu.setBackground(new java.awt.Color(242, 245, 250));
+        btnAtceltPieteikumu.setForeground(new java.awt.Color(51, 65, 81));
+        btnAtceltPieteikumu.setText("Atcelt pieteikumu");
+        btnAtceltPieteikumu.setFocusPainted(false);
+        btnAtceltPieteikumu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtceltPieteikumuActionPerformed(evt);
+            }
+        });
+
+        btnLabotPasakumu.setForeground(new java.awt.Color(59, 99, 224));
+        btnLabotPasakumu.setText("Labot");
+        btnLabotPasakumu.setFocusPainted(false);
+        btnLabotPasakumu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLabotPasakumuActionPerformed(evt);
+            }
+        });
+
+        btnDzestPasakumu.setForeground(new java.awt.Color(160, 40, 35));
+        btnDzestPasakumu.setText("Dzēst");
+        btnDzestPasakumu.setFocusPainted(false);
+        btnDzestPasakumu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDzestPasakumuActionPerformed(evt);
             }
         });
 
@@ -1016,10 +1079,16 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                     .addComponent(scrPasakumi)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnAtceltPieteikumu, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDalibnieki, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnPievienotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnLabotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDzestPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnIzrakstities, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
@@ -1046,6 +1115,9 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                     .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDalibnieki, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPievienotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAtceltPieteikumu, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLabotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDzestPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnIzrakstities, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnIziet, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(60, 60, 60))
@@ -1054,9 +1126,27 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         mnuFails.setText("Fails");
 
         mniIzrakstities.setText("Izrakstīties");
+        mniIzrakstities.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIzrakstitiesActionPerformed(evt);
+            }
+        });
         mnuFails.add(mniIzrakstities);
 
+        mniDzestKontu.setText("Dzēst kontu");
+        mniDzestKontu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniDzestKontuActionPerformed(evt);
+            }
+        });
+        mnuFails.add(mniDzestKontu);
+
         mniIziet.setText("Iziet");
+        mniIziet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIzietActionPerformed(evt);
+            }
+        });
         mnuFails.add(mniIziet);
 
         mnbGalvena.add(mnuFails);
@@ -1064,15 +1154,67 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         mnuPasakumi.setText("Pasākumi");
 
         mniRegistreties.setText("Reģistrēties dalībai");
+        mniRegistreties.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistretiesDalibaActionPerformed(evt);
+            }
+        });
         mnuPasakumi.add(mniRegistreties);
 
+        mniAtceltPieteikumu.setText("Atcelt pieteikumu");
+        mniAtceltPieteikumu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtceltPieteikumuActionPerformed(evt);
+            }
+        });
+        mnuPasakumi.add(mniAtceltPieteikumu);
+
         mniPievienot.setText("Pievienot pasākumu");
+        mniPievienot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPievienotPasakumuActionPerformed(evt);
+            }
+        });
         mnuPasakumi.add(mniPievienot);
 
+        mniLabotPasakumu.setText("Labot pasākumu");
+        mniLabotPasakumu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLabotPasakumuActionPerformed(evt);
+            }
+        });
+        mnuPasakumi.add(mniLabotPasakumu);
+
+        mniDzestPasakumu.setText("Dzēst pasākumu");
+        mniDzestPasakumu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDzestPasakumuActionPerformed(evt);
+            }
+        });
+        mnuPasakumi.add(mniDzestPasakumu);
+
         mniDalibnieki.setText("Dalībnieki");
+        mniDalibnieki.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDalibniekiActionPerformed(evt);
+            }
+        });
         mnuPasakumi.add(mniDalibnieki);
 
         mnbGalvena.add(mnuPasakumi);
+
+        mnuPalidziba.setText("Palīdzība");
+
+        mniInstrukcija.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        mniInstrukcija.setText("Lietošanas instrukcija");
+        mniInstrukcija.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniInstrukcijaActionPerformed(evt);
+            }
+        });
+        mnuPalidziba.add(mniInstrukcija);
+
+        mnbGalvena.add(mnuPalidziba);
 
         setJMenuBar(mnbGalvena);
 
@@ -1163,12 +1305,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         if (lietotajuDAO.registretLietotaju(vards, uzvards, lietotajvards,
                 talrunis.isEmpty() ? null : talrunis, parole)) {
             info(dlgRegister, "Reģistrēšana ir veiksmīgi pabeigta!");
-            txtRegisterName.setText("");
-            txtRegisterSurname.setText("");
-            txtRegisterUsername.setText("");
-            txtRegisterPhone.setText("");
-            pwdRegisterPassword.setText("");
-            pwdRegisterPassword2.setText("");
+            notiritRegistracijasLaukus();
             txtLoginUsername.setText(lietotajvards);
             dlgRegister.setVisible(false);
             paraditLogu(dlgLogin);
@@ -1178,7 +1315,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegisterActionPerformed
 
     private void btnRegisterCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterCancelActionPerformed
-        // poga "Atcelt" - atpakaļ uz ielogošanās logu
+        // poga "Atcelt" - notīra laukus un atpakaļ uz ielogošanās logu
+        notiritRegistracijasLaukus();
         dlgRegister.setVisible(false);
         paraditLogu(dlgLogin);
     }//GEN-LAST:event_btnRegisterCancelActionPerformed
@@ -1189,7 +1327,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_dlgLoginWindowClosing
 
     private void dlgRegisterWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgRegisterWindowClosing
-        // reģistrācijas loga krustiņš - atpakaļ uz ielogošanos
+        // reģistrācijas loga krustiņš - notīra laukus un atpakaļ uz ielogošanos
+        notiritRegistracijasLaukus();
         dlgRegister.setVisible(false);
         paraditLogu(dlgLogin);
     }//GEN-LAST:event_dlgRegisterWindowClosing
@@ -1218,10 +1357,55 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         paraditLogu(dlgAddEvent);
     }//GEN-LAST:event_btnPievienotPasakumuActionPerformed
 
+    private void btnLabotPasakumuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLabotPasakumuActionPerformed
+        // poga "Labot": atver pasākuma logu ar izvēlētā pasākuma datiem
+        if (!(currentUser instanceof Administrators)) {
+            return;
+        }
+        Pasakums p = izveletaisPasakums();
+        if (p == null) {
+            return;
+        }
+        labojamaisPasakums = p;
+        txtEventName.setText(p.getNosaukums());
+        txtEventDescription.setText(p.getApraksts() == null ? "" : p.getApraksts());
+        txtEventDate.setText(p.getDatums().toLocalDate().format(Validacija.DATUMA_FORMATS));
+        txtEventTime.setText(p.getLaiks());
+        txtEventPlace.setText(p.getVieta());
+        spnEventMax.setValue(p.getMaksDalibniekuSkaits());
+        dlgAddEvent.setTitle("Pasākumu sistēma – Pasākuma labošana");
+        lblEventHeader.setText("Pasākuma labošana (administrators)");
+        setVisible(false);
+        paraditLogu(dlgAddEvent);
+    }//GEN-LAST:event_btnLabotPasakumuActionPerformed
+
+    private void btnDzestPasakumuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDzestPasakumuActionPerformed
+        // poga "Dzēst": pēc apstiprinājuma dzēš izvēlēto pasākumu kopā ar tā pieteikumiem
+        if (!(currentUser instanceof Administrators)) {
+            return;
+        }
+        Pasakums p = izveletaisPasakums();
+        if (p == null) {
+            return;
+        }
+        int atbilde = JOptionPane.showConfirmDialog(this,
+                "Vai tiešām dzēst pasākumu \"" + p.getNosaukums() + "\"?\nTiks dzēsti arī visi tā pieteikumi.",
+                "Dzēst pasākumu", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (atbilde != JOptionPane.YES_OPTION) {
+            return;
+        }
+        if (pasakumuDAO.dzestPasakumu(p.getId())) {
+            info(this, "Pasākums dzēsts.");
+        } else {
+            kluda(this, "Neizdevās dzēst pasākumu.");
+        }
+        ieladetPasakumus();
+    }//GEN-LAST:event_btnDzestPasakumuActionPerformed
+
     private void btnEventSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventSaveActionPerformed
                // poga "Saglabāt": nolasa laukus, pārbauda un saglabā pasākumu
         if (!(currentUser instanceof Administrators)) {
-            kluda(dlgAddEvent, "Tikai administrators var izveidot pasākumus!");
+            kluda(dlgAddEvent, "Tikai administrators var izveidot vai labot pasākumus!");
             return;
         }
 
@@ -1243,18 +1427,36 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         LocalDate datums = Validacija.parsetDatumu(datumsTeksts);
         String laiks = Validacija.parsetLaiku(laiksTeksts).format(DateTimeFormatter.ofPattern("HH:mm"));
 
+        // labošanas režīms - saglabā izmaiņas esošajam pasākumam
+        if (labojamaisPasakums != null) {
+            int apstiprinati = labojamaisPasakums.getMaksDalibniekuSkaits() - labojamaisPasakums.getBrivoVietuSkaitu();
+            if (maks < apstiprinati) {
+                kluda(dlgAddEvent, "Maksimālais dalībnieku skaits nevar būt mazāks par jau apstiprināto ("
+                        + apstiprinati + ")!");
+                return;
+            }
+            Pasakums labots = new Pasakums(labojamaisPasakums.getId(), nosaukums,
+                    apraksts.isEmpty() ? null : apraksts, java.sql.Date.valueOf(datums), laiks, vieta, maks,
+                    labojamaisPasakums.getIzveidotajsId());
+            if (pasakumuDAO.atjauninatPasakumu(labots)) {
+                info(dlgAddEvent, "Pasākums veiksmīgi labots!");
+                notiritPasakumaLaukus();
+                ieladetPasakumus();
+                dlgAddEvent.setVisible(false);
+                atvertGalvenoLogu();
+            } else {
+                kluda(dlgAddEvent, "Neizdevās saglabāt izmaiņas datu bāzē.");
+            }
+            return;
+        }
+
         // izveido pasākumu un saglabā
         Pasakums p = ((Administrators) currentUser).izveidotPasakumu(nosaukums,
                 apraksts.isEmpty() ? null : apraksts, java.sql.Date.valueOf(datums), laiks, vieta, maks);
 
         if (pasakumuDAO.saglabatPasakumu(p)) {
             info(dlgAddEvent, "Pasākums veiksmīgi izveidots!");
-            txtEventName.setText("");
-            txtEventDescription.setText("");
-            txtEventDate.setText("");
-            txtEventTime.setText("");
-            txtEventPlace.setText("");
-            spnEventMax.setValue(10);
+            notiritPasakumaLaukus();
             ieladetPasakumus();
             dlgAddEvent.setVisible(false);
             atvertGalvenoLogu();
@@ -1264,20 +1466,32 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEventSaveActionPerformed
 
     private void btnEventCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventCancelActionPerformed
-        // poga "Atcelt" - atpakaļ uz galveno logu
+        // poga "Atcelt" - notīra laukus un atpakaļ uz galveno logu
+        notiritPasakumaLaukus();
         dlgAddEvent.setVisible(false);
         atvertGalvenoLogu();
     }//GEN-LAST:event_btnEventCancelActionPerformed
 
     private void dlgAddEventWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgAddEventWindowClosing
-        // krustiņš - atpakaļ uz galveno logu
+        // krustiņš - notīra laukus un atpakaļ uz galveno logu
+        notiritPasakumaLaukus();
         dlgAddEvent.setVisible(false);
         atvertGalvenoLogu();
     }//GEN-LAST:event_dlgAddEventWindowClosing
 
     private void btnDalibniekiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDalibniekiActionPerformed
         // atjauno sarakstus un atver dalībnieku pārvaldības logu
+        // ja tabulā ir izvēlēts pasākums, logā uzreiz parāda tā dalībniekus
+        int rinda = tblPasakumi.getSelectedRow();
+        int izveletaisId = rinda >= 0 ? pasakumi.get(tblPasakumi.convertRowIndexToModel(rinda)).getId() : -1;
         ieladetPasakumus();
+        for (int i = 0; i < pasakumi.size(); i++) {
+            if (pasakumi.get(i).getId() == izveletaisId) {
+                atjaunina = true;
+                cmbParticipantsEvent.setSelectedIndex(i);
+                atjaunina = false;
+            }
+        }
         ieladetDalibniekus();
         setVisible(false);
         paraditLogu(dlgParticipants);
@@ -1296,19 +1510,16 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_dlgParticipantsWindowClosing
 
     private void btnRegistretiesDalibaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistretiesDalibaActionPerformed
-            // poga "Reģistrēties dalībai": piesaka dalībnieku izvēlētajam pasākumam
+        // poga "Reģistrēties dalībai": piesaka dalībnieku izvēlētajam pasākumam
         if (!(currentUser instanceof Dalibnieks)) {
             info(this, "Administrators nevar pieteikties dalībai pasākumā.");
             return;
         }
         // lietotājam jāizvēlas rinda tabulā
-        int rinda = tblPasakumi.getSelectedRow();
-        if (rinda < 0 || rinda >= pasakumi.size()) {
-            kluda(this, "Izvēlieties pasākumu no saraksta!");
+        Pasakums p = izveletaisPasakums();
+        if (p == null) {
             return;
         }
-        Pasakums p = pasakumi.get(tblPasakumi.convertRowIndexToModel(rinda));
-
         // vai vēl ir brīvas vietas
         if (p.getBrivoVietuSkaitu() <= 0) {
             kluda(this, "Vietu skaits ir pilns!");
@@ -1317,6 +1528,10 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         // vai šis lietotājs jau nav pieteicies
         if (registracijaDAO.jauPieteicies(p.getId(), currentUser.getId())) {
             kluda(this, "Jūs jau esat pieteicies šim pasākumam!");
+            return;
+        }
+        // kontaktinformācija - ja profilā nav tālruņa, to paprasa
+        if (!ievaditKontaktinformaciju()) {
             return;
         }
 
@@ -1329,8 +1544,35 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         ieladetPasakumus();
     }//GEN-LAST:event_btnRegistretiesDalibaActionPerformed
 
+    private void btnAtceltPieteikumuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtceltPieteikumuActionPerformed
+        // poga "Atcelt pieteikumu": dalībnieks atsauc savu pieteikumu izvēlētajam pasākumam
+        if (!(currentUser instanceof Dalibnieks)) {
+            return;
+        }
+        Pasakums p = izveletaisPasakums();
+        if (p == null) {
+            return;
+        }
+        if (!registracijaDAO.jauPieteicies(p.getId(), currentUser.getId())) {
+            kluda(this, "Jūs neesat pieteicies šim pasākumam!");
+            return;
+        }
+        int atbilde = JOptionPane.showConfirmDialog(this,
+                "Vai tiešām atcelt pieteikumu pasākumam \"" + p.getNosaukums() + "\"?",
+                "Atcelt pieteikumu", JOptionPane.YES_NO_OPTION);
+        if (atbilde != JOptionPane.YES_OPTION) {
+            return;
+        }
+        if (registracijaDAO.atceltPieteikumu(p.getId(), currentUser.getId())) {
+            info(this, "Pieteikums atcelts.");
+        } else {
+            kluda(this, "Neizdevās atcelt pieteikumu.");
+        }
+        ieladetPasakumus();
+    }//GEN-LAST:event_btnAtceltPieteikumuActionPerformed
+
     private void btnMekletActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMekletActionPerformed
-            // poga "Meklēt": meklē pēc viena vai vairākiem kritērijiem (tukšie lauki netiek ņemti vērā)
+        // poga "Meklēt": meklē pēc viena vai vairākiem kritērijiem (tukšie lauki netiek ņemti vērā)
         List<RowFilter<DefaultTableModel, Integer>> kriteriji = new ArrayList<>();
         pievienotKriteriju(kriteriji, txtMekletNosaukums.getText(), 0);
         pievienotKriteriju(kriteriji, txtMekletDatums.getText(), 1);
@@ -1402,14 +1644,100 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cmbParticipantsEventActionPerformed
 
-    // atver logu ekrāna vidū
+    private void mniInstrukcijaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniInstrukcijaActionPerformed
+        // izvēlne "Palīdzība": īsa lietošanas instrukcija atbilstoši lietotāja lomai
+        String teksts;
+        if (currentUser instanceof Administrators) {
+            teksts = "Darbs ar programmu (administrators):\n\n"
+                    + "• Meklēšana - ievadiet nosaukumu, vietu un/vai datumu (dd.mm.gggg) un nospiediet \"Meklēt\".\n"
+                    + "   \"Notīrīt\" atkal rāda visus pasākumus.\n"
+                    + "• Pievienot pasākumu - aizpildiet laukus (laiks hh:mm) un nospiediet \"Saglabāt\".\n"
+                    + "• Labot / Dzēst - izvēlieties pasākumu tabulā un nospiediet attiecīgo pogu.\n"
+                    + "• Dalībnieki - izvēlieties pasākumu, tad pieteikumu un nospiediet \"Apstiprināt\" vai \"Noraidīt\".\n"
+                    + "   Apstiprināt var tikai tad, ja pasākumā ir brīvas vietas.\n"
+                    + "• Izrakstīties / Iziet - pogas loga apakšā vai izvēlne \"Fails\".";
+        } else {
+            teksts = "Darbs ar programmu (dalībnieks):\n\n"
+                    + "• Meklēšana - ievadiet nosaukumu, vietu un/vai datumu (dd.mm.gggg) un nospiediet \"Meklēt\".\n"
+                    + "   \"Notīrīt\" atkal rāda visus pasākumus.\n"
+                    + "• Reģistrēties dalībai - izvēlieties pasākumu tabulā un nospiediet pogu.\n"
+                    + "   Ja profilā nav tālruņa numura, programma to paprasīs.\n"
+                    + "• Pieteikuma statuss redzams kolonnā \"Mans statuss\": Gaida, Apstiprināts vai Noraidīts.\n"
+                    + "• Atcelt pieteikumu - izvēlieties pasākumu un nospiediet \"Atcelt pieteikumu\".\n"
+                    + "• Dzēst kontu - izvēlne \"Fails\" → \"Dzēst kontu\".\n"
+                    + "• Izrakstīties / Iziet - pogas loga apakšā vai izvēlne \"Fails\".";
+        }
+        JOptionPane.showMessageDialog(this, teksts, "Palīdzība", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_mniInstrukcijaActionPerformed
+
+    private void mniDzestKontuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniDzestKontuActionPerformed
+        // izvēlne "Dzēst kontu": tikai dalībniekam, pirms dzēšanas pajautā
+        if (!(currentUser instanceof Dalibnieks)) {
+            kluda(this, "Administratora kontu dzēst nevar.");
+            return;
+        }
+        int atbilde = JOptionPane.showConfirmDialog(this,
+                "Vai tiešām vēlaties dzēst savu kontu?\nVisi jūsu pieteikumi arī tiks dzēsti.",
+                "Dzēst kontu", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (atbilde != JOptionPane.YES_OPTION) {
+            return;
+        }
+        if (!lietotajuDAO.dzestLietotaju(currentUser.getId())) {
+            kluda(this, "Neizdevās dzēst kontu.");
+            return;
+        }
+        info(this, "Konts ir dzēsts.");
+        // atpakaļ uz ielogošanās logu
+        currentUser = null;
+        setVisible(false);
+        txtLoginUsername.setText("");
+        pwdLoginPassword.setText("");
+        paraditLogu(dlgLogin);
+    }//GEN-LAST:event_mniDzestKontuActionPerformed
+
+    /**
+     * Atver apakšlogu ekrāna vidū.
+     *
+     * @param logs apakšlogs
+     */
     private void paraditLogu(javax.swing.JDialog logs) {
         logs.pack();
         logs.setLocationRelativeTo(null);
         logs.setVisible(true);
     }
 
-    // pirms aizvēršanas pajautā
+    /**
+     * Notīra reģistrācijas loga ievadlaukus.
+     */
+    private void notiritRegistracijasLaukus() {
+        txtRegisterName.setText("");
+        txtRegisterSurname.setText("");
+        txtRegisterUsername.setText("");
+        txtRegisterPhone.setText("");
+        pwdRegisterPassword.setText("");
+        pwdRegisterPassword2.setText("");
+    }
+
+    /**
+     * Notīra pasākuma loga ievadlaukus un atgriež to izveides režīmā.
+     */
+    private void notiritPasakumaLaukus() {
+        labojamaisPasakums = null;
+        dlgAddEvent.setTitle("Pasākumu sistēma – Pasākuma izveide");
+        lblEventHeader.setText("Pasākuma izveide (administrators)");
+        txtEventName.setText("");
+        txtEventDescription.setText("");
+        txtEventDate.setText("");
+        txtEventTime.setText("");
+        txtEventPlace.setText("");
+        spnEventMax.setValue(10);
+    }
+
+    /**
+     * Pirms programmas aizvēršanas pajautā apstiprinājumu un aizver datu bāzi.
+     *
+     * @param logs logs, virs kura rāda jautājumu
+     */
     private void iziet(java.awt.Component logs) {
         int atbilde = JOptionPane.showConfirmDialog(logs, "Vai tiešām vēlaties aizvērt programmu?",
                 "Iziet", JOptionPane.YES_NO_OPTION);
@@ -1423,7 +1751,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
 
 
-    // ja datu bāze nav pieslēgta, nav jēgas pārbaudīt lietotāju
+    /**
+     * Pārbauda, vai datu bāze ir pieslēgta; ja nav - parāda kļūdu.
+     *
+     * @param vecaks logs, virs kura rāda paziņojumu
+     * @return true, ja datu bāze ir pieejama
+     */
     private boolean parbauditSavienojumu(java.awt.Component vecaks) {
         if (!dbPieejama) {
             kluda(vecaks, "Nav savienojuma ar datu bāzi.\nPārbaudiet, vai programma jau nav palaista citā logā, un restartējiet programmu.");
@@ -1431,34 +1764,70 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         return dbPieejama;
     }
 
-    // sarkanais kļūdas paziņojums
+    /**
+     * Parāda kļūdas paziņojumu (ERROR_MESSAGE).
+     *
+     * @param vecaks logs, virs kura rāda paziņojumu
+     * @param teksts paziņojuma teksts
+     */
     private void kluda(java.awt.Component vecaks, String teksts) {
         JOptionPane.showMessageDialog(vecaks, teksts, "Kļūda", JOptionPane.ERROR_MESSAGE);
     }
 
-    // parasts informācijas paziņojums
+    /**
+     * Parāda informācijas paziņojumu (INFORMATION_MESSAGE).
+     *
+     * @param vecaks logs, virs kura rāda paziņojumu
+     * @param teksts paziņojuma teksts
+     */
     private void info(java.awt.Component vecaks, String teksts) {
         JOptionPane.showMessageDialog(vecaks, teksts, "Informācija", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // datums un laiks tabulai, piem. 25.12.2026 18:30
+    /**
+     * Sagatavo pasākuma datumu un laiku tabulai, piem. 25.12.2026 18:30.
+     *
+     * @param p pasākums
+     * @return datums un laiks teksta veidā
+     */
     private String formatDatums(Pasakums p) {
         return p.getDatums().toLocalDate().format(Validacija.DATUMA_FORMATS) + " " + p.getLaiks();
     }
 
-    // administrators redz pārvaldību, dalībnieks - pieteikšanos
+    /**
+     * Parāda pogas un izvēlnes atbilstoši lomai: administrators redz pārvaldību,
+     * dalībnieks - pieteikšanos, atcelšanu, kolonnu "Mans statuss" un konta dzēšanu.
+     */
     private void uzstaditTiesibas() {
         boolean admin = currentUser instanceof Administrators;
         btnPievienotPasakumu.setVisible(admin);
         btnDalibnieki.setVisible(admin);
+        btnLabotPasakumu.setVisible(admin);
+        btnDzestPasakumu.setVisible(admin);
         btnRegistretiesDaliba.setVisible(!admin);
+        btnAtceltPieteikumu.setVisible(!admin);
         mniPievienot.setVisible(admin);
+        mniLabotPasakumu.setVisible(admin);
+        mniDzestPasakumu.setVisible(admin);
         mniDalibnieki.setVisible(admin);
         mniRegistreties.setVisible(!admin);
+        mniAtceltPieteikumu.setVisible(!admin);
+        mniDzestKontu.setVisible(!admin);
+
+        // kolonna "Mans statuss" ir tikai dalībniekam
+        tblPasakumi.removeColumn(kolMansStatuss);
+        if (!admin) {
+            tblPasakumi.addColumn(kolMansStatuss);
+        }
         lblVirsraksts.setText("Pasākumu saraksts – " + currentUser.getVards() + " " + currentUser.getUzvards());
+        // loga platums tikai pēc redzamajām pogām
+        pack();
     }
 
-    // pasākumu tabula + izvēlne dalībnieku logā
+    /**
+     * Ielādē pasākumu tabulu un pasākumu izvēlni dalībnieku logā.
+     * Dalībniekam aizpilda arī kolonnu "Mans statuss".
+     */
     private void ieladetPasakumus() {
         int izvelesId = -1;
         int ind = cmbParticipantsEvent.getSelectedIndex();
@@ -1466,7 +1835,17 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             izvelesId = pasakumi.get(ind).getId();
         }
 
-        pasakumi = pasakumuDAO.iegutVisusPasakumus();
+        // dalībniekam - viņa pieteikumu statusi (pasākuma id -> statuss)
+        Map<Integer, String> maniStatusi = new HashMap<>();
+        try {
+            pasakumi = pasakumuDAO.iegutVisusPasakumus();
+            if (currentUser instanceof Dalibnieks) {
+                maniStatusi = registracijaDAO.iegutLietotajaStatusus(currentUser.getId());
+            }
+        } catch (SQLException e) {
+            pasakumi = new ArrayList<>();
+            kluda(this, "Neizdevās ielādēt pasākumu sarakstu no datu bāzes.");
+        }
         DefaultTableModel tm = (DefaultTableModel) tblPasakumi.getModel();
         tm.setRowCount(0);
 
@@ -1474,7 +1853,10 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         int jaunaisInd = pasakumi.isEmpty() ? -1 : 0;
         for (int i = 0; i < pasakumi.size(); i++) {
             Pasakums p = pasakumi.get(i);
-            tm.addRow(new Object[]{p.getNosaukums(), formatDatums(p), p.getVieta(), p.getBrivoVietuSkaitu()});
+            // ja nav pieteicies - tukšs
+            String statuss = maniStatusi.containsKey(p.getId())
+                    ? Registracija.statussTeksts(maniStatusi.get(p.getId())) : "";
+            tm.addRow(new Object[]{p.getNosaukums(), formatDatums(p), p.getVieta(), p.getBrivoVietuSkaitu(), statuss});
             nosaukumi[i] = p.getNosaukums() + " (" + formatDatums(p) + ")";
             if (p.getId() == izvelesId) {
                 jaunaisInd = i;
@@ -1489,24 +1871,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         atjaunina = false;
     }
 
-    // meklēšana pēc viena vai vairākiem kritērijiem (tukšie lauki netiek ņemti vērā)
-    private void mekletPasakumus() {
-        List<RowFilter<DefaultTableModel, Integer>> kriteriji = new ArrayList<>();
-        pievienotKriteriju(kriteriji, txtMekletNosaukums.getText(), 0);
-        pievienotKriteriju(kriteriji, txtMekletDatums.getText(), 1);
-        pievienotKriteriju(kriteriji, txtMekletVieta.getText(), 2);
-
-        @SuppressWarnings("unchecked")
-        TableRowSorter<DefaultTableModel> sorter = (TableRowSorter<DefaultTableModel>) tblPasakumi.getRowSorter();
-        // visiem kritērijiem jāizpildās vienlaicīgi (UN)
-        sorter.setRowFilter(kriteriji.isEmpty() ? null : RowFilter.andFilter(kriteriji));
-
-        if (!kriteriji.isEmpty() && tblPasakumi.getRowCount() == 0) {
-            info(this, "Neviens pasākums neatbilst meklēšanas kritērijiem.");
-        }
-    }
-
-    // teksts kolonnā jāatrod neatkarīgi no lielajiem/mazajiem burtiem
+    /**
+     * Pievieno meklēšanas kritēriju, ja lauks nav tukšs.
+     * Teksts tiek meklēts neatkarīgi no lielajiem/mazajiem burtiem.
+     *
+     * @param kriteriji kritēriju saraksts
+     * @param teksts meklējamais teksts
+     * @param kolonna tabulas kolonnas numurs
+     */
     private void pievienotKriteriju(List<RowFilter<DefaultTableModel, Integer>> kriteriji, String teksts, int kolonna) {
         teksts = teksts.trim();
         if (!teksts.isEmpty()) {
@@ -1514,16 +1886,9 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         }
     }
 
-    // notīra laukus un atkal rāda visus pasākumus
-    private void notiritMeklesanu() {
-        txtMekletNosaukums.setText("");
-        txtMekletVieta.setText("");
-        txtMekletDatums.setText("");
-        tblPasakumi.getRowSorter().setSortKeys(null);
-        ((TableRowSorter<?>) tblPasakumi.getRowSorter()).setRowFilter(null);
-    }
-
-    // dalībnieku tabula izvēlētajam pasākumam
+    /**
+     * Ielādē dalībnieku tabulu izvēlētajam pasākumam.
+     */
     private void ieladetDalibniekus() {
         DefaultTableModel tm = (DefaultTableModel) tblParticipants.getModel();
         tm.setRowCount(0);
@@ -1533,7 +1898,12 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
             dalibnieki = new ArrayList<>();
             return;
         }
-        dalibnieki = registracijaDAO.iegutPasakumaDalibniekus(pasakumi.get(ind));
+        try {
+            dalibnieki = registracijaDAO.iegutPasakumaDalibniekus(pasakumi.get(ind));
+        } catch (SQLException e) {
+            dalibnieki = new ArrayList<>();
+            kluda(dlgParticipants, "Neizdevās ielādēt dalībnieku sarakstu no datu bāzes.");
+        }
         for (Registracija r : dalibnieki) {
             Dalibnieks d = r.getDalibnieks();
             tm.addRow(new Object[]{d.getVards(), d.getUzvards(), d.getLietotajvardu(),
@@ -1541,41 +1911,55 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         }
     }
 
-    // poga "Reģistrēties dalībai"
-    private void pieteiktiesPasakumam() {
-        if (!(currentUser instanceof Dalibnieks)) {
-            info(this, "Administrators nevar pieteikties dalībai pasākumā.");
-            return;
+    /**
+     * Paprasa tālruni, ja tā nav dalībnieka profilā, un saglabā to datu bāzē.
+     *
+     * @return true, ja kontaktinformācija ir; false, ja lietotājs atcēla vai neizdevās saglabāt
+     */
+    private boolean ievaditKontaktinformaciju() {
+        if (currentUser.getTalrunis() != null && !currentUser.getTalrunis().isEmpty()) {
+            return true;
         }
-        // lietotājam jāizvēlas rinda tabulā
-        int rinda = tblPasakumi.getSelectedRow();
-        if (rinda < 0 || rinda >= pasakumi.size()) {
-            kluda(this, "Izvēlieties pasākumu no saraksta!");
-            return;
+        while (true) {
+            String talrunis = JOptionPane.showInputDialog(this,
+                    "Jūsu profilā nav kontaktinformācijas.\nIevadiet tālruņa numuru (piem., +371 20000000):",
+                    "Kontaktinformācija", JOptionPane.QUESTION_MESSAGE);
+            if (talrunis == null) {
+                return false; // nospiests "Atcelt"
+            }
+            talrunis = talrunis.trim();
+            if (!Validacija.derigsTalrunis(talrunis)) {
+                kluda(this, "Ievadiet derīgu tālruņa numuru (piem., +371 20000000)!");
+                continue;
+            }
+            if (!lietotajuDAO.saglabatTalruni(currentUser.getId(), talrunis)) {
+                kluda(this, "Neizdevās saglabāt kontaktinformāciju datu bāzē.");
+                return false;
+            }
+            currentUser.setTalrunis(talrunis);
+            return true;
         }
-        Pasakums p = pasakumi.get(tblPasakumi.convertRowIndexToModel(rinda));
-
-        // vai vēl ir brīvas vietas
-        if (p.getBrivoVietuSkaitu() <= 0) {
-            kluda(this, "Vietu skaits ir pilns!");
-            return;
-        }
-        // vai šis lietotājs jau nav pieteicies
-        if (registracijaDAO.jauPieteicies(p.getId(), currentUser.getId())) {
-            kluda(this, "Jūs jau esat pieteicies šim pasākumam!");
-            return;
-        }
-
-        Registracija r = ((Dalibnieks) currentUser).registretiesPasakumam(p);
-        if (registracijaDAO.saglabatRegistraciju(r)) {
-            info(this, "Pieteikums nosūtīts, gaidiet apstiprinājumu!");
-        } else {
-            kluda(this, "Neizdevās saglabāt pieteikumu. Mēģiniet vēlreiz.");
-        }
-        ieladetPasakumus();
     }
 
-    // atgriež tabulā izvēlēto pieteikumu vai null (un paziņo lietotājam)
+    /**
+     * Atgriež pasākumu tabulā izvēlēto pasākumu.
+     *
+     * @return izvēlētais pasākums vai null (lietotājam parāda paziņojumu)
+     */
+    private Pasakums izveletaisPasakums() {
+        int rinda = tblPasakumi.getSelectedRow();
+        if (rinda < 0) {
+            kluda(this, "Izvēlieties pasākumu no saraksta!");
+            return null;
+        }
+        return pasakumi.get(tblPasakumi.convertRowIndexToModel(rinda));
+    }
+
+    /**
+     * Atgriež dalībnieku tabulā izvēlēto pieteikumu.
+     *
+     * @return izvēlētais pieteikums vai null (lietotājam parāda paziņojumu)
+     */
     private Registracija izveletaisPieteikums() {
         int rinda = tblParticipants.getSelectedRow();
         if (rinda < 0 || rinda >= dalibnieki.size()) {
@@ -1586,7 +1970,9 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     }
     
     /**
-     * @param args the command line arguments
+     * Programmas sākums: pieslēdzas datu bāzei un atver ielogošanās logu.
+     *
+     * @param args komandrindas argumenti (netiek izmantoti)
      */
     public static void main(String args[]) {
         // Metal, citādi nestrādā pogu krāsas
@@ -1630,11 +2016,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApprove;
+    private javax.swing.JButton btnAtceltPieteikumu;
     private javax.swing.JButton btnDalibnieki;
+    private javax.swing.JButton btnDzestPasakumu;
     private javax.swing.JButton btnEventCancel;
     private javax.swing.JButton btnEventSave;
     private javax.swing.JButton btnIziet;
     private javax.swing.JButton btnIzrakstities;
+    private javax.swing.JButton btnLabotPasakumu;
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnLoginRegister;
     private javax.swing.JButton btnMeklet;
@@ -1678,12 +2067,18 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblRegisterUsername;
     private javax.swing.JLabel lblVirsraksts;
     private javax.swing.JMenuBar mnbGalvena;
+    private javax.swing.JMenuItem mniAtceltPieteikumu;
     private javax.swing.JMenuItem mniDalibnieki;
+    private javax.swing.JMenuItem mniDzestKontu;
+    private javax.swing.JMenuItem mniDzestPasakumu;
+    private javax.swing.JMenuItem mniInstrukcija;
     private javax.swing.JMenuItem mniIziet;
     private javax.swing.JMenuItem mniIzrakstities;
+    private javax.swing.JMenuItem mniLabotPasakumu;
     private javax.swing.JMenuItem mniPievienot;
     private javax.swing.JMenuItem mniRegistreties;
     private javax.swing.JMenu mnuFails;
+    private javax.swing.JMenu mnuPalidziba;
     private javax.swing.JMenu mnuPasakumi;
     private javax.swing.JPanel pnlBody;
     private javax.swing.JPanel pnlEventBody;

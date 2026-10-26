@@ -9,15 +9,23 @@ import eventregistrationsystem.model.Pasakums;
 import eventregistrationsystem.model.Registracija;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
+ * Datu piekļuve tabulai REGISTRACIJAS: pieteikumi un to statusi.
  *
  * @author artjomsdoktorovs, glebsvasiljievs
  */
 public class RegistracijaDAO {
 
-    // false, ja jau ir pieteicies (UNIQUE pasakuma_id + lietotaja_id)
+    /**
+     * Saglabā jaunu pieteikumu.
+     *
+     * @param r pieteikums
+     * @return true, ja saglabāts; false, ja jau ir pieteicies (UNIQUE pasakuma_id + lietotaja_id)
+     */
     public boolean saglabatRegistraciju(Registracija r) {
         String sql = "INSERT INTO REGISTRACIJAS (pasakuma_id, lietotaja_id, statuss) VALUES (?, ?, ?)";
 
@@ -34,6 +42,34 @@ public class RegistracijaDAO {
         }
     }
 
+    /**
+     * Atceļ (dzēš) dalībnieka pieteikumu pasākumam.
+     *
+     * @param pasakumaId pasākuma identifikators
+     * @param lietotajaId dalībnieka identifikators
+     * @return true, ja pieteikums dzēsts
+     */
+    public boolean atceltPieteikumu(int pasakumaId, int lietotajaId) {
+        String sql = "DELETE FROM REGISTRACIJAS WHERE pasakuma_id = ? AND lietotaja_id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, pasakumaId);
+            ps.setInt(2, lietotajaId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Maina pieteikuma statusu.
+     *
+     * @param id pieteikuma identifikators
+     * @param statuss jaunais statuss (GAIDA, APSTIPRINATS vai NORAIDITS)
+     * @return true, ja atjaunināts
+     */
     public boolean mainitStatusu(int id, String statuss) {
         String sql = "UPDATE REGISTRACIJAS SET statuss = ? WHERE id = ?";
 
@@ -48,8 +84,15 @@ public class RegistracijaDAO {
         }
     }
 
-    // pasākuma dalībnieki priekš "Dalībnieku pārvaldība" loga
-    public List<Registracija> iegutPasakumaDalibniekus(Pasakums p) {
+    /**
+     * Nolasa pasākuma pieteikumus logam "Dalībnieku pārvaldība".
+     * Kļūdu nodod GUI, lai lietotājs redz paziņojumu, nevis tukšu tabulu.
+     *
+     * @param p pasākums
+     * @return pieteikumu saraksts, sakārtots pēc reģistrācijas laika
+     * @throws SQLException datu bāzes kļūdas gadījumā
+     */
+    public List<Registracija> iegutPasakumaDalibniekus(Pasakums p) throws SQLException {
         List<Registracija> saraksts = new ArrayList<>();
         String sql = "SELECT r.id, r.statuss, r.registracijas_laiks, l.id AS lid, l.vards, l.uzvards, "
                 + "l.lietotajvards, l.talrunis FROM REGISTRACIJAS r "
@@ -66,12 +109,39 @@ public class RegistracijaDAO {
                 saraksts.add(new Registracija(rs.getInt("id"), p, d, rs.getString("statuss"),
                         rs.getTimestamp("registracijas_laiks")));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return saraksts;
     }
-        // true, ja lietotājs jau ir pieteicies šim pasākumam
+
+    /**
+     * Nolasa dalībnieka pieteikumu statusus kolonnai "Mans statuss".
+     *
+     * @param lietotajaId dalībnieka identifikators
+     * @return pasākuma id -> statusa kods
+     * @throws SQLException datu bāzes kļūdas gadījumā
+     */
+    public Map<Integer, String> iegutLietotajaStatusus(int lietotajaId) throws SQLException {
+        Map<Integer, String> statusi = new HashMap<>();
+        String sql = "SELECT pasakuma_id, statuss FROM REGISTRACIJAS WHERE lietotaja_id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, lietotajaId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                statusi.put(rs.getInt("pasakuma_id"), rs.getString("statuss"));
+            }
+        }
+        return statusi;
+    }
+
+    /**
+     * Pārbauda, vai lietotājs jau ir pieteicies pasākumam.
+     *
+     * @param pasakumaId pasākuma identifikators
+     * @param lietotajaId lietotāja identifikators
+     * @return true, ja jau ir pieteicies
+     */
     public boolean jauPieteicies(int pasakumaId, int lietotajaId) {
         String sql = "SELECT COUNT(*) FROM REGISTRACIJAS WHERE pasakuma_id = ? AND lietotaja_id = ?";
 
@@ -88,8 +158,13 @@ public class RegistracijaDAO {
         }
     }
 
-    // apstiprina pieteikumu tikai ja ir brīvas vietas
-    // atgriež: 1 = apstiprināts, -1 = vietu nav, 0 = kļūda
+    /**
+     * Apstiprina pieteikumu tikai tad, ja pasākumā ir brīvas vietas
+     * (pārbaude un atjaunināšana vienā transakcijā).
+     *
+     * @param registracijasId pieteikuma identifikators
+     * @return 1 - apstiprināts, -1 - vietu nav, 0 - kļūda
+     */
     public int apstiprinatArKontroli(int registracijasId) {
         String sqlInfo = "SELECT r.pasakuma_id, r.statuss, p.maks_dalibnieku_skaits "
                 + "FROM REGISTRACIJAS r JOIN PASAKUMI p ON p.id = r.pasakuma_id WHERE r.id = ?";

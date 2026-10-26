@@ -954,11 +954,25 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Izrakst&#x12b;ties"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIzrakstitiesActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniDzestKontu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Dz&#x113;st kontu"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniDzestKontuActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mniIziet">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Iziet"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIzietActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -971,16 +985,67 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Re&#x123;istr&#x113;ties dal&#x12b;bai"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegistretiesDalibaActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniAtceltPieteikumu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Atcelt pieteikumu"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAtceltPieteikumuActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mniPievienot">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Pievienot pas&#x101;kumu"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPievienotPasakumuActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniLabotPasakumu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Labot pas&#x101;kumu"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLabotPasakumuActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniDzestPasakumu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Dz&#x113;st pas&#x101;kumu"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDzestPasakumuActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mniDalibnieki">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Dal&#x12b;bnieki"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDalibniekiActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="mnuPalidziba">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Pal&#x12b;dz&#x12b;ba"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="mniInstrukcija">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="F1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Lieto&#x161;anas instrukcija"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniInstrukcijaActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -1106,10 +1171,16 @@
                       <Component id="scrPasakumi" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnRegistretiesDaliba" min="-2" pref="185" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="btnAtceltPieteikumu" min="-2" pref="170" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btnDalibnieki" min="-2" pref="135" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btnPievienotPasakumu" min="-2" pref="170" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="btnLabotPasakumu" min="-2" pref="95" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="btnDzestPasakumu" min="-2" pref="95" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="btnIzrakstities" min="-2" pref="120" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
@@ -1141,6 +1212,9 @@
                       <Component id="btnRegistretiesDaliba" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="btnDalibnieki" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="btnPievienotPasakumu" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="btnAtceltPieteikumu" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="btnLabotPasakumu" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="btnDzestPasakumu" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="btnIzrakstities" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="btnIziet" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                   </Group>
@@ -1160,11 +1234,12 @@
             <Component class="javax.swing.JTable" name="tblPasakumi">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="4" rowCount="0">
+                  <Table columnCount="5" rowCount="0">
                     <Column editable="false" title="Nosaukums" type="java.lang.String"/>
                     <Column editable="false" title="Datums" type="java.lang.String"/>
                     <Column editable="false" title="Vieta" type="java.lang.String"/>
                     <Column editable="false" title="Br&#x12b;v&#x101;s vietas" type="java.lang.Integer"/>
+                    <Column editable="false" title="Mans statuss" type="java.lang.String"/>
                   </Table>
                 </Property>
               </Properties>
@@ -1218,6 +1293,45 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPievienotPasakumuActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnAtceltPieteikumu">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="fa" green="f5" red="f2" type="rgb"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="51" green="41" red="33" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Atcelt pieteikumu"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAtceltPieteikumuActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnLabotPasakumu">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="e0" green="63" red="3b" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Labot"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLabotPasakumuActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnDzestPasakumu">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="23" green="28" red="a0" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Dz&#x113;st"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDzestPasakumuActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnIzrakstities">

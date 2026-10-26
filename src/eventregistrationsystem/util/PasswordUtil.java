@@ -8,12 +8,24 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 /**
+ * Palīgklase paroļu jaucējkoda aprēķināšanai, lai datu bāzē
+ * parole netiktu glabāta atklātā veidā.
  *
  * @author artjomsdoktorovs, glebsvasiljievs
  */
 public class PasswordUtil {
 
-    // parole -> SHA-256
+    /** Klasei ir tikai statiskas metodes, objektu neveido. */
+    private PasswordUtil() {
+    }
+
+    /**
+     * Aprēķina paroles SHA-256 jaucējkodu.
+     *
+     * @param password parole
+     * @return 64 simbolu heksadecimāla virkne
+     * @throws RuntimeException ja SHA-256 algoritms nav pieejams
+     */
     public static String hash(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

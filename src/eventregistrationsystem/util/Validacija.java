@@ -11,11 +11,14 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
 /**
+ * Ievaddatu pārbaude reģistrācijas un pasākuma izveides formām.
+ * Metodes atgriež kļūdas tekstu vai null, ja dati ir pareizi.
  *
  * @author glebsvasiljievs
  */
 public class Validacija {
 
+    /** Datuma formāts dd.mm.gggg (stingrā pārbaude). */
     public static final DateTimeFormatter DATUMA_FORMATS
             = DateTimeFormatter.ofPattern("dd.MM.uuuu").withResolverStyle(ResolverStyle.STRICT);
     private static final DateTimeFormatter LAIKA_FORMATS = DateTimeFormatter.ofPattern("H:mm");
@@ -23,7 +26,17 @@ public class Validacija {
     private Validacija() {
     }
 
-    // reģistrācijas formas pārbaude
+    /**
+     * Pārbauda reģistrācijas formas laukus.
+     *
+     * @param vards vārds
+     * @param uzvards uzvārds
+     * @param epasts e-pasts (lietotājvārds)
+     * @param talrunis tālrunis (nav obligāts, var būt tukšs)
+     * @param parole parole
+     * @param parole2 parole atkārtoti
+     * @return kļūdas teksts vai null, ja visi dati ir pareizi
+     */
     public static String registracija(String vards, String uzvards, String epasts,
             String talrunis, String parole, String parole2) {
         if (vards.isEmpty() || uzvards.isEmpty() || epasts.isEmpty() || parole.isEmpty()) {
@@ -44,13 +57,33 @@ public class Validacija {
             return "Kāds no laukiem ir pārāk garš!";
         }
         // tālrunis nav obligāts, bet ja ievadīts - tikai cipari, + un atstarpes
-        if (!talrunis.isEmpty() && !talrunis.matches("^\\+?[0-9 ]{8,19}$")) {
+        if (!talrunis.isEmpty() && !derigsTalrunis(talrunis)) {
             return "Ievadiet derīgu tālruņa numuru (piem., +371 20000000)!";
         }
         return null;
     }
 
-    // pasākuma formas pārbaude
+    /**
+     * Pārbauda tālruņa numura formātu: tikai cipari, + sākumā un atstarpes.
+     *
+     * @param talrunis tālruņa numurs
+     * @return true, ja formāts ir pareizs
+     */
+    public static boolean derigsTalrunis(String talrunis) {
+        return talrunis.matches("^\\+?[0-9 ]{8,19}$");
+    }
+
+    /**
+     * Pārbauda pasākuma izveides formas laukus.
+     *
+     * @param nosaukums pasākuma nosaukums
+     * @param apraksts apraksts (nav obligāts)
+     * @param datumsTeksts datums formātā dd.mm.gggg
+     * @param laiksTeksts laiks formātā hh:mm
+     * @param vieta norises vieta
+     * @param maks maksimālais dalībnieku skaits
+     * @return kļūdas teksts vai null, ja visi dati ir pareizi
+     */
     public static String pasakums(String nosaukums, String apraksts, String datumsTeksts,
             String laiksTeksts, String vieta, int maks) {
         if (nosaukums.isEmpty() || datumsTeksts.isEmpty() || laiksTeksts.isEmpty() || vieta.isEmpty()) {
@@ -80,7 +113,12 @@ public class Validacija {
         return null;
     }
 
-    // datums no teksta vai null, ja formāts nepareizs
+    /**
+     * Pārveido tekstu datumā.
+     *
+     * @param teksts datums formātā dd.mm.gggg
+     * @return datums vai null, ja formāts ir nepareizs
+     */
     public static LocalDate parsetDatumu(String teksts) {
         try {
             return LocalDate.parse(teksts, DATUMA_FORMATS);
@@ -89,7 +127,12 @@ public class Validacija {
         }
     }
 
-    // laiks no teksta vai null, ja formāts nepareizs
+    /**
+     * Pārveido tekstu laikā.
+     *
+     * @param teksts laiks formātā hh:mm
+     * @return laiks vai null, ja formāts ir nepareizs
+     */
     public static LocalTime parsetLaiku(String teksts) {
         try {
             return LocalTime.parse(teksts, LAIKA_FORMATS);
