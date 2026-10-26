@@ -3,7 +3,8 @@ Tēma: Pasākumu reģistrācijas sistēma<br>
 Autori :<br>
 Artjoms Doktorovs - Kizarov3<br>
 Gļebs Vasiļjevs - Destral1x<br>
-ATS/PR-32
+ATS/PR-32<br>
+GitHub: https://github.com/Destral1x/-5-EventRegistrationSystem
 
 # Pasākumu reģistrācijas sistēma
 
@@ -15,13 +16,14 @@ pasākumiem un seko līdzi sava pieteikuma statusam.
 
 - JDK 21 (Derby 10.17 darbojas tikai ar Java 21 vai jaunāku)
 - Apache NetBeans IDE (projekts ir NetBeans Ant projekts)
-- Visas bibliotēkas jau ir mapē `lib/`: `derby.jar`, `derbyshared.jar`, `derbytools.jar`,
+- Visas bibliotēkas jau ir mapē `lib`: `derby.jar`, `derbyshared.jar`, `derbytools.jar`,
   `junit-4.13.2.jar`, `hamcrest-core-1.3.jar`, papildus neko lejupielādēt nav vajadzīgs
 
 ## Instalēšanas instrukcija
 
-1. Nokopējiet projekta mapi uz datoru (vai klonējiet GitHub repozitoriju).
-2. NetBeans: **File → Open Project…** un izvēlieties mapi `5.EventRegistrationSystem`.
+1. Nokopējiet projekta mapi uz datoru vai lejupielādējiet to no GitHub (**Code → Download ZIP**)
+   un atarhivējiet.
+2. NetBeans: **File → Open Project…** un izvēlieties projekta mapi.
 3. Ja NetBeans ziņo par trūkstošu Java platformu, **Project Properties → Libraries → Java Platform**
    izvēlieties JDK 21.
 4. Palaidiet programmu: **Run → Run Project** (F6).
@@ -32,22 +34,22 @@ Bez NetBeans (Windows komandrinda `cmd`):
 2. Atveriet `cmd` projekta mapē un palaidiet:
 
 ```
-cd C:\ceļš\uz\5.EventRegistrationSystem
+cd C:\ceļš\uz\projekta\mapi
 java -jar dist\5.EventRegistrationSystem.jar
 ```
 
 Programma jāpalaiž no projekta mapes, jo datu bāze atrodas relatīvajā ceļā `database\eventdb`.
-Ja `.jar` failu atver ar dubultklikšķi mapē `dist`, programma izveidos jaunu, tukšu datu bāzi
-mapē `dist\database\eventdb` (tikai ar sākuma datiem).
+Ja `.jar` failu atver ar dubultklikšķi mapē `dist`, programma izveidos jaunu datu bāzi
+mapē `dist\database\eventdb` tikai ar sākuma datiem.
 
 ## Datu bāze
 
-- Lokālā (iegultā) Apache Derby datu bāze mapē `database/eventdb`, serveris nav vajadzīgs.
+- Lokālā (iegultā) Apache Derby datu bāze mapē `database\eventdb`, serveris nav vajadzīgs.
 - Ja datu bāzes nav, pirmajā palaišanā tā tiek izveidota automātiski no
-  `src/eventregistrationsystem/sql/schema.sql` (tabulas) un `data.sql` (sākuma dati).
+  `src\eventregistrationsystem\sql\schema.sql` (tabulas) un `data.sql` (sākuma dati).
 - Datu bāzi vienlaikus var atvērt tikai viena programma. Ja tā ir atvērta NetBeans logā
   **Services**, pirms palaišanas nospiediet **Disconnect**.
-- Rezerves kopija: aizveriet programmu un nokopējiet mapi `database/eventdb`.
+- Rezerves kopija: aizveriet programmu un nokopējiet mapi `database\eventdb`.
   Lai atjaunotu, iekopējiet to atpakaļ.
 
 ## Lietošanas instrukcija
@@ -83,9 +85,9 @@ Visas darbības pieejamas arī galvenajā izvēlnē (**Fails**, **Pasākumi**).
 
 ## Dokumentācija un testi
 
-- Javadoc dokumentācija: `docs/index.html`. Atjaunot: NetBeans **Run → Generate Javadoc**
-  (rezultāts tiek saglabāts mapē `docs/`).
-- JUnit4 testi: mapē `test/`, palaišana - **Run → Test Project** (Ctrl+F6) vai `ant test`.
+- Javadoc dokumentācija: `docs\index.html`. Atjaunot: NetBeans **Run → Generate Javadoc**
+  (rezultāts tiek saglabāts mapē `docs`).
+- JUnit4 testi: mapē `test`, palaišana - **Run → Test Project** (Alt+F6).
 - Kļūdu žurnāls: `Kludu_zurnals.docx`.
 
 ## Projekta struktūra
