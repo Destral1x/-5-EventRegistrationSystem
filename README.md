@@ -4,7 +4,6 @@ Autori :<br>
 Artjoms Doktorovs - Kizarov3<br>
 Gļebs Vasiļjevs - Destral1x<br>
 ATS/PR-32<br>
-GitHub: https://github.com/Destral1x/-5-EventRegistrationSystem
 
 # Pasākumu reģistrācijas sistēma
 
