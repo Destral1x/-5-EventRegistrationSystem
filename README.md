@@ -26,14 +26,19 @@ pasākumiem un seko līdzi sava pieteikuma statusam.
    izvēlieties JDK 21.
 4. Palaidiet programmu: **Run → Run Project** (F6).
 
-Bez NetBeans (no projekta mapes):
+Bez NetBeans (Windows komandrinda `cmd`):
+
+1. NetBeans vienreiz izpildiet **Run → Clean and Build Project** (Shift+F11), tiek izveidota mape `dist`.
+2. Atveriet `cmd` projekta mapē un palaidiet:
 
 ```
-ant jar
-java -jar dist/5.EventRegistrationSystem.jar
+cd C:\ceļš\uz\5.EventRegistrationSystem
+java -jar dist\5.EventRegistrationSystem.jar
 ```
 
-Programma jāpalaiž no projekta mapes, jo datu bāze atrodas relatīvajā ceļā `database/eventdb`.
+Programma jāpalaiž no projekta mapes, jo datu bāze atrodas relatīvajā ceļā `database\eventdb`.
+Ja `.jar` failu atver ar dubultklikšķi mapē `dist`, programma izveidos jaunu, tukšu datu bāzi
+mapē `dist\database\eventdb` (tikai ar sākuma datiem).
 
 ## Datu bāze
 
