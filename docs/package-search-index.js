@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"eventregistrationsystem"},{"l":"eventregistrationsystem.dao"},{"l":"eventregistrationsystem.model"},{"l":"eventregistrationsystem.util"}];updateSearchResults();
