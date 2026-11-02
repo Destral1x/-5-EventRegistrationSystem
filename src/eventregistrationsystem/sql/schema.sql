@@ -5,13 +5,15 @@ CREATE TABLE LIETOTAJI (
     id             INT          NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     vards          VARCHAR(50)  NOT NULL,
     uzvards        VARCHAR(50)  NOT NULL,
-    lietotajvards  VARCHAR(50)  NOT NULL,
+    lietotajvards  VARCHAR(30)  NOT NULL,
+    epasts         VARCHAR(50)  NOT NULL,
     talrunis       VARCHAR(20),
     parole_hash    VARCHAR(64)  NOT NULL,
     loma           VARCHAR(15)  NOT NULL DEFAULT 'DALIBNIEKS',
     izveidots      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_lietotaji PRIMARY KEY (id),
     CONSTRAINT uq_lietotajvards UNIQUE (lietotajvards),
+    CONSTRAINT uq_epasts UNIQUE (epasts),
     CONSTRAINT ck_loma CHECK (loma IN ('ADMIN', 'DALIBNIEKS'))
 );
 

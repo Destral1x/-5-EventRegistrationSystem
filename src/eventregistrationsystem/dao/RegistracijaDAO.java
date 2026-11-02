@@ -95,7 +95,7 @@ public class RegistracijaDAO {
     public List<Registracija> iegutPasakumaDalibniekus(Pasakums p) throws SQLException {
         List<Registracija> saraksts = new ArrayList<>();
         String sql = "SELECT r.id, r.statuss, r.registracijas_laiks, l.id AS lid, l.vards, l.uzvards, "
-                + "l.lietotajvards, l.talrunis FROM REGISTRACIJAS r "
+                + "l.lietotajvards, l.epasts, l.talrunis FROM REGISTRACIJAS r "
                 + "JOIN LIETOTAJI l ON l.id = r.lietotaja_id "
                 + "WHERE r.pasakuma_id = ? ORDER BY r.registracijas_laiks";
 
@@ -105,7 +105,7 @@ public class RegistracijaDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Dalibnieks d = new Dalibnieks(rs.getInt("lid"), rs.getString("vards"), rs.getString("uzvards"),
-                        rs.getString("lietotajvards"), rs.getString("talrunis"), null);
+                        rs.getString("lietotajvards"), rs.getString("epasts"), rs.getString("talrunis"), null);
                 saraksts.add(new Registracija(rs.getInt("id"), p, d, rs.getString("statuss"),
                         rs.getTimestamp("registracijas_laiks")));
             }

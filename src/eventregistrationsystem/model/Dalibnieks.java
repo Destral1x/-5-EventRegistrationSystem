@@ -17,12 +17,14 @@ public class Dalibnieks extends Lietotajs {
      * @param id lietotāja identifikators
      * @param vards vārds
      * @param uzvards uzvārds
-     * @param lietotajvards lietotājvārds (e-pasts)
+     * @param lietotajvards lietotājvārds
+     * @param epasts e-pasta adrese
      * @param talrunis tālrunis vai null
      * @param paroleHash paroles SHA-256 jaucējkods
      */
-    public Dalibnieks(int id, String vards, String uzvards, String lietotajvards, String talrunis, String paroleHash) {
-        super(id, vards, uzvards, lietotajvards, talrunis, paroleHash);
+    public Dalibnieks(int id, String vards, String uzvards, String lietotajvards, String epasts,
+            String talrunis, String paroleHash) {
+        super(id, vards, uzvards, lietotajvards, epasts, talrunis, paroleHash);
     }
 
     /**

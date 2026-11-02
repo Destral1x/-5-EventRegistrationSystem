@@ -28,62 +28,62 @@ public class ValidacijaTest {
 
     @Test
     public void registracijaDerigiDati() {
-        assertNull(Validacija.registracija("Anna", "Kalniņa", "anna@example.com",
+        assertNull(Validacija.registracija("Anna", "Kalniņa", "anna", "anna@example.com",
                 "+371 20000000", "parole123", "parole123"));
     }
 
     @Test
     public void registracijaTalrunisNavObligats() {
-        assertNull(Validacija.registracija("Anna", "Kalniņa", "anna@example.com",
+        assertNull(Validacija.registracija("Anna", "Kalniņa", "anna", "anna@example.com",
                 "", "parole123", "parole123"));
     }
 
     @Test
     public void registracijaTuksVards() {
-        assertEquals(OBLIGATIE, Validacija.registracija("", "Kalniņa", "anna@example.com",
+        assertEquals(OBLIGATIE, Validacija.registracija("", "Kalniņa", "anna", "anna@example.com",
                 "", "parole123", "parole123"));
     }
 
     @Test
     public void registracijaNederigsEpasts() {
         assertEquals("Ievadiet derīgu e-pasta adresi!", Validacija.registracija("Anna", "Kalniņa",
-                "anna.example.com", "", "parole123", "parole123"));
+                "anna", "anna.example.com", "", "parole123", "parole123"));
         assertEquals("Ievadiet derīgu e-pasta adresi!", Validacija.registracija("Anna", "Kalniņa",
-                "anna@example", "", "parole123", "parole123"));
+                "anna", "anna@example", "", "parole123", "parole123"));
     }
 
     @Test
     public void registracijaParIsaParole() {
         assertEquals("Parolei jābūt vismaz 6 simbolus garai!", Validacija.registracija("Anna", "Kalniņa",
-                "anna@example.com", "", "12345", "12345"));
+                "anna", "anna@example.com", "", "12345", "12345"));
     }
 
     // robežgadījums: tieši 6 simboli ir derīga parole
     @Test
     public void registracijaParole6Simboli() {
-        assertNull(Validacija.registracija("Anna", "Kalniņa", "anna@example.com",
+        assertNull(Validacija.registracija("Anna", "Kalniņa", "anna", "anna@example.com",
                 "", "123456", "123456"));
     }
 
     @Test
     public void registracijaParolesNesakrit() {
         assertEquals("Paroles nesakrīt!", Validacija.registracija("Anna", "Kalniņa",
-                "anna@example.com", "", "parole123", "parole124"));
+                "anna", "anna@example.com", "", "parole123", "parole124"));
     }
 
     // robežgadījums: vārds ar 50 simboliem ir derīgs, ar 51 - pārāk garš
     @Test
     public void registracijaVardaGarums() {
-        assertNull(Validacija.registracija("A".repeat(50), "Kalniņa", "anna@example.com",
+        assertNull(Validacija.registracija("A".repeat(50), "Kalniņa", "anna", "anna@example.com",
                 "", "parole123", "parole123"));
-        assertEquals(PARGARS, Validacija.registracija("A".repeat(51), "Kalniņa", "anna@example.com",
+        assertEquals(PARGARS, Validacija.registracija("A".repeat(51), "Kalniņa", "anna", "anna@example.com",
                 "", "parole123", "parole123"));
     }
 
     @Test
     public void registracijaNederigsTalrunis() {
         assertEquals("Ievadiet derīgu tālruņa numuru (piem., +371 20000000)!", Validacija.registracija(
-                "Anna", "Kalniņa", "anna@example.com", "abc12345", "parole123", "parole123"));
+                "Anna", "Kalniņa", "anna", "anna@example.com", "abc12345", "parole123", "parole123"));
     }
 
     // ---------- pasākuma forma ----------
@@ -167,5 +167,19 @@ public class ValidacijaTest {
     public void parsetLaikuNederigs() {
         assertNull(Validacija.parsetLaiku("25:00"));
         assertNull(Validacija.parsetLaiku("18-30"));
+    }
+
+    // lietotājvārds: 3-30 simboli, bez @ un atstarpēm; latviešu burti atļauti
+    @Test
+    public void registracijaNederigsLietotajvards() {
+        String teksts = "Lietotājvārdam jābūt 3-30 simbolus garam (burti, cipari, punkts vai _)!";
+        assertEquals(teksts, Validacija.registracija("Anna", "Kalniņa", "an", "anna@example.com",
+                "", "parole123", "parole123"));
+        assertEquals(teksts, Validacija.registracija("Anna", "Kalniņa", "anna@example.com", "anna@example.com",
+                "", "parole123", "parole123"));
+        assertEquals(teksts, Validacija.registracija("Anna", "Kalniņa", "anna k", "anna@example.com",
+                "", "parole123", "parole123"));
+        assertNull(Validacija.registracija("Anna", "Kalniņa", "anna_kalniņa.2", "anna@example.com",
+                "", "parole123", "parole123"));
     }
 }

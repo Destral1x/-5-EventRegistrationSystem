@@ -19,6 +19,7 @@ public class Lietotajs {
     private String vards;
     private String uzvards;
     private String lietotajvards;
+    private String epasts;
     private String talrunis;
     private String paroleHash;
 
@@ -28,15 +29,18 @@ public class Lietotajs {
      * @param id lietotāja identifikators
      * @param vards vārds
      * @param uzvards uzvārds
-     * @param lietotajvards lietotājvārds (e-pasts)
+     * @param lietotajvards lietotājvārds
+     * @param epasts e-pasta adrese
      * @param talrunis tālrunis vai null
      * @param paroleHash paroles SHA-256 jaucējkods
      */
-    public Lietotajs(int id, String vards, String uzvards, String lietotajvards, String talrunis, String paroleHash) {
+    public Lietotajs(int id, String vards, String uzvards, String lietotajvards, String epasts,
+            String talrunis, String paroleHash) {
         this.id = id;
         this.vards = vards;
         this.uzvards = uzvards;
         this.lietotajvards = lietotajvards;
+        this.epasts = epasts;
         this.talrunis = talrunis;
         this.paroleHash = paroleHash;
     }
@@ -79,12 +83,21 @@ public class Lietotajs {
     }
 
     /**
-     * Lietotājvārds (e-pasts).
+     * Lietotājvārds.
      *
-     * @return lietotājvārds (e-pasts)
+     * @return lietotājvārds
      */
     public String getLietotajvardu() {
         return lietotajvards;
+    }
+
+    /**
+     * E-pasta adrese.
+     *
+     * @return e-pasta adrese
+     */
+    public String getEpastu() {
+        return epasts;
     }
 
     /**

@@ -49,21 +49,27 @@ mapē `dist\database\eventdb` tikai ar sākuma datiem.
   `src\eventregistrationsystem\sql\schema.sql` (tabulas) un `data.sql` (sākuma dati).
 - Datu bāzi vienlaikus var atvērt tikai viena programma. Ja tā ir atvērta NetBeans logā
   **Services**, pirms palaišanas nospiediet **Disconnect**.
+- Lai sāktu ar tīriem sākuma datiem, aizveriet programmu un izdzēsiet mapi `database\eventdb` -
+  nākamajā palaišanā datu bāze tiks izveidota no jauna.
 - Rezerves kopija: aizveriet programmu un nokopējiet mapi `database\eventdb`.
   Lai atjaunotu, iekopējiet to atpakaļ.
 
 ## Lietošanas instrukcija
 
-Sākuma lietotāji (no `data.sql`):
+Sākuma (testa) dati no `data.sql`: 11 lietotāji, 12 pasākumi un 26 pieteikumi ar dažādiem
+statusiem. Pasākumos "Programmēšanas sacensības" un "Excel padziļināti" visas vietas jau ir aizņemtas,
+dalībniekiem `peteris` un `kristaps` profilā nav tālruņa.
+Ielogoties var gan ar lietotājvārdu, gan ar e-pastu.
 
-| Loma | Lietotājvārds | Parole |
-|---|---|---|
-| Administrators | `admin` | `admin123` |
-| Dalībnieks | `janis@example.com` | `admin123` |
+| Loma | Lietotājvārds | E-pasts | Parole |
+|---|---|---|---|
+| Administrators | `admin` | `admin@example.com` | `admin123` |
+| Dalībnieki | `janis`, `anna`, `peteris`, `laura` u. c. | `janis@example.com`, `anna@example.com` u. c. | `parole123` |
 
 1. **Reģistrēties** - ielogošanās logā nospiediet "Reģistrēties", aizpildiet vārdu, uzvārdu,
-   e-pastu, (tālruni) un paroli divreiz. Jauns lietotājs vienmēr ir dalībnieks.
-2. **Ielogoties** - ievadiet lietotājvārdu (e-pastu) un paroli, nospiediet "Ielogoties".
+   lietotājvārdu (3-30 simboli: burti, cipari, punkts vai _), e-pastu, (tālruni) un paroli divreiz.
+   Lietotājvārdam un e-pastam jābūt unikāliem. Jauns lietotājs vienmēr ir dalībnieks.
+2. **Ielogoties** - ievadiet lietotājvārdu vai e-pastu un paroli, nospiediet "Ielogoties".
 3. **Apskatīt un meklēt pasākumus** - galvenajā logā redzami aktīvie pasākumi un brīvo vietu skaits.
    Ievadiet nosaukumu, vietu un/vai datumu un nospiediet "Meklēt"; "Notīrīt" atkal rāda visus.
 4. **Pieteikties pasākumam (dalībnieks)** - izvēlieties pasākumu tabulā un nospiediet
@@ -71,14 +77,18 @@ Sākuma lietotāji (no `data.sql`):
    Pieteikuma statuss redzams kolonnā "Mans statuss" (Gaida / Apstiprināts / Noraidīts).
    Lai pieteikumu atsauktu, izvēlieties pasākumu un nospiediet "Atcelt pieteikumu".
 5. **Izveidot pasākumu (administrators)** - "Pievienot pasākumu", aizpildiet laukus
-   (datums dd.mm.gggg, laiks hh:mm) un nospiediet "Saglabāt".
+   (datums dd.mm.gggg, laiks hh:mm) un nospiediet "Saglabāt". Vienā vietā un laikā nevar
+   ieplānot divus pasākumus.
    Esošu pasākumu var izvēlēties tabulā un "Labot" (atveras tas pats logs ar pasākuma datiem)
    vai "Dzēst" (pēc apstiprinājuma tiek dzēsts pasākums kopā ar tā pieteikumiem).
 6. **Apstiprināt vai noraidīt pieteikumus (administrators)** - izvēlieties pasākumu un nospiediet
    "Dalībnieki", izvēlieties pieteikumu un nospiediet "Apstiprināt" vai "Noraidīt".
    Apstiprināt var tikai tad, ja ir brīvas vietas.
-7. **Dzēst kontu (dalībnieks)** - izvēlne **Fails → Dzēst kontu**, apstipriniet dzēšanu.
-8. **Izrakstīties / Iziet** - pogas vai izvēlne **Fails**; abas darbības prasa apstiprinājumu.
+7. **Apskatīt lietotājus (administrators)** - poga "Lietotāji" (vai **Pasākumi → Lietotāji**)
+   atver logu ar visu lietotāju datiem: vārds, uzvārds, lietotājvārds, e-pasts, tālrunis, loma, pieteikumu skaits
+   un reģistrācijas datums.
+8. **Dzēst kontu (dalībnieks)** - izvēlne **Fails → Dzēst kontu**, apstipriniet dzēšanu.
+9. **Izrakstīties / Iziet** - pogas vai izvēlne **Fails**; abas darbības prasa apstiprinājumu.
 
 Visas darbības pieejamas arī galvenajā izvēlnē (**Fails**, **Pasākumi**).
 Īsa lietošanas instrukcija atbilstoši lomai: izvēlne **Palīdzība → Lietošanas instrukcija** (F1).

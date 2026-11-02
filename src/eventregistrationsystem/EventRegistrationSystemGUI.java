@@ -38,7 +38,7 @@ import javax.swing.table.TableRowSorter;
 
 /**
  * Pasākumu reģistrācijas sistēmas galvenais logs (JFrame) ar apakšlogiem (JDialog):
- * ielogošanās, reģistrācija, pasākuma izveide un dalībnieku pārvaldība.
+ * ielogošanās, reģistrācija, pasākuma izveide, dalībnieku pārvaldība un lietotāju saraksts.
  *
  * @author artjomsdoktorovs, glebsvasiljievs
  */
@@ -93,6 +93,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         noformetPogu(btnApprove, new Color(56, 130, 64));
         noformetPogu(btnReject, new Color(160, 40, 35));
         noformetPogu(btnParticipantsClose, peleka);
+        noformetPogu(btnLietotaji, zila);
+        noformetPogu(btnUsersClose, peleka);
         noformetPogu(btnMeklet, zila);
         noformetPogu(btnNotirit, peleka);
         btnMeklet.setBackground(Color.WHITE);
@@ -100,6 +102,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         // kārtotājs, lai tabulā var atlasīt rindas (meklēšana)
         tblPasakumi.setRowSorter(new TableRowSorter<>((DefaultTableModel) tblPasakumi.getModel()));
         btnDalibnieki.setBackground(Color.WHITE);
+        btnLietotaji.setBackground(Color.WHITE);
         btnLoginRegister.setBackground(Color.WHITE);
         btnPievienotPasakumu.setBackground(Color.WHITE);
         btnLabotPasakumu.setBackground(Color.WHITE);
@@ -146,6 +149,25 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         tblParticipants.getTableHeader().setForeground(new Color(30, 58, 138));
         tblParticipants.getTableHeader().setFont(tblParticipants.getFont().deriveFont(Font.BOLD));
         scrParticipants.getViewport().setBackground(Color.WHITE);
+
+        // lietotāju tabula (administratora logs)
+        tblUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblUsers.setRowHeight(28);
+        tblUsers.setGridColor(new Color(196, 212, 236));
+        tblUsers.getTableHeader().setBackground(new Color(220, 232, 252));
+        tblUsers.getTableHeader().setForeground(new Color(30, 58, 138));
+        tblUsers.getTableHeader().setFont(tblUsers.getFont().deriveFont(Font.BOLD));
+        tblUsers.setAutoCreateRowSorter(true);
+        scrUsers.getViewport().setBackground(Color.WHITE);
+        // kolonnu platumi: e-pastam vairāk vietas, skaitlim un datumam mazāk
+        int[] platumi = {85, 95, 95, 180, 115, 100, 75, 90};
+        DefaultTableCellRenderer vidu = new DefaultTableCellRenderer();
+        vidu.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < platumi.length; i++) {
+            tblUsers.getColumnModel().getColumn(i).setPreferredWidth(platumi[i]);
+        }
+        tblUsers.getColumnModel().getColumn(6).setCellRenderer(vidu);
+        tblUsers.getColumnModel().getColumn(7).setCellRenderer(vidu);
 
         // statuss pa vidu, krāsa pēc statusa
         DefaultTableCellRenderer statusaRenderer = new DefaultTableCellRenderer() {
@@ -219,6 +241,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         txtRegisterSurname = new javax.swing.JTextField();
         lblRegisterUsername = new javax.swing.JLabel();
         txtRegisterUsername = new javax.swing.JTextField();
+        lblRegisterEmail = new javax.swing.JLabel();
+        txtRegisterEmail = new javax.swing.JTextField();
         lblRegisterPhone = new javax.swing.JLabel();
         txtRegisterPhone = new javax.swing.JTextField();
         lblRegisterPassword = new javax.swing.JLabel();
@@ -261,6 +285,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnApprove = new javax.swing.JButton();
         btnReject = new javax.swing.JButton();
         btnParticipantsClose = new javax.swing.JButton();
+        dlgUsers = new javax.swing.JDialog();
+        pnlUsersHeader = new javax.swing.JPanel();
+        lblUsersHeader = new javax.swing.JLabel();
+        pnlUsersBody = new javax.swing.JPanel();
+        lblUsersInfo = new javax.swing.JLabel();
+        scrUsers = new javax.swing.JScrollPane();
+        tblUsers = new javax.swing.JTable();
+        btnUsersClose = new javax.swing.JButton();
         pnlHeader = new javax.swing.JPanel();
         lblVirsraksts = new javax.swing.JLabel();
         pnlBody = new javax.swing.JPanel();
@@ -268,6 +300,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         tblPasakumi = new javax.swing.JTable();
         btnRegistretiesDaliba = new javax.swing.JButton();
         btnDalibnieki = new javax.swing.JButton();
+        btnLietotaji = new javax.swing.JButton();
         btnPievienotPasakumu = new javax.swing.JButton();
         btnAtceltPieteikumu = new javax.swing.JButton();
         btnLabotPasakumu = new javax.swing.JButton();
@@ -294,6 +327,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         mniLabotPasakumu = new javax.swing.JMenuItem();
         mniDzestPasakumu = new javax.swing.JMenuItem();
         mniDalibnieki = new javax.swing.JMenuItem();
+        mniLietotaji = new javax.swing.JMenuItem();
         mnuPalidziba = new javax.swing.JMenu();
         mniInstrukcija = new javax.swing.JMenuItem();
 
@@ -334,7 +368,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         lblLoginHint.setForeground(new java.awt.Color(100, 116, 139));
         lblLoginHint.setText("Lūdzu, ievadiet savus piekļuves datus:");
 
-        lblLoginUsername.setText("Lietotājvārds:");
+        lblLoginUsername.setText("Lietotājvārds vai e-pasts:");
 
         lblLoginPassword.setText("Parole:");
 
@@ -456,7 +490,9 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
         lblRegisterSurname.setText("Uzvārds:");
 
-        lblRegisterUsername.setText("E-pasts / Lietotājvārds:");
+        lblRegisterUsername.setText("Lietotājvārds:");
+
+        lblRegisterEmail.setText("E-pasts:");
 
         lblRegisterPhone.setText("Tālrunis:");
 
@@ -498,6 +534,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                             .addComponent(lblRegisterName)
                             .addComponent(lblRegisterSurname)
                             .addComponent(lblRegisterUsername)
+                            .addComponent(lblRegisterEmail)
                             .addComponent(lblRegisterPhone)
                             .addComponent(lblRegisterPassword)
                             .addComponent(lblRegisterPassword2))
@@ -506,6 +543,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                             .addComponent(txtRegisterName, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                             .addComponent(txtRegisterSurname, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                             .addComponent(txtRegisterUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(txtRegisterEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                             .addComponent(txtRegisterPhone, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                             .addComponent(pwdRegisterPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                             .addComponent(pwdRegisterPassword2, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)))
@@ -533,6 +571,10 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblRegisterUsername)
                     .addComponent(txtRegisterUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRegisterEmail)
+                    .addComponent(txtRegisterEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addGroup(pnlRegisterBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblRegisterPhone)
@@ -885,6 +927,115 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 .addComponent(pnlParticipantsBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        dlgUsers.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        dlgUsers.setTitle("Pasākumu sistēma – Lietotāji");
+        dlgUsers.setResizable(false);
+        dlgUsers.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                dlgUsersWindowClosing(evt);
+            }
+        });
+
+        pnlUsersHeader.setBackground(new java.awt.Color(59, 99, 224));
+
+        lblUsersHeader.setFont(lblUsersHeader.getFont().deriveFont(lblUsersHeader.getFont().getStyle() | java.awt.Font.BOLD, lblUsersHeader.getFont().getSize()+3));
+        lblUsersHeader.setForeground(new java.awt.Color(255, 255, 255));
+        lblUsersHeader.setText("Sistēmas lietotāji (administrators)");
+
+        javax.swing.GroupLayout pnlUsersHeaderLayout = new javax.swing.GroupLayout(pnlUsersHeader);
+        pnlUsersHeader.setLayout(pnlUsersHeaderLayout);
+        pnlUsersHeaderLayout.setHorizontalGroup(
+            pnlUsersHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUsersHeaderLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblUsersHeader)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlUsersHeaderLayout.setVerticalGroup(
+            pnlUsersHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUsersHeaderLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(lblUsersHeader)
+                .addGap(12, 12, 12))
+        );
+
+        pnlUsersBody.setBackground(new java.awt.Color(248, 250, 252));
+
+        lblUsersInfo.setText("Lietotāji:");
+
+        tblUsers.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Vārds", "Uzvārds", "Lietotājvārds", "E-pasts", "Tālrunis", "Loma", "Pieteikumi", "Reģistrēts"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        scrUsers.setViewportView(tblUsers);
+
+        btnUsersClose.setBackground(new java.awt.Color(242, 245, 250));
+        btnUsersClose.setForeground(new java.awt.Color(51, 65, 81));
+        btnUsersClose.setText("Aizvērt");
+        btnUsersClose.setFocusPainted(false);
+        btnUsersClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsersCloseActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlUsersBodyLayout = new javax.swing.GroupLayout(pnlUsersBody);
+        pnlUsersBody.setLayout(pnlUsersBodyLayout);
+        pnlUsersBodyLayout.setHorizontalGroup(
+            pnlUsersBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUsersBodyLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(pnlUsersBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblUsersInfo)
+                    .addComponent(scrUsers, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+                    .addComponent(btnUsersClose, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
+        );
+        pnlUsersBodyLayout.setVerticalGroup(
+            pnlUsersBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUsersBodyLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(lblUsersInfo)
+                .addGap(12, 12, 12)
+                .addComponent(scrUsers, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
+                .addComponent(btnUsersClose, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
+        );
+
+        javax.swing.GroupLayout dlgUsersLayout = new javax.swing.GroupLayout(dlgUsers.getContentPane());
+        dlgUsers.getContentPane().setLayout(dlgUsersLayout);
+        dlgUsersLayout.setHorizontalGroup(
+            dlgUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlUsersHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlUsersBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dlgUsersLayout.setVerticalGroup(
+            dlgUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dlgUsersLayout.createSequentialGroup()
+                .addComponent(pnlUsersHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlUsersBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Pasākumu sistēma – Pasākumu saraksts");
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -961,6 +1112,16 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         btnDalibnieki.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDalibniekiActionPerformed(evt);
+            }
+        });
+
+        btnLietotaji.setFont(btnLietotaji.getFont().deriveFont(btnLietotaji.getFont().getSize()+1f));
+        btnLietotaji.setForeground(new java.awt.Color(59, 99, 224));
+        btnLietotaji.setText("Lietotāji");
+        btnLietotaji.setFocusPainted(false);
+        btnLietotaji.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLietotajiActionPerformed(evt);
             }
         });
 
@@ -1084,6 +1245,8 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDalibnieki, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnLietotaji, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnPievienotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnLabotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1114,6 +1277,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                 .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(btnRegistretiesDaliba, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDalibnieki, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLietotaji, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPievienotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAtceltPieteikumu, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLabotPasakumu, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1201,6 +1365,14 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         });
         mnuPasakumi.add(mniDalibnieki);
 
+        mniLietotaji.setText("Lietotāji");
+        mniLietotaji.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLietotajiActionPerformed(evt);
+            }
+        });
+        mnuPasakumi.add(mniLietotaji);
+
         mnbGalvena.add(mnuPasakumi);
 
         mnuPalidziba.setText("Palīdzība");
@@ -1244,18 +1416,18 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // poga "Ielogoties": nolasa laukus, pārbauda un atver galveno logu
-        String lietotajvards = txtLoginUsername.getText().trim();
+        String login = txtLoginUsername.getText().trim();
         String parole = new String(pwdLoginPassword.getPassword());
 
-        if (lietotajvards.isEmpty() || parole.isEmpty()) {
-            kluda(dlgLogin, "Ievadiet lietotājvārdu un paroli!");
+        if (login.isEmpty() || parole.isEmpty()) {
+            kluda(dlgLogin, "Ievadiet lietotājvārdu (vai e-pastu) un paroli!");
             return;
         }
         if (!parbauditSavienojumu(dlgLogin)) {
             return;
         }
-        // meklē lietotāju un salīdzina paroli
-        Lietotajs l = lietotajuDAO.atrastLietotaju(lietotajvards);
+        // meklē lietotāju pēc lietotājvārda vai e-pasta un salīdzina paroli
+        Lietotajs l = lietotajuDAO.atrastLietotaju(login);
         if (l == null || !l.parbauditParoli(parole)) {
             kluda(dlgLogin, "Nepareizs lietotājvārds vai parole!");
             return;
@@ -1282,12 +1454,13 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         String vards = txtRegisterName.getText().trim();
         String uzvards = txtRegisterSurname.getText().trim();
         String lietotajvards = txtRegisterUsername.getText().trim();
+        String epasts = txtRegisterEmail.getText().trim();
         String talrunis = txtRegisterPhone.getText().trim();
         String parole = new String(pwdRegisterPassword.getPassword());
         String parole2 = new String(pwdRegisterPassword2.getPassword());
 
         // datu pārbaude ir klasē Validacija
-        String kludasTeksts = Validacija.registracija(vards, uzvards, lietotajvards, talrunis, parole, parole2);
+        String kludasTeksts = Validacija.registracija(vards, uzvards, lietotajvards, epasts, talrunis, parole, parole2);
         if (kludasTeksts != null) {
             kluda(dlgRegister, kludasTeksts);
             return;
@@ -1295,14 +1468,18 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         if (!parbauditSavienojumu(dlgRegister)) {
             return;
         }
-        // tāds lietotājvārds jau ir aizņemts
-        if (lietotajuDAO.atrastLietotaju(lietotajvards) != null) {
-            kluda(dlgRegister, "Šāds lietotājvārds jau eksistē!");
+        // lietotājvārdam un e-pastam jābūt unikāliem
+        if (lietotajuDAO.irLietotajvards(lietotajvards)) {
+            kluda(dlgRegister, "Šāds lietotājvārds jau ir aizņemts!");
+            return;
+        }
+        if (lietotajuDAO.irEpasts(epasts)) {
+            kluda(dlgRegister, "Lietotājs ar šādu e-pastu jau eksistē!");
             return;
         }
 
         // viss pareizi - saglabā un notīra laukus, atgriežas uz ielogošanos
-        if (lietotajuDAO.registretLietotaju(vards, uzvards, lietotajvards,
+        if (lietotajuDAO.registretLietotaju(vards, uzvards, lietotajvards, epasts,
                 talrunis.isEmpty() ? null : talrunis, parole)) {
             info(dlgRegister, "Reģistrēšana ir veiksmīgi pabeigta!");
             notiritRegistracijasLaukus();
@@ -1427,6 +1604,13 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         LocalDate datums = Validacija.parsetDatumu(datumsTeksts);
         String laiks = Validacija.parsetLaiku(laiksTeksts).format(DateTimeFormatter.ofPattern("HH:mm"));
 
+        // vienā vietā un laikā nevar notikt divi pasākumi (labojot neskaita pašu pasākumu)
+        int izlaistId = labojamaisPasakums != null ? labojamaisPasakums.getId() : -1;
+        if (pasakumuDAO.irPasakumsVietaUnLaika(java.sql.Date.valueOf(datums), laiks, vieta, izlaistId)) {
+            kluda(dlgAddEvent, "Šajā vietā un laikā jau notiek cits pasākums!");
+            return;
+        }
+
         // labošanas režīms - saglabā izmaiņas esošajam pasākumam
         if (labojamaisPasakums != null) {
             int apstiprinati = labojamaisPasakums.getMaksDalibniekuSkaits() - labojamaisPasakums.getBrivoVietuSkaitu();
@@ -1508,6 +1692,31 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         dlgParticipants.setVisible(false);
         atvertGalvenoLogu();
     }//GEN-LAST:event_dlgParticipantsWindowClosing
+
+    private void btnLietotajiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLietotajiActionPerformed
+        // poga "Lietotāji": administratoram parāda visu lietotāju datus
+        if (!(currentUser instanceof Administrators)) {
+            kluda(this, "Lietotāju sarakstu var apskatīt tikai administrators!");
+            return;
+        }
+        if (!ieladetLietotajus()) {
+            return;
+        }
+        setVisible(false);
+        paraditLogu(dlgUsers);
+    }//GEN-LAST:event_btnLietotajiActionPerformed
+
+    private void btnUsersCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsersCloseActionPerformed
+        // poga "Aizvērt" - atpakaļ uz galveno logu
+        dlgUsers.setVisible(false);
+        atvertGalvenoLogu();
+    }//GEN-LAST:event_btnUsersCloseActionPerformed
+
+    private void dlgUsersWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_dlgUsersWindowClosing
+        // krustiņš - atpakaļ uz galveno logu
+        dlgUsers.setVisible(false);
+        atvertGalvenoLogu();
+    }//GEN-LAST:event_dlgUsersWindowClosing
 
     private void btnRegistretiesDalibaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistretiesDalibaActionPerformed
         // poga "Reģistrēties dalībai": piesaka dalībnieku izvēlētajam pasākumam
@@ -1655,6 +1864,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
                     + "• Labot / Dzēst - izvēlieties pasākumu tabulā un nospiediet attiecīgo pogu.\n"
                     + "• Dalībnieki - izvēlieties pasākumu, tad pieteikumu un nospiediet \"Apstiprināt\" vai \"Noraidīt\".\n"
                     + "   Apstiprināt var tikai tad, ja pasākumā ir brīvas vietas.\n"
+                    + "• Lietotāji - visu lietotāju dati (lietotājvārds, e-pasts, tālrunis, loma, pieteikumu skaits).\n"
                     + "• Izrakstīties / Iziet - pogas loga apakšā vai izvēlne \"Fails\".";
         } else {
             teksts = "Darbs ar programmu (dalībnieks):\n\n"
@@ -1713,6 +1923,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         txtRegisterName.setText("");
         txtRegisterSurname.setText("");
         txtRegisterUsername.setText("");
+        txtRegisterEmail.setText("");
         txtRegisterPhone.setText("");
         pwdRegisterPassword.setText("");
         pwdRegisterPassword2.setText("");
@@ -1802,6 +2013,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         boolean admin = currentUser instanceof Administrators;
         btnPievienotPasakumu.setVisible(admin);
         btnDalibnieki.setVisible(admin);
+        btnLietotaji.setVisible(admin);
         btnLabotPasakumu.setVisible(admin);
         btnDzestPasakumu.setVisible(admin);
         btnRegistretiesDaliba.setVisible(!admin);
@@ -1810,6 +2022,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         mniLabotPasakumu.setVisible(admin);
         mniDzestPasakumu.setVisible(admin);
         mniDalibnieki.setVisible(admin);
+        mniLietotaji.setVisible(admin);
         mniRegistreties.setVisible(!admin);
         mniAtceltPieteikumu.setVisible(!admin);
         mniDzestKontu.setVisible(!admin);
@@ -1906,9 +2119,36 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
         }
         for (Registracija r : dalibnieki) {
             Dalibnieks d = r.getDalibnieks();
-            tm.addRow(new Object[]{d.getVards(), d.getUzvards(), d.getLietotajvardu(),
+            tm.addRow(new Object[]{d.getVards(), d.getUzvards(), d.getEpastu(),
                 d.getTalrunis() == null ? "" : d.getTalrunis(), r.getStatussTeksts()});
         }
+    }
+
+    /**
+     * Ielādē lietotāju tabulu: lietotāja dati, loma, pieteikumu skaits un reģistrācijas datums.
+     *
+     * @return true, ja dati ielādēti; false, ja radās datu bāzes kļūda
+     */
+    private boolean ieladetLietotajus() {
+        DefaultTableModel tm = (DefaultTableModel) tblUsers.getModel();
+        tm.setRowCount(0);
+        List<Object[]> lietotaji;
+        try {
+            lietotaji = lietotajuDAO.iegutVisusLietotajus();
+        } catch (SQLException e) {
+            kluda(this, "Neizdevās ielādēt lietotāju sarakstu no datu bāzes.");
+            return false;
+        }
+        int dalibniekuSkaits = 0;
+        for (Object[] r : lietotaji) {
+            tm.addRow(r);
+            if ("Dalībnieks".equals(r[5])) {
+                dalibniekuSkaits++;
+            }
+        }
+        lblUsersInfo.setText("Kopā lietotāju: " + lietotaji.size() + " (dalībnieki: " + dalibniekuSkaits
+                + ", administratori: " + (lietotaji.size() - dalibniekuSkaits) + ")");
+        return true;
     }
 
     /**
@@ -2018,6 +2258,15 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnApprove;
     private javax.swing.JButton btnAtceltPieteikumu;
     private javax.swing.JButton btnDalibnieki;
+    private javax.swing.JButton btnLietotaji;
+    private javax.swing.JButton btnUsersClose;
+    private javax.swing.JDialog dlgUsers;
+    private javax.swing.JLabel lblUsersHeader;
+    private javax.swing.JLabel lblUsersInfo;
+    private javax.swing.JPanel pnlUsersBody;
+    private javax.swing.JPanel pnlUsersHeader;
+    private javax.swing.JScrollPane scrUsers;
+    private javax.swing.JTable tblUsers;
     private javax.swing.JButton btnDzestPasakumu;
     private javax.swing.JButton btnEventCancel;
     private javax.swing.JButton btnEventSave;
@@ -2057,6 +2306,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblMekletVieta;
     private javax.swing.JLabel lblParticipantsEvent;
     private javax.swing.JLabel lblParticipantsHeader;
+    private javax.swing.JLabel lblRegisterEmail;
     private javax.swing.JLabel lblRegisterHeader;
     private javax.swing.JLabel lblRegisterHint;
     private javax.swing.JLabel lblRegisterName;
@@ -2069,6 +2319,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JMenuBar mnbGalvena;
     private javax.swing.JMenuItem mniAtceltPieteikumu;
     private javax.swing.JMenuItem mniDalibnieki;
+    private javax.swing.JMenuItem mniLietotaji;
     private javax.swing.JMenuItem mniDzestKontu;
     private javax.swing.JMenuItem mniDzestPasakumu;
     private javax.swing.JMenuItem mniInstrukcija;
@@ -2110,6 +2361,7 @@ public class EventRegistrationSystemGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtMekletDatums;
     private javax.swing.JTextField txtMekletNosaukums;
     private javax.swing.JTextField txtMekletVieta;
+    private javax.swing.JTextField txtRegisterEmail;
     private javax.swing.JTextField txtRegisterName;
     private javax.swing.JTextField txtRegisterPhone;
     private javax.swing.JTextField txtRegisterSurname;

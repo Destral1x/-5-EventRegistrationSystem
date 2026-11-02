@@ -144,7 +144,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lblLoginUsername">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Lietot&#x101;jv&#x101;rds:"/>
+                <Property name="text" type="java.lang.String" value="Lietot&#x101;jv&#x101;rds vai e-pasts:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtLoginUsername">
@@ -282,6 +282,7 @@
                                   <Component id="lblRegisterName" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblRegisterSurname" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblRegisterUsername" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblRegisterEmail" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblRegisterPhone" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblRegisterPassword" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblRegisterPassword2" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -291,6 +292,7 @@
                                   <Component id="txtRegisterName" alignment="0" pref="320" max="32767" attributes="0"/>
                                   <Component id="txtRegisterSurname" alignment="0" pref="320" max="32767" attributes="0"/>
                                   <Component id="txtRegisterUsername" alignment="0" pref="320" max="32767" attributes="0"/>
+                                  <Component id="txtRegisterEmail" alignment="0" pref="320" max="32767" attributes="0"/>
                                   <Component id="txtRegisterPhone" alignment="0" pref="320" max="32767" attributes="0"/>
                                   <Component id="pwdRegisterPassword" alignment="0" pref="320" max="32767" attributes="0"/>
                                   <Component id="pwdRegisterPassword2" alignment="0" pref="320" max="32767" attributes="0"/>
@@ -326,6 +328,11 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="lblRegisterUsername" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="txtRegisterUsername" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblRegisterEmail" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtRegisterEmail" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -379,10 +386,17 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lblRegisterUsername">
               <Properties>
-                <Property name="text" type="java.lang.String" value="E-pasts / Lietot&#x101;jv&#x101;rds:"/>
+                <Property name="text" type="java.lang.String" value="Lietot&#x101;jv&#x101;rds:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtRegisterUsername">
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblRegisterEmail">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="E-pasts:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtRegisterEmail">
             </Component>
             <Component class="javax.swing.JLabel" name="lblRegisterPhone">
               <Properties>
@@ -943,6 +957,161 @@
         </Container>
       </SubComponents>
     </Container>
+    <Container class="javax.swing.JDialog" name="dlgUsers">
+      <Properties>
+        <Property name="defaultCloseOperation" type="int" value="0"/>
+        <Property name="title" type="java.lang.String" value="Pas&#x101;kumu sist&#x113;ma &#x2013; Lietot&#x101;ji"/>
+        <Property name="resizable" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="dlgUsersWindowClosing"/>
+      </Events>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="pnlUsersHeader" alignment="0" max="32767" attributes="0"/>
+              <Component id="pnlUsersBody" alignment="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="pnlUsersHeader" min="-2" max="-2" attributes="0"/>
+                  <Component id="pnlUsersBody" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="pnlUsersHeader">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="e0" green="63" red="3b" type="rgb"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                      <Component id="lblUsersHeader" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Component id="lblUsersHeader" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="lblUsersHeader">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                  <FontInfo relative="true">
+                    <Font bold="true" component="lblUsersHeader" property="font" relativeSize="true" size="3"/>
+                  </FontInfo>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Sist&#x113;mas lietot&#x101;ji (administrators)"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="pnlUsersBody">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="fc" green="fa" red="f8" type="rgb"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblUsersInfo" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="scrUsers" alignment="0" pref="820" max="32767" attributes="0"/>
+                          <Component id="btnUsersClose" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                      <Component id="lblUsersInfo" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Component id="scrUsers" pref="260" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                      <Component id="btnUsersClose" min="-2" pref="38" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="lblUsersInfo">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Lietot&#x101;ji:"/>
+              </Properties>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="scrUsers">
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTable" name="tblUsers">
+                  <Properties>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                      <Table columnCount="8" rowCount="0">
+                        <Column editable="false" title="V&#x101;rds" type="java.lang.String"/>
+                        <Column editable="false" title="Uzv&#x101;rds" type="java.lang.String"/>
+                        <Column editable="false" title="Lietot&#x101;jv&#x101;rds" type="java.lang.String"/>
+                        <Column editable="false" title="E-pasts" type="java.lang.String"/>
+                        <Column editable="false" title="T&#x101;lrunis" type="java.lang.String"/>
+                        <Column editable="false" title="Loma" type="java.lang.String"/>
+                        <Column editable="false" title="Pieteikumi" type="java.lang.Integer"/>
+                        <Column editable="false" title="Re&#x123;istr&#x113;ts" type="java.lang.String"/>
+                      </Table>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JButton" name="btnUsersClose">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="fa" green="f5" red="f2" type="rgb"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="51" green="41" red="33" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Aizv&#x113;rt"/>
+                <Property name="focusPainted" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUsersCloseActionPerformed"/>
+              </Events>
+            </Component>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
     <Menu class="javax.swing.JMenuBar" name="mnbGalvena">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="mnuFails">
@@ -1027,6 +1196,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDalibniekiActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniLietotaji">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Lietot&#x101;ji"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLietotajiActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -1176,6 +1353,8 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btnDalibnieki" min="-2" pref="135" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="btnLietotaji" min="-2" pref="120" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btnPievienotPasakumu" min="-2" pref="170" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btnLabotPasakumu" min="-2" pref="95" max="-2" attributes="0"/>
@@ -1211,6 +1390,7 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="btnRegistretiesDaliba" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="btnDalibnieki" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="btnLietotaji" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="btnPievienotPasakumu" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="btnAtceltPieteikumu" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="btnLabotPasakumu" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
@@ -1281,6 +1461,23 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDalibniekiActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnLietotaji">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+              <FontInfo relative="true">
+                <Font component="btnLietotaji" property="font" relativeSize="true" size="1"/>
+              </FontInfo>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="e0" green="63" red="3b" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Lietot&#x101;ji"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLietotajiActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnPievienotPasakumu">

@@ -17,7 +17,7 @@ import org.junit.Test;
 public class LietotajsTest {
 
     private Lietotajs lietotajs(String hash) {
-        return new Lietotajs(1, "Anna", "Kalniņa", "anna@example.com", "+371 20000000", hash);
+        return new Lietotajs(1, "Anna", "Kalniņa", "anna", "anna@example.com", "+371 20000000", hash);
     }
 
     @Test
@@ -59,7 +59,8 @@ public class LietotajsTest {
         assertEquals(1, l.getId());
         assertEquals("Anna", l.getVards());
         assertEquals("Kalniņa", l.getUzvards());
-        assertEquals("anna@example.com", l.getLietotajvardu());
+        assertEquals("anna", l.getLietotajvardu());
+        assertEquals("anna@example.com", l.getEpastu());
         assertEquals("+371 20000000", l.getTalrunis());
     }
 }

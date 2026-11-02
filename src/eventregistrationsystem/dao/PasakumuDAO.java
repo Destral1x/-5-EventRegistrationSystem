@@ -142,4 +142,32 @@ public class PasakumuDAO {
             return false;
         }
     }
+
+    /**
+     * Pārbauda, vai tajā pašā vietā, datumā un laikā jau nav cita pasākuma.
+     * Vietu salīdzina, neņemot vērā lielos/mazos burtus un atstarpes malās.
+     *
+     * @param datums norises datums
+     * @param laiks norises laiks (hh:mm)
+     * @param vieta norises vieta
+     * @param izlaistId pasākums, ko neskaita (labojot - pats pasākums), jaunam -1
+     * @return true, ja vieta šajā laikā jau ir aizņemta
+     */
+    public boolean irPasakumsVietaUnLaika(Date datums, String laiks, String vieta, int izlaistId) {
+        String sql = "SELECT COUNT(*) FROM PASAKUMI WHERE datums = ? AND laiks = ? "
+                + "AND LOWER(TRIM(vieta)) = LOWER(?) AND id <> ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDate(1, datums);
+            ps.setTime(2, Time.valueOf(laiks + ":00"));
+            ps.setString(3, vieta.trim());
+            ps.setInt(4, izlaistId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

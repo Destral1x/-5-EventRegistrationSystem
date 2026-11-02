@@ -24,8 +24,8 @@ public class RegistracijaTest {
     public void setUp() {
         pasakums = new Pasakums(1, "Datu bāzu meistarklase", "Praktiska nodarbība",
                 java.sql.Date.valueOf("2030-12-05"), "14:30", "Aktu zāle", 15, 1);
-        dalibnieks = new Dalibnieks(2, "Jānis", "Bērziņš", "janis@example.com", null, "hash");
-        administrators = new Administrators(1, "Sistēmas", "Administrators", "admin", null, "hash");
+        dalibnieks = new Dalibnieks(2, "Jānis", "Bērziņš", "janis", "janis@example.com", null, "hash");
+        administrators = new Administrators(1, "Sistēmas", "Administrators", "admin", "admin@example.com", null, "hash");
     }
 
     // jauns pieteikums vienmēr sākas ar statusu GAIDA

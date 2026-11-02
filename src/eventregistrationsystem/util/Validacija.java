@@ -31,16 +31,21 @@ public class Validacija {
      *
      * @param vards vārds
      * @param uzvards uzvārds
-     * @param epasts e-pasts (lietotājvārds)
+     * @param lietotajvards lietotājvārds (3-30 simboli: burti, cipari, punkts, _)
+     * @param epasts e-pasta adrese
      * @param talrunis tālrunis (nav obligāts, var būt tukšs)
      * @param parole parole
      * @param parole2 parole atkārtoti
      * @return kļūdas teksts vai null, ja visi dati ir pareizi
      */
-    public static String registracija(String vards, String uzvards, String epasts,
+    public static String registracija(String vards, String uzvards, String lietotajvards, String epasts,
             String talrunis, String parole, String parole2) {
-        if (vards.isEmpty() || uzvards.isEmpty() || epasts.isEmpty() || parole.isEmpty()) {
+        if (vards.isEmpty() || uzvards.isEmpty() || lietotajvards.isEmpty() || epasts.isEmpty() || parole.isEmpty()) {
             return "Aizpildiet visus obligātos laukus!";
+        }
+        // lietotājvārdā nedrīkst būt @, lai to nevarētu sajaukt ar e-pastu
+        if (!derigsLietotajvards(lietotajvards)) {
+            return "Lietotājvārdam jābūt 3-30 simbolus garam (burti, cipari, punkts vai _)!";
         }
         // e-pastam jāsatur @ un punkts
         if (!epasts.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
@@ -61,6 +66,16 @@ public class Validacija {
             return "Ievadiet derīgu tālruņa numuru (piem., +371 20000000)!";
         }
         return null;
+    }
+
+    /**
+     * Pārbauda lietotājvārda formātu: 3-30 simboli, burti (arī latviešu), cipari, punkts un _.
+     *
+     * @param lietotajvards lietotājvārds
+     * @return true, ja formāts ir pareizs
+     */
+    public static boolean derigsLietotajvards(String lietotajvards) {
+        return lietotajvards.matches("^[\\p{L}0-9._]{3,30}$");
     }
 
     /**
